@@ -1,6 +1,6 @@
 # Relay MKE — 2-minute pitch script
 
-**Format:** 4 minutes, hard stop. 2:00 pitch (this script, 8 slides + 2 appendix slides for Q&A) → 2:00 live demo ([demo-runbook.md](demo-runbook.md)).
+**Format:** 4 minutes, hard stop. 2:00 pitch (this script, 8 slides + a backup demo-video slide + 2 appendix slides for Q&A) → 2:00 live demo ([demo-runbook.md](demo-runbook.md)).
 **Pace:** ~290 spoken words ≈ 2:00 at a calm 145 wpm. Every beat has a slide in [slides/index.html](slides/index.html).
 **Rule:** nothing on a slide that we can't also show live. Numbers below are the ones the Grants page shows today (synthetic 2026 data).
 
@@ -68,5 +68,6 @@
 - **Judges:** Vaun Mayes (ComForce founder — slide 2 is his week), Brett Storoe (applied AI — slides 4, 5 and 7), Dr. Carriere (community data — slides 6 and 7). Make eye contact on the matching slide.
 - **Non-technical audience:** no words like LLM, webhook, Next.js. Say "Jordan", "the board", "a text".
 - **If running long:** cut the research sentence in slide 3 and the findhelp comparison in slide 7. Never cut slide 6.
-- **Q&A:** slides 9 (tech stack) and 10 (limits & next steps) sit after the close — press `End` or jump to `#9` when a judge asks how it's built or what's simulated.
+- **If the live call fails:** slide 9 is the recorded demo (`presentation/demo-backup.mp4`, press `V`). Narrate over it with the demo-runbook beats.
+- **Q&A:** slides 10 (tech stack) and 11 (limits & next steps) sit after the close — press `End` or jump to `#10` when a judge asks how it's built or what's simulated.
 - **Pause** after "the resident is never asked" and after "the one number the City itself doesn't measure." Those are the two lines we want remembered.

@@ -17,6 +17,7 @@
 | `←` click left half | Previous |
 | `T` / `R` | Pause-resume / reset the clock (bottom center; amber at 0:20, red when over) |
 | `N` | Presenter notes overlay (the script for the current slide) |
+| `V` | Play / pause the backup demo video (slide 9) |
 | `F` | Fullscreen |
 | `#3` in the URL | Jump straight to slide 3 |
 
@@ -26,7 +27,9 @@ Swipe works on a phone or tablet, so a teammate can advance from the front row i
 
 1. Title (0:00) · 2. The story (0:05) · 3. The loop that breaks (0:30) · 4. What we built — annotated board (0:50) · 5. Data flow, first ring → "yes, it arrived" (1:00) · 6. Proof funders can audit (1:15) · 7. Responsible + cost (1:35) · 8. Close → demo (1:50)
 
-Appendix for Q&A, not part of the 2:00: 9. Tech stack · 10. Limits & next steps.
+9. **Demo video (backup only)** — placeholder until `presentation/demo-backup.mp4` exists; then it plays that file, `V` = play/pause. Skip it when the live demo works.
+
+Appendix for Q&A, not part of the 2:00: 10. Tech stack · 11. Limits & next steps.
 
 ### Visual language
 

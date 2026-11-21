@@ -41,7 +41,7 @@ Starts the moment slide 8 ends. Two people: **Presenter** (laptop, projected) an
 | Card doesn't appear on the board within 10 s | Presenter opens `/r` and pastes the request text. Keep talking. | 10 s |
 | Call-back doesn't ring | Resident taps **"1 · yes it arrived"** in Messages. Card still flips to Verified. | 0 s |
 | Tunnel dies mid-demo | Resident's phone is dead; laptop tab `/phone?number=4145550199` (localhost) becomes the resident. Presenter drives both. | 5 s |
-| Everything dies | Play `presentation/demo-backup.mp4` (record it in the dry run with QuickTime screen recording, 1:50). | — |
+| Everything dies | Play `presentation/demo-backup.mp4 (plays on deck slide 9, press V)` (record it in the dry run with QuickTime screen recording, 1:50). | — |
 
 ## Lines to say over the quiet moments
 
