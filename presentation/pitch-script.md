@@ -1,6 +1,6 @@
 # Pitch script — 2:00
 
-Spoken at a normal pace this is ~290 words, which lands at 1:55. Beats match the deck's clock (top-left). **Bold** = advance the slide. Slides 10–12 are spoken after the demo, inside the Q&A/wrap-up.
+Spoken at a normal pace this is ~290 words, which lands at 1:55. Beats match the deck's clock (top-left). **Bold** = advance the slide. Nothing animates on its own: each → is one step (problem → solution, one card move, one stack connection), so press as you speak. Slides 10–12 are spoken after the demo, inside the Q&A/wrap-up.
 
 ---
 

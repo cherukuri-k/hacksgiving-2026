@@ -14,14 +14,14 @@
 
 | # | Slide | Beat | What animates |
 | --- | --- | --- | --- |
-| 1 | Team V · Relay MKE | 0:00 | Five-step request loop draws itself; Verify step in coral |
+| 1 | Team V · Relay MKE | 0:00 | Request rail draws itself on load, a pulse rides it; Verify step in coral |
 | 2 | About — one number, one board, one proof | 0:08 | Points cascade, board screenshot |
 | 3 | Problem 1 · Information sharing | 0:20 | Tangle of 17 phone lines fades, one hub + spokes replaces it |
 | 4 | Problem 2 · Requests & referrals | 0:38 | One card moves New → Claimed → In progress → Delivered → Verified |
 | 5 | Problem 3 · Data & impact | 0:56 | Bars grow, 67 % donut counts up, “City: not measured” |
 | 6 | Problem 4 · Awareness & decisions | 1:14 | Dot-matrix map; three coral gap clusters pulse; weekly brief |
 | 7 | Problem 5 · Training | 1:30 | Volunteers fade out / join; playbook Q&A with source line |
-| 8 | Tech stack | 1:45 | **Manual:** each → reveals the next logo + flowing arrow (8 clicks) |
+| 8 | Tech stack | 1:45 | Each → reveals the next logo + flowing arrow (8 presses) |
 | 9 | Demo | 2:05 | Hand-off to live demo. **V** plays `demo-backup.mp4` if it exists |
 | 10 | Benefits | after demo | Was/now columns |
 | 11 | Cost — $1.66 | after demo | Price counts up, cost bar segments grow, findhelp comparison |
@@ -31,7 +31,7 @@
 
 | Key | Does |
 | --- | --- |
-| → Space Enter · click right half | Next fragment / slide. First advance from slide 1 starts the 2:00 clock |
+| → Space Enter · click right half | Next step. **Nothing moves on its own** — every build (problem → solution, card moving lane, each stack connection) is one press. When a slide is fully revealed the next press changes slide. First press on slide 1 starts the 2:00 clock |
 | ← · click left half | Previous slide (fully revealed) |
 | Home / End | First / last slide |
 | T · R | Start-stop / reset the clock |
