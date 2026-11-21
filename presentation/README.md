@@ -4,7 +4,7 @@
 
 | File | What it is |
 | --- | --- |
-| [slides/index.html](slides/index.html) | The deck. Single HTML file, no network needed. Open in Chrome, press **F** for fullscreen. |
+| [slides/index.html](slides/index.html) | The deck. Single HTML file + `slides/img/` (real app screenshots), no network needed. Open in Chrome, press **F** for fullscreen. |
 | [pitch-script.md](pitch-script.md) | Word-for-word 2:00 script, one beat per slide, with the two lines we want remembered. |
 | [demo-runbook.md](demo-runbook.md) | The 2:00 demo, second by second: who does what, pre-flight checklist, what to do when something breaks. |
 | [Relay-MKE-pitch.pdf](Relay-MKE-pitch.pdf) | Static export of the deck for the submission form / backup. |
@@ -24,11 +24,21 @@ Swipe works on a phone or tablet, so a teammate can advance from the front row i
 
 ## Slide → script map
 
-1. Title (0:00) · 2. The story (0:05) · 3. The loop that breaks (0:30) · 4. What we built (0:50) · 5. Proof funders can audit (1:15) · 6. Responsible + cost (1:35) · 7. Close → demo (1:50)
+1. Title (0:00) · 2. The story (0:05) · 3. The loop that breaks (0:30) · 4. What we built — annotated board (0:50) · 5. Data flow, first ring → "yes, it arrived" (1:00) · 6. Proof funders can audit (1:15) · 7. Responsible + cost (1:35) · 8. Close → demo (1:50)
 
-Numbers on slides 5 and 6 come from `/grants` on the seeded 2026 data (71 % · 21/26 · 2 h 5 m · 67 % · $1.66 per request). If the seed changes, update both the deck and the script.
+Appendix for Q&A, not part of the 2:00: 9. Tech stack · 10. Limits & next steps.
 
-## Regenerate the PDF
+### Visual language
+
+Dark stage, one green accent, uppercase tracked captions, `● LIVE` / `◦ SIMULATED` / `◦ SYNTHETIC DATA` tags on anything a judge might question. Every screenshot is the real app (`slides/img/`, captured from `localhost:3077`). Bottom-left glyph row is the slide progress; bottom-right is the page number.
+
+Numbers on slides 6 and 7 come from `/grants` on the seeded 2026 data (71 % · 21/26 · 2 h 5 m · 67 % · $1.66 per request). If the seed changes, update both the deck and the script.
+
+## Regenerate screenshots and the PDF
+
+Screenshots: with the app running on `:3077`, capture `/board` and `/grants` at 1600×1000 and `/phone?number=4145550188` at 390×844 (2× scale) into `slides/img/` — `board.png`, `grants.png`, `phone-home.png`, `phone-messages.png`, `phone-dialer.png`.
+
+PDF (one page per slide, all build steps revealed):
 
 ```bash
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --disable-gpu \

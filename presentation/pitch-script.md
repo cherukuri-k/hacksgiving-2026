@@ -1,6 +1,6 @@
 # Relay MKE — 2-minute pitch script
 
-**Format:** 4 minutes, hard stop. 2:00 pitch (this script, 7 slides) → 2:00 live demo ([demo-runbook.md](demo-runbook.md)).
+**Format:** 4 minutes, hard stop. 2:00 pitch (this script, 8 slides + 2 appendix slides for Q&A) → 2:00 live demo ([demo-runbook.md](demo-runbook.md)).
 **Pace:** ~290 spoken words ≈ 2:00 at a calm 145 wpm. Every beat has a slide in [slides/index.html](slides/index.html).
 **Rule:** nothing on a slide that we can't also show live. Numbers below are the ones the Grants page shows today (synthetic 2026 data).
 
@@ -28,7 +28,9 @@
 >
 > Relay MKE is built around that one missing step.
 
-## 0:50 — Slide 4 · What we built (25 s)
+## 0:50 — Slides 4–5 · What we built (25 s)
+
+*Slide 4 (annotated board + phone) for the first paragraph; advance to slide 5 (the data-flow thread) at "A coordinator taps Dispatch."*
 
 > A resident calls ComForce. Jordan — our AI — answers in English or Spanish, listens, and logs the request on the shared board **while they're still talking.** The resident gets a tracking code by text.
 >
@@ -36,7 +38,7 @@
 >
 > After delivery, Relay texts the resident: *did it arrive?* No reply? **Jordan calls them back, in their language.** Only the resident's "yes" counts.
 
-## 1:15 — Slide 5 · Proof funders can audit (20 s)
+## 1:15 — Slide 6 · Proof funders can audit (20 s)
 
 > That verified loop is what turns stories into evidence.
 >
@@ -44,13 +46,13 @@
 >
 > One click drafts the grant application, in the funder's own vocabulary.
 
-## 1:35 — Slide 6 · Responsible, and nearly free (15 s)
+## 1:35 — Slide 7 · Responsible, and nearly free (15 s)
 
 > Guardrails are built in: it never scores or predicts a person, PII is stripped before any AI sees it, humans make every decision, and a caller in crisis hears 988 and Sojourner on the first call.
 >
 > It runs on volunteers' own phones for about a dollar sixty-six a request. findhelp charges up to seventy-five thousand a year.
 
-## 1:50 — Slide 7 · Close → demo (10 s)
+## 1:50 — Slide 8 · Close → demo (10 s)
 
 > One engine for all eight divisions. ComForce owns the data. Deployable Monday.
 >
@@ -63,7 +65,8 @@
 ## Delivery notes
 
 - **Who speaks:** one presenter for the 2:00 pitch; a second teammate runs the phone in the demo. Don't trade the mic mid-pitch.
-- **Judges:** Vaun Mayes (ComForce founder — slide 2 is his week), Brett Storoe (applied AI — slides 4 and 6), Dr. Carriere (community data — slides 5 and 6). Make eye contact on the matching slide.
+- **Judges:** Vaun Mayes (ComForce founder — slide 2 is his week), Brett Storoe (applied AI — slides 4, 5 and 7), Dr. Carriere (community data — slides 6 and 7). Make eye contact on the matching slide.
 - **Non-technical audience:** no words like LLM, webhook, Next.js. Say "Jordan", "the board", "a text".
-- **If running long:** cut the research sentence in slide 3 and the findhelp comparison in slide 6. Never cut slide 5.
+- **If running long:** cut the research sentence in slide 3 and the findhelp comparison in slide 7. Never cut slide 6.
+- **Q&A:** slides 9 (tech stack) and 10 (limits & next steps) sit after the close — press `End` or jump to `#9` when a judge asks how it's built or what's simulated.
 - **Pause** after "the resident is never asked" and after "the one number the City itself doesn't measure." Those are the two lines we want remembered.

@@ -1,6 +1,6 @@
 # Relay MKE — 2-minute live demo runbook
 
-Starts the moment slide 7 ends. Two people: **Presenter** (laptop, projected) and **Resident** (teammate, real phone). Target 1:50; hard cap 2:00.
+Starts the moment slide 8 ends. Two people: **Presenter** (laptop, projected) and **Resident** (teammate, real phone). Target 1:50; hard cap 2:00.
 
 ## Screen layout (projected)
 
