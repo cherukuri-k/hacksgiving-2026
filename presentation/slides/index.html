@@ -131,22 +131,28 @@
 
   /* 6 stack — architecture diagram */
   .arch{position:relative;width:1660px;height:740px;margin-top:34px;font-size:15px}
-  .arch .grp{position:absolute;border:1.5px solid var(--ink);border-radius:12px;background:#fff}
-  .arch .grp.rec{border-color:var(--acc)}
-  .arch .gl{position:absolute;left:20px;top:12px;font-size:16px;font-weight:600;letter-spacing:-.01em}
+  .arch .grp{position:absolute;border:1.5px solid var(--gc,var(--ink));border-radius:14px;background:#fff;box-shadow:0 10px 30px -22px rgba(18,20,23,.35)}
+  .arch .grp::before{content:"";position:absolute;inset:0;height:40px;border-radius:12px 12px 0 0;background:var(--gt,transparent)}
+  .arch .c-in{--gc:#f22f46;--gt:#fff1f3} .arch .c-app{--gc:#111;--gt:#f3f4f6} .arch .c-ai{--gc:#1f5fbf;--gt:#edf3fc} .arch .c-db{--gc:#1e8a5a;--gt:#eaf6ef} .arch .c-out{--gc:#e0671b}
+  .arch .gb{position:absolute;right:14px;top:10px;width:22px;height:22px;color:var(--gc)} .arch .gb svg{width:22px;height:22px}
+  .arch .gl{position:absolute;left:20px;top:10px;font-size:16px;font-weight:600;letter-spacing:-.01em;color:var(--gc,var(--ink))}
   .arch .gl i{font-style:normal;font-weight:500;color:var(--mut);margin-left:10px;font-size:14px}
-  .arch .bx{position:absolute;display:flex;align-items:center;gap:14px;padding:12px 16px;border:1px solid var(--line2);border-radius:10px;background:var(--panel)}
+  .arch .bx{position:absolute;display:flex;align-items:center;gap:14px;padding:12px 16px;border:1px solid var(--line2);border-radius:10px;background:#fff;box-shadow:0 4px 14px -10px rgba(18,20,23,.3)}
   .arch .bx b{display:block;font-size:17px;font-weight:600;line-height:1.2}
   .arch .bx span{display:block;font-size:13px;color:var(--mut);margin-top:3px;line-height:1.3}
   .arch .bx em{display:inline-block;font-style:normal}
   .arch .bx.dark{background:#111;border-color:#111}.arch .bx.dark b{color:#fff}.arch .bx.dark span{color:#bbb}
   .arch .bx.blue{background:var(--acc);border-color:var(--acc)}.arch .bx.blue b{color:#fff}.arch .bx.blue span{color:#d7e3f7}
-  .arch .bx.big{background:#fff;border-color:var(--acc)}
-  .arch .bx.out{border:1.5px solid var(--ink);background:#fff}
-  .arch .bx span.lg{flex:none;width:40px;height:40px;margin:0;border-radius:9px;display:grid;place-items:center;font-weight:700;font-size:17px;line-height:1;letter-spacing:-.02em}
-  .arch .bx.blue span.lg,.arch .bx.big span.lg{width:52px;height:52px;font-size:22px;border-radius:12px}
+  .arch .bx.big{background:#fff;border:1.5px solid #1e8a5a}
+  .arch .bx.out{border:1.5px solid var(--gc);background:#fff} .arch .bx.out b{color:var(--gc)}
+  .arch .bx span.lg{flex:none;width:40px;height:40px;margin:0;border-radius:9px;display:grid;place-items:center;font-weight:700;font-size:17px;line-height:1;letter-spacing:-.02em;border:1px solid var(--line)}
+  .arch .bx span.lg img{width:24px;height:24px;display:block} .arch .bx span.lg[style*="--inv"] img{filter:invert(1)}
+  .arch .bx span.lg.ic{background:#fff;color:var(--ink)} .arch .bx span.lg.ic svg{width:22px;height:22px} .arch .bx span.lg.ic.or{color:#e0671b;background:#fdf1e8;border-color:#f6d9c2} .arch .bx span.lg.ic.gr{color:#fff;background:#1e8a5a;border-color:#1e8a5a}
+  .arch .bx.dark span.lg,.arch .bx.blue span.lg{border-color:transparent}
+  .arch .bx.blue span.lg,.arch .bx.big span.lg{width:56px;height:56px;border-radius:12px} .arch .bx.blue span.lg img,.arch .bx.big span.lg img{width:32px;height:32px}
   .arch .fn{position:absolute;font-size:13px;color:var(--mut);line-height:1.4}
   .arch .fn b{color:var(--ink);font-size:15px}
+  .arch .fn.pii{display:flex;gap:8px;align-items:flex-start;color:#1f5fbf;font-weight:500;background:#edf3fc;padding:8px 10px;border-radius:8px} .arch .fn.pii svg{flex:none;width:18px;height:18px;margin-top:1px}
   .arch .wires{position:absolute;left:0;top:0;pointer-events:none}
   .arch .wires path{stroke-dashoffset:0}
   .arch .cap{position:absolute;right:0;bottom:-14px;text-align:right;font-family:var(--mono);font-size:11px;color:var(--faint);line-height:1.5}
@@ -370,62 +376,62 @@
     <h2>One record in the middle. Cheap, current parts around it.</h2>
     <div class="arch">
       <!-- row 1: channels -->
-      <div class="grp f" style="left:0;top:0;width:1660px;height:150px"><div class="gl">Incoming channels</div>
-        <div class="bx dark" style="left:20px;top:40px;width:300px;height:90px"><span class="lg" style="background:#f22f46;color:#fff">T</span><div><b>Twilio Voice + SMS</b><span>the number ComForce already gives out</span></div></div>
-        <div class="bx" style="left:400px;top:40px;width:230px;height:90px"><span class="lg" style="background:#111;color:#fff">&#9742;</span><div><b>Phone call</b><span>Jordan answers · EN / ES</span></div></div>
-        <div class="bx" style="left:650px;top:40px;width:230px;height:90px"><span class="lg" style="background:#111;color:#fff">&#9993;</span><div><b>Text message</b><span>reply any time · STOP</span></div></div>
-        <div class="bx" style="left:900px;top:40px;width:230px;height:90px"><span class="lg" style="background:#111;color:#fff">&#9638;</span><div><b>Web intake form</b><span>same record, nothing to install</span></div></div>
-        <div class="bx" style="left:1150px;top:40px;width:230px;height:90px"><span class="lg" style="background:#111;color:#fff">&#9647;</span><div><b>Resident phone</b><span>/phone · /r tracking page</span></div></div>
-        <div class="bx" style="left:1400px;top:40px;width:240px;height:90px"><span class="lg" style="background:#111;color:#fff">&#9742;</span><div><b>Partner line</b><span>/partner-line · accept / decline</span></div></div>
+      <div class="grp f c-in" style="left:0;top:0;width:1660px;height:150px"><div class="gl">Incoming channels <i>Twilio · the number ComForce already gives out</i></div><div class="gb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+        <div class="bx dark" style="left:20px;top:40px;width:300px;height:90px"><span class="lg" style="background:#fff"><img src="img/logos/twilio.svg" alt=""></span><div><b>Twilio Voice + SMS</b><span>the number ComForce already gives out</span></div></div>
+        <div class="bx" style="left:400px;top:40px;width:230px;height:90px"><span class="lg ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><div><b>Phone call</b><span>Jordan answers · EN / ES</span></div></div>
+        <div class="bx" style="left:650px;top:40px;width:230px;height:90px"><span class="lg ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><div><b>Text message</b><span>reply any time · STOP</span></div></div>
+        <div class="bx" style="left:900px;top:40px;width:230px;height:90px"><span class="lg ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><div><b>Web intake form</b><span>same record, nothing to install</span></div></div>
+        <div class="bx" style="left:1150px;top:40px;width:230px;height:90px"><span class="lg ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></span><div><b>Resident phone</b><span>/phone · /r tracking page</span></div></div>
+        <div class="bx" style="left:1400px;top:40px;width:240px;height:90px"><span class="lg ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></span><div><b>Partner line</b><span>/partner-line · accept / decline</span></div></div>
       </div>
       <!-- row 2: app cluster -->
-      <div class="grp f" style="left:0;top:180px;width:400px;height:390px"><div class="gl">App cluster <i>Vercel · $25 / mo</i></div>
-        <div class="bx" style="left:20px;top:46px;width:360px;height:96px"><span class="lg" style="background:#000;color:#fff">N</span><div><b>Next.js 16 · React 19</b><span>Board · Partners · Pulse · Guide · Impact</span></div></div>
-        <div class="bx" style="left:20px;top:156px;width:360px;height:96px"><span class="lg" style="background:#3178c6;color:#fff">TS</span><div><b>TypeScript · zod · 37 tests</b><span>server actions, validated at the edge</span></div></div>
-        <div class="bx" style="left:20px;top:266px;width:360px;height:96px"><span class="lg" style="background:#111;color:#fff">&#9647;</span><div><b>Resident PWA</b><span>/phone · /m · /r — no app store</span></div></div>
+      <div class="grp f c-app" style="left:0;top:180px;width:400px;height:390px"><div class="gl">App cluster <i>Vercel · $25 / mo</i></div><div class="gb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+        <div class="bx" style="left:20px;top:46px;width:360px;height:96px"><span class="lg" style="background:#000;--inv:1"><img src="img/logos/nextdotjs.svg" alt=""></span><div><b>Next.js 16 · React 19</b><span>Board · Partners · Pulse · Guide · Impact</span></div></div>
+        <div class="bx" style="left:20px;top:156px;width:360px;height:96px"><span class="lg" style="background:#3178c6;--inv:1"><img src="img/logos/typescript.svg" alt=""></span><div><b>TypeScript · zod · 37 tests</b><span>server actions, validated at the edge</span></div></div>
+        <div class="bx" style="left:20px;top:266px;width:360px;height:96px"><span class="lg" style="background:#fff"><img src="img/logos/react.svg" alt=""></span><div><b>Resident PWA</b><span>/phone · /m · /r — no app store</span></div></div>
       </div>
       <!-- row 2: agent cluster -->
-      <div class="grp f" style="left:440px;top:180px;width:800px;height:390px"><div class="gl">Agent cluster <i>Jordan</i></div>
-        <div class="bx blue" style="left:24px;top:70px;width:200px;height:260px;flex-direction:column;justify-content:center;text-align:center;gap:10px"><span class="lg" style="background:#fff;color:#1f5fbf">11</span><div><b>ElevenLabs Agents</b><span>voice router · 3 agents</span></div></div>
+      <div class="grp f c-ai" style="left:440px;top:180px;width:800px;height:390px"><div class="gl">Agent cluster <i>Jordan · voice + reasoning</i></div><div class="gb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <div class="bx blue" style="left:24px;top:70px;width:200px;height:260px;flex-direction:column;justify-content:center;text-align:center;gap:10px"><span class="lg" style="background:#fff"><img src="img/logos/elevenlabs.svg" alt=""></span><div><b>ElevenLabs Agents</b><span>voice router · 3 agents</span></div></div>
         <div class="bx" style="left:290px;top:42px;width:260px;height:88px"><div><b>Intake agent</b><span>resident calls · logs the request live</span></div></div>
         <div class="bx" style="left:290px;top:146px;width:260px;height:108px"><div><b>Partner-call agent</b><span>accept · decline · capacity</span><em class="tag sim" style="margin-top:6px">simulated</em></div></div>
         <div class="bx" style="left:290px;top:270px;width:260px;height:88px"><div><b>Call-back agent</b><span>“did it arrive?” in their language</span></div></div>
-        <div class="bx" style="left:580px;top:110px;width:200px;height:160px;flex-direction:column;justify-content:center;text-align:center;gap:10px"><span class="lg" style="background:#d97757;color:#fff">A</span><div><b>Claude</b><span>structure · triage · redaction · summaries</span></div></div>
-        <div class="fn" style="left:580px;top:290px;width:200px">PII stripped before any model sees it</div>
+        <div class="bx" style="left:580px;top:110px;width:200px;height:160px;flex-direction:column;justify-content:center;text-align:center;gap:10px"><span class="lg" style="background:#fff"><img src="img/logos/claude.svg" alt=""></span><div><b>Claude</b><span>structure · triage · redaction · summaries</span></div></div>
+        <div class="fn pii" style="left:580px;top:288px;width:200px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>PII stripped before any model sees it</div>
       </div>
       <!-- row 2: record -->
-      <div class="grp f rec" style="left:1280px;top:180px;width:380px;height:390px"><div class="gl">The record</div>
-        <div class="bx big" style="left:20px;top:60px;width:340px;height:200px;flex-direction:column;justify-content:center;text-align:center;gap:12px"><span class="lg" style="background:#3ecf8e;color:#0b3b26">S</span><div><b>Supabase Postgres</b><span>requests · partners · outcomes · audit</span></div></div>
+      <div class="grp f c-db" style="left:1280px;top:180px;width:380px;height:390px"><div class="gl">The record <i>one source of truth</i></div><div class="gb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+        <div class="bx big" style="left:20px;top:60px;width:340px;height:200px;flex-direction:column;justify-content:center;text-align:center;gap:12px"><span class="lg" style="background:#fff"><img src="img/logos/supabase.svg" alt=""></span><div><b>Supabase Postgres</b><span>requests · partners · outcomes · audit</span></div></div>
         <div class="fn" style="left:20px;top:280px;width:340px">ComForce owns every row · in-memory fallback for demos · CSV out any time</div>
         <div class="fn" style="left:20px;top:330px;width:340px"><b>$0 → $25 / mo</b></div>
       </div>
       <!-- row 3: outputs -->
-      <div class="bx out f" style="left:0;top:620px;width:385px;height:100px"><span class="lg" style="background:#111;color:#fff">R</span><div><b>Partner handoff</b><span>Resend email · run-sheet SMS</span></div></div>
-      <div class="bx out f" style="left:425px;top:620px;width:385px;height:100px"><span class="lg" style="background:#199900;color:#fff">L</span><div><b>Neighborhood Pulse</b><span>Leaflet · DCWS cluster overlays</span></div></div>
-      <div class="bx out f" style="left:850px;top:620px;width:385px;height:100px"><span class="lg" style="background:#111;color:#fff">&#9636;</span><div><b>Impact Studio</b><span>grant draft · Countdown export · CSV</span></div></div>
-      <div class="bx out f" style="left:1275px;top:620px;width:385px;height:100px"><span class="lg" style="background:#1e8a5a;color:#fff">&#10003;</span><div><b>Verification</b><span>resident reply or Jordan call-back</span></div></div>
+      <div class="bx out f c-out" style="left:0;top:620px;width:385px;height:100px"><span class="lg" style="background:#000;--inv:1"><img src="img/logos/resend.svg" alt=""></span><div><b>Partner handoff</b><span>Resend email · run-sheet SMS</span></div></div>
+      <div class="bx out f c-out" style="left:425px;top:620px;width:385px;height:100px"><span class="lg" style="background:#fff"><img src="img/logos/leaflet.svg" alt=""></span><div><b>Neighborhood Pulse</b><span>Leaflet · DCWS cluster overlays</span></div></div>
+      <div class="bx out f c-out" style="left:850px;top:620px;width:385px;height:100px"><span class="lg ic or"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></span><div><b>Impact Studio</b><span>grant draft · Countdown export · CSV</span></div></div>
+      <div class="bx out f c-out" style="left:1275px;top:620px;width:385px;height:100px"><span class="lg ic gr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></span><div><b>Verification</b><span>resident reply or Jordan call-back</span></div></div>
       <!-- arrows -->
       <svg class="wires f slow" viewBox="0 0 1660 740" width="1660" height="740">
         <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker></defs>
-        <g fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)">
-          <path d="M400 85H322"/>
+        <g fill="none" stroke="#111" stroke-width="1.75" marker-end="url(#ah)">
+          <path d="M400 85H322" stroke="#f22f46"/>
           <path d="M650 85H632"/><path d="M900 85H882"/><path d="M1150 85H1132"/><path d="M1400 85H1382"/>
           <!-- twilio -> agent cluster -->
-          <path d="M170 150V165H840V180"/>
+          <path d="M170 150V165H840V180" stroke="#f22f46"/>
           <!-- router -> agents -->
-          <path d="M664 300 730 266"/><path d="M664 320H730"/><path d="M664 340 730 374"/>
+          <g stroke="#1f5fbf"><path d="M664 300 730 266"/><path d="M664 320H730"/><path d="M664 340 730 374"/></g>
           <!-- agents -> claude -->
-          <path d="M990 266 1020 300"/><path d="M990 320H1020"/><path d="M990 374 1020 340"/>
+          <g stroke="#1f5fbf"><path d="M990 266 1020 300"/><path d="M990 320H1020"/><path d="M990 374 1020 340"/></g>
           <!-- claude -> record -->
-          <path d="M1220 370H1300"/>
+          <path d="M1220 370H1300" stroke="#1f5fbf" stroke-dasharray="6 5"/>
           <!-- record -> outputs -->
-          <path d="M1470 570V595H192V620"/><path d="M200 595V570" stroke-dasharray="5 5"/><path d="M617 595V620"/><path d="M1042 595V620"/><path d="M1467 595V620"/>
+          <g stroke="#1e8a5a"><path d="M1470 570V595H192V620"/><path d="M200 595V570" stroke-dasharray="5 5"/><path d="M617 595V620"/><path d="M1042 595V620"/><path d="M1467 595V620"/></g>
         </g>
                 <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="#777">
-          <text x="190" y="160">media stream · webhooks</text>
-          <text x="215" y="588">server actions · reads &amp; writes</text>
-          <text x="1260" y="400" text-anchor="middle">structured JSON</text>
-          <text x="1455" y="590" text-anchor="end">publish · every 2 s</text>
+          <text x="190" y="160" fill="#f22f46">media stream · webhooks</text>
+          <text x="215" y="588" fill="#1e8a5a">server actions · reads &amp; writes</text>
+          <text x="1260" y="348" text-anchor="middle" fill="#1f5fbf">structured</text><text x="1260" y="362" text-anchor="middle" fill="#1f5fbf">JSON</text>
+          <text x="1455" y="590" text-anchor="end" fill="#1e8a5a">publish · every 2 s</text>
         </g>
       </svg>
       <div class="cap">Relay MKE · Milwaukee · ComForce · Next 16 · React 19 · Claude · ElevenLabs Agents · Twilio · Supabase · Resend · Leaflet · Vercel<br>pay-per-use everywhere · no seat licences · ≈ $1.66 per request at list prices</div>
