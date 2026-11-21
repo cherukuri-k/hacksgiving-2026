@@ -1,0 +1,757 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Relay MKE — Team V — Hacksgiving 2026</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  :root{
+    --paper:#f4f1ea; --paper2:#ebe7dd; --ink:#17181c; --ink2:#3d3f46; --mut:#6f727b; --faint:#a3a6ad; --line:#d8d4ca; --line2:#c2bdb1;
+    --teal:#0e6b63; --teal2:#d8e9e5; --coral:#d9482b; --coral2:#f7ddd5; --amber:#b7791f; --amber2:#f3e6cf;
+    --dark:#15171b; --dark2:#23262c;
+    --sans:-apple-system,"Helvetica Neue",Inter,Arial,sans-serif; --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#1a1b1e;color:var(--ink);font-family:var(--sans);overflow:hidden;-webkit-font-smoothing:antialiased}
+  b{font-weight:600}
+  #stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center;overflow:hidden;background:var(--paper)}
+
+  section.slide{position:absolute;inset:0;padding:96px 120px 110px;opacity:0;visibility:hidden;transform:translateY(18px);transition:opacity .3s ease,transform 0s .3s,visibility 0s .3s;background:var(--paper)}
+  section.slide.active{opacity:1;visibility:visible;transform:none;transition:opacity .55s cubic-bezier(.2,.7,.2,1) .1s,transform .65s cubic-bezier(.2,.7,.2,1) .1s,visibility 0s}
+  section.dark{background:var(--dark);color:var(--paper)}
+  @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+  @keyframes flow{to{stroke-dashoffset:-36}}
+  @keyframes pulse{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2.2);opacity:0}}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  section.slide.active>.k{animation:rise .6s cubic-bezier(.2,.7,.2,1) .12s both}
+  section.slide.active>h2,section.slide.active>h1{animation:rise .7s cubic-bezier(.2,.7,.2,1) .2s both}
+
+  /* fragments */
+  .f{opacity:0;transform:translateY(16px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
+  .f.from-r{transform:translateX(40px)} .f.from-l{transform:translateX(-40px)} .f.grow{transform:scale(.92)}
+  .f.on{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+
+  /* chrome */
+  #foot{position:absolute;left:120px;right:120px;bottom:44px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--faint);z-index:5;letter-spacing:.02em}
+  .dark #foot,.dark ~ #foot{color:#6c7079}
+  #foot .l b{color:var(--mut);font-weight:500}
+  #clock{position:absolute;left:50%;transform:translateX(-50%);bottom:44px;font-family:var(--mono);font-size:14px;color:var(--faint);z-index:5}
+  #clock.warn{color:var(--amber)} #clock.over{color:var(--coral)}
+  #prog{position:absolute;left:0;top:0;height:3px;background:var(--teal);z-index:5;transition:width .5s cubic-bezier(.2,.7,.2,1)}
+  #notes{position:absolute;left:0;right:0;bottom:0;background:#0f1013;color:#fff;padding:30px 120px;font-size:26px;line-height:1.45;transform:translateY(100%);transition:transform .3s;z-index:6;max-height:50%;overflow:auto}
+  #notes.on{transform:none}
+  #help{position:absolute;left:120px;top:36px;font-family:var(--mono);font-size:12px;color:var(--faint);z-index:5;transition:opacity 1s}#help.hide{opacity:0}
+
+  /* type */
+  .k{font-family:var(--mono);font-size:14px;color:var(--mut);margin-bottom:26px;letter-spacing:.02em;display:flex;gap:14px;align-items:center}
+  .k .n{color:var(--teal);font-weight:600}
+  .k .sep{width:28px;height:1px;background:var(--line2)}
+  .dark .k{color:#8a8e97} .dark .k .sep{background:#3a3e46}
+  h1{font-size:150px;line-height:.95;font-weight:700;letter-spacing:-.04em}
+  h2{font-size:56px;line-height:1.08;font-weight:700;letter-spacing:-.03em;max-width:1500px}
+  h2 em{font-style:normal;color:var(--teal)}
+  .dark h2 em{color:#6fc2b7}
+  .sub{font-size:24px;color:var(--mut);line-height:1.45;margin-top:18px;max-width:1100px}
+  .dark .sub{color:#a3a7b0}
+  .tag{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:3px;color:var(--mut);background:var(--paper2)}
+  .tag.live{color:var(--teal);background:var(--teal2)} .tag.sim{color:var(--amber);background:var(--amber2)} .tag.gap{color:var(--coral);background:var(--coral2)}
+  .tag.live::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin:0 6px 1px 0;animation:blink 1.6s infinite}
+  .shot{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 30px 60px -30px rgba(20,20,25,.35)}
+  .shot img{display:block;width:100%}
+  .shot .bar{height:30px;background:#ecebe6;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px;padding:0 12px}
+  .shot .bar i{width:9px;height:9px;border-radius:50%;background:#cfccc3}
+  .num{font-family:var(--mono);font-size:13px;color:var(--teal);font-weight:600}
+  .mono{font-family:var(--mono)}
+  svg text{font-family:var(--sans)}
+  svg .m{font-family:var(--mono)}
+
+  /* problem/solution two-column frame used on slides 3–7 */
+  .ps{display:grid;grid-template-columns:560px 1fr;gap:90px;margin-top:36px;align-items:start}
+  .ps .txt .blk{padding:26px 0;border-top:1px solid var(--line)}
+  .ps .txt .blk:last-child{border-bottom:1px solid var(--line)}
+  .ps .txt .lab{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+  .ps .txt .lab.p{color:var(--coral)} .ps .txt .lab.s{color:var(--teal)}
+  .ps .txt p{font-size:21px;line-height:1.45;color:var(--ink2)}
+  .ps .txt p b{color:var(--ink)}
+  .ps .txt .mod{margin-top:14px;font-size:15px;color:var(--mut)} .ps .txt .mod b{color:var(--ink);font-weight:600}
+  .ps .viz{position:relative}
+
+  /* 1 title */
+  .title{display:grid;grid-template-columns:1fr 760px;height:100%;align-items:center;gap:40px}
+  .title .team{font-family:var(--mono);font-size:16px;color:#8a8e97;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:16px;margin-bottom:46px}
+  .title .team b{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--paper);color:var(--dark);font-size:22px;font-weight:700;letter-spacing:0}
+  .title h1{color:var(--paper)}
+  .title p{font-size:30px;color:#c7cad1;line-height:1.35;margin-top:36px;max-width:820px}
+  .title p b{color:#fff;font-weight:600}
+  .title .meta{margin-top:56px;display:flex;gap:40px;font-family:var(--mono);font-size:14px;color:#8a8e97}
+  .title .meta b{color:#e6e8ec;font-weight:500}
+  .loop{width:640px;height:640px;overflow:visible;justify-self:center}
+  .loop .ring{fill:none;stroke:#2c3037;stroke-width:1.5}
+  .loop .arc{fill:none;stroke:#6fc2b7;stroke-width:3;stroke-linecap:round;stroke-dasharray:1000;stroke-dashoffset:1000;transition:stroke-dashoffset 1.1s cubic-bezier(.2,.7,.2,1)}
+  .loop .arc.on{stroke-dashoffset:0}
+  .loop .arc.last{stroke:#f08a6c}
+  .loop .node circle{fill:var(--dark);stroke:#50555e;stroke-width:1.5;transition:stroke .5s,fill .5s}
+  .loop .node.on circle{stroke:#6fc2b7} .loop .node.last.on circle{stroke:#f08a6c;fill:#f08a6c}
+  .loop .node text{fill:#c7cad1;font-size:17px;font-weight:500}
+  .loop .node tspan.s{fill:#777b84;font-size:13px;font-weight:400}
+  .loop .c{fill:#e6e8ec;font-size:20px;font-weight:600}
+  .loop .c2{fill:#8a8e97;font-size:14px}
+
+  /* 2 about */
+  .about{display:grid;grid-template-columns:600px 1fr;gap:80px;margin-top:40px;align-items:start}
+  .three{display:grid;gap:0}
+  .three>div{padding:26px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:64px 1fr;gap:22px;align-items:start}
+  .three>div:last-child{border-bottom:1px solid var(--line)}
+  .three .ic{width:52px;height:52px;border-radius:12px;background:var(--dark);color:var(--paper);display:grid;place-items:center}
+  .three .ic svg{width:26px;height:26px}
+  .three b{display:block;font-size:24px;font-weight:600;letter-spacing:-.01em}
+  .three span{display:block;font-size:17px;color:var(--mut);margin-top:6px;line-height:1.45}
+  .divs{margin-top:34px;display:flex;flex-wrap:wrap;gap:8px}
+  .divs span{font-family:var(--mono);font-size:12px;padding:6px 10px;border:1px solid var(--line2);border-radius:999px;color:var(--ink2)}
+  .divs .all{background:var(--teal);border-color:var(--teal);color:#fff}
+  .about .shot{width:1000px}
+
+  /* 3 network */
+  .net{width:1100px;height:620px}
+  .net line{stroke:var(--line2);stroke-width:1.2;transition:opacity .8s}
+  .net .tangle.off{opacity:.08}
+  .net .spoke{stroke:var(--teal);stroke-width:2;stroke-dasharray:6 8;opacity:0;transition:opacity .8s}
+  .net .spoke.on{opacity:1;animation:flow 1.4s linear infinite}
+  .net .n circle{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+  .net .n.p circle{stroke:var(--mut);stroke-dasharray:3 3}
+  .net .n text{font-size:14px;fill:var(--ink2)}
+  .net .hub{opacity:0;transform:scale(.6);transform-origin:550px 310px;transition:opacity .7s,transform .9s cubic-bezier(.34,1.3,.4,1)}
+  .net .hub.on{opacity:1;transform:none}
+  .net .hub circle{fill:var(--teal)} .net .hub text{fill:#fff;font-size:16px;font-weight:600;text-anchor:middle}
+  .net .cap{font-family:var(--mono);font-size:13px;fill:var(--mut)}
+  .net .cap.gap{fill:var(--coral)}
+
+  /* 4 pipeline */
+  .pipe{position:relative;width:1100px;height:620px}
+  .pipe .lane{position:absolute;top:120px;width:196px;height:430px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  .pipe .lane h5{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);padding:14px 16px;border-bottom:1px solid var(--line)}
+  .pipe .lane.v h5{color:var(--teal)}
+  .pipe .ghost{position:absolute;left:14px;top:60px;right:14px;height:84px;border-radius:8px;background:var(--paper2);opacity:.7}
+  .pipe .ghost.g2{top:160px;height:70px}
+  .pipe .card{position:absolute;top:180px;width:168px;padding:14px;border-radius:8px;background:#fff;border:1.5px solid var(--ink);box-shadow:0 14px 30px -14px rgba(20,20,25,.4);transition:left .9s cubic-bezier(.2,.7,.2,1),border-color .5s,top .9s cubic-bezier(.2,.7,.2,1);left:14px;z-index:2}
+  .pipe .card .id{font-family:var(--mono);font-size:12px;color:var(--mut)}
+  .pipe .card b{display:block;font-size:15px;line-height:1.3;margin-top:6px}
+  .pipe .card .chips{margin-top:10px;display:flex;flex-wrap:wrap;gap:4px}
+  .pipe .card .chips i{font-style:normal;font-family:var(--mono);font-size:10px;padding:3px 6px;border-radius:3px;background:var(--paper2);color:var(--ink2)}
+  .pipe .card .st{margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--mut)}
+  .pipe[data-step="1"] .card{left:14px}
+  .pipe[data-step="2"] .card{left:240px}
+  .pipe[data-step="3"] .card{left:466px}
+  .pipe[data-step="4"] .card{left:692px}
+  .pipe[data-step="5"] .card{left:918px;border-color:var(--teal);background:#f3faf8}
+  .pipe[data-step="5"] .card .st{color:var(--teal);font-weight:600}
+  .pipe .ph{position:absolute;left:0;top:0;width:1100px;height:100px;display:flex;gap:14px;align-items:flex-start}
+  .pipe .bub{font-size:15px;line-height:1.35;padding:10px 14px;border-radius:14px;max-width:360px;background:#fff;border:1px solid var(--line)}
+  .pipe .bub.j{background:var(--teal);color:#fff;border-color:var(--teal)}
+  .pipe .bub small{display:block;font-family:var(--mono);font-size:10px;opacity:.7;margin-bottom:4px}
+  .pipe .who{position:absolute;bottom:-44px;left:0;font-family:var(--mono);font-size:12px;color:var(--mut);display:flex;gap:28px}
+  .pipe .who b{color:var(--ink);font-weight:500}
+
+  /* 5 charts */
+  .charts{display:grid;grid-template-columns:1fr 440px;gap:80px;width:1130px;align-items:center;margin-top:20px}
+  .hbar{display:grid;gap:30px}
+  .hbar .r{display:grid;grid-template-columns:250px 1fr 80px;gap:18px;align-items:center}
+  .hbar .r .l{font-size:18px;color:var(--ink2)} .hbar .r .l small{display:block;font-family:var(--mono);font-size:12px;color:var(--faint);margin-top:3px}
+  .hbar .r .t{height:42px;background:var(--paper2);border-radius:4px;position:relative;overflow:hidden}
+  .hbar .r .t i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--ink);border-radius:4px;transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
+  .hbar .r.hl .t i{background:var(--teal)}
+  .hbar .r .v{font-family:var(--mono);font-size:19px;text-align:right;color:var(--ink)}
+  .f.on .hbar .r .t i{width:calc(var(--w)*1%)}
+  .f.on .hbar .r:nth-child(2) .t i{transition-delay:.15s} .f.on .hbar .r:nth-child(3) .t i{transition-delay:.3s} .f.on .hbar .r:nth-child(4) .t i{transition-delay:.45s}
+  .hbar .city{margin-top:8px;display:grid;grid-template-columns:250px 1fr;gap:18px;align-items:center;font-size:16px;color:var(--mut)}
+  .hbar .city .t{height:42px;border:1px dashed var(--coral);border-radius:4px;display:flex;align-items:center;padding:0 12px;color:var(--coral);font-family:var(--mono);font-size:12px}
+  .donut{width:440px;height:440px}
+  .donut .bg{fill:none;stroke:var(--paper2);stroke-width:26}
+  .donut .fg{fill:none;stroke:var(--teal);stroke-width:26;stroke-linecap:butt;stroke-dasharray:0 1000;transition:stroke-dasharray 1.4s cubic-bezier(.2,.7,.2,1) .3s;transform:rotate(-90deg);transform-origin:center}
+  .f.on .donut .fg{stroke-dasharray:var(--d) 1000}
+  .donut .big{font-size:84px;font-weight:700;letter-spacing:-.04em;fill:var(--ink)}
+  .donut .sm{font-size:15px;fill:var(--mut)}
+  .charts .cap{font-size:17px;color:var(--mut);margin-top:10px;line-height:1.45;text-align:center;white-space:nowrap}
+  .charts .cap b{color:var(--ink)}
+
+  /* 6 map */
+  .map{width:1100px;height:620px}
+  .map .grid circle{fill:var(--line2)}
+  .map .cl circle.base{fill:var(--teal);opacity:.75}
+  .map .cl.gap circle.base{fill:var(--coral)}
+  .map .cl circle.ring{fill:none;stroke:var(--coral);stroke-width:2;transform-origin:center;transform-box:fill-box;opacity:0}
+  .map .cl.gap.on circle.ring{animation:pulse 2s ease-out infinite}
+  .map .cl{opacity:0;transform:scale(.4);transform-origin:center;transform-box:fill-box;transition:opacity .5s,transform .7s cubic-bezier(.34,1.3,.4,1)}
+  .map .cl.on{opacity:1;transform:none}
+  .map text{font-size:13px;fill:var(--ink2)}
+  .map .brief{opacity:0;transition:opacity .7s .3s} .map .brief.on{opacity:1}
+  .map .brief rect{fill:#fff;stroke:var(--line);stroke-width:1}
+  .map .brief .h{font-family:var(--mono);font-size:11px;fill:var(--mut);letter-spacing:.08em}
+  .map .brief .t{font-size:15px;fill:var(--ink)} .map .brief .t.b{font-weight:600}
+  .map .leg{font-family:var(--mono);font-size:12px;fill:var(--mut)}
+
+  /* 7 knowledge */
+  .know{width:1100px;height:620px;position:relative}
+  .know .people{position:absolute;left:0;top:0;right:0;height:150px;display:flex;gap:14px;align-items:flex-end}
+  .know .pp{width:70px;flex:none;text-align:center;font-family:var(--mono);font-size:11px;color:var(--mut);transition:opacity .9s}
+  .know .pp svg{width:44px;height:44px;display:block;margin:0 auto 8px;color:var(--ink)}
+  .know .pp.gone{opacity:.18} .know .pp.gone svg{color:var(--mut)}
+  .know .pp.new{opacity:0} .know .pp.new.on{opacity:1}
+  .know .book{position:absolute;left:0;right:0;top:220px;height:110px;border-radius:12px;background:var(--dark);color:var(--paper);display:grid;grid-template-columns:1fr auto;align-items:center;padding:0 34px}
+  .know .book b{font-size:24px;display:block} .know .book span{display:block;font-size:15px;color:#a3a7b0;margin-top:6px}
+  .know .book .docs{display:flex;gap:8px} .know .book .docs i{font-style:normal;font-family:var(--mono);font-size:11px;padding:6px 10px;border:1px solid #3a3e46;border-radius:4px;color:#c7cad1}
+  .know .chat{position:absolute;left:0;top:380px;width:1100px;display:grid;gap:14px}
+  .know .q,.know .a{max-width:720px;padding:14px 18px;border-radius:14px;font-size:17px;line-height:1.4}
+  .know .q{background:#fff;border:1px solid var(--line);justify-self:end}
+  .know .a{background:var(--teal2);color:var(--ink)} .know .a small{display:block;font-family:var(--mono);font-size:11px;color:var(--teal);margin-top:8px}
+  .know .arrow{position:absolute;left:540px;top:332px;width:2px;height:46px;background:var(--teal);opacity:0;transition:opacity .5s}
+  .know .arrow.on{opacity:1}
+  .know .turn{position:absolute;left:0;top:176px;font-family:var(--mono);font-size:12px;color:var(--coral)}
+
+  /* 8 stack */
+  .stack{position:relative;width:1680px;height:720px;margin-top:20px}
+  .stack .node{position:absolute;display:flex;flex-direction:column;align-items:center;gap:10px;width:170px;opacity:.18;filter:grayscale(1);transition:opacity .6s,filter .6s,transform .6s cubic-bezier(.34,1.3,.4,1);transform:scale(.92)}
+  .stack .node.on{opacity:1;filter:none;transform:none}
+  .stack .node .lg{width:84px;height:84px;border-radius:22px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;box-shadow:0 14px 30px -18px rgba(20,20,25,.35)}
+  .stack .node .lg img{width:46px;height:46px;display:block}
+  .stack .node .lg.dk{background:var(--dark);border-color:var(--dark)} .stack .node .lg.dk img{filter:invert(1)}
+  .stack .node .lg.multi{width:170px;display:flex;gap:16px;padding:0 18px} .stack .node .lg.multi img{width:38px;height:38px}
+  .stack .node .lg.person{background:var(--teal);border-color:var(--teal);color:#fff} .stack .node .lg.person svg{width:40px;height:40px}
+  .stack .node b{font-size:17px;font-weight:600;text-align:center;letter-spacing:-.01em}
+  .stack .node span{font-family:var(--mono);font-size:11px;color:var(--mut);text-align:center;line-height:1.4}
+  .stack .node.rec .lg{width:120px;height:120px;border-radius:32px;border:1.5px solid var(--teal)} .stack .node.rec .lg img{width:64px;height:64px}
+  .stack .node.rec b{font-size:20px}
+  .stack svg.wires{position:absolute;inset:0;pointer-events:none;overflow:visible}
+  .stack .w{fill:none;stroke:var(--ink);stroke-width:2;stroke-dasharray:10 8;opacity:0;transition:opacity .5s}
+  .stack .w.on{opacity:1;animation:flow 1.1s linear infinite}
+  .stack .w.vf{stroke:var(--teal)} .stack .w.ai{stroke:#7a5af5}
+  .stack .wl{font-family:var(--mono);font-size:12px;fill:var(--mut);opacity:0;transition:opacity .5s .2s} .stack .wl.on{opacity:1}
+  .stack .dot{fill:var(--ink);opacity:0} .stack .dot.on{opacity:1}
+  .stack .steps{position:absolute;right:0;top:0;width:300px;display:grid;gap:0}
+  .stack .steps div{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:11px 0;border-top:1px solid var(--line);font-size:15px;color:var(--faint);transition:color .4s}
+  .stack .steps div:last-child{border-bottom:1px solid var(--line)}
+  .stack .steps div.on{color:var(--ink)} .stack .steps div.on .num{color:var(--teal)} .stack .steps div .num{color:var(--faint)}
+  .stack .costs{position:absolute;right:0;bottom:0;width:300px;font-family:var(--mono);font-size:12px;color:var(--mut);line-height:1.7}
+  .stack .costs b{color:var(--ink);font-weight:600}
+  .stack .hint{position:absolute;left:0;bottom:0;font-family:var(--mono);font-size:12px;color:var(--faint)}
+
+  /* 9 video */
+  .vid{position:relative;margin-top:30px;width:1680px;height:700px;border-radius:12px;overflow:hidden;background:var(--dark)}
+  .vid video{display:block;width:100%;height:100%;object-fit:contain}
+  .vid .ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;color:var(--paper)}
+  .vid .ph .play{width:92px;height:92px;border-radius:50%;border:1.5px solid #50555e;display:grid;place-items:center}
+  .vid .ph .play svg{width:30px;height:30px;fill:#fff;margin-left:5px}
+  .vid .ph b{font-size:24px} .vid .ph span{font-size:15px;color:#8a8e97;max-width:760px;line-height:1.5}
+  .vid .ph code{font-family:var(--mono);color:#c7cad1}
+  .vid .chap{position:absolute;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #2c3037}
+  .vid .chap div{padding:16px 22px;font-size:14px;color:#8a8e97;border-right:1px solid #2c3037}
+  .vid .chap div:last-child{border-right:none}
+  .vid .chap div b{display:block;font-family:var(--mono);font-size:12px;color:#6fc2b7;margin-bottom:4px;font-weight:500}
+  .vid.ready .ph{display:none}
+
+  /* 10 benefits */
+  .ba{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:40px}
+  .ba>div{border-top:2px solid var(--ink);padding-top:22px}
+  .ba h3{font-size:14px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:500}
+  .ba .was{font-size:19px;color:var(--mut);margin-top:22px;text-decoration:line-through;text-decoration-color:var(--coral);text-decoration-thickness:1.5px}
+  .ba .now{font-size:34px;font-weight:600;letter-spacing:-.02em;line-height:1.2;margin-top:10px}
+  .ba p{font-size:18px;color:var(--ink2);line-height:1.5;margin-top:16px}
+  .who{margin-top:120px;display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
+  .who>div{display:grid;grid-template-columns:40px 1fr;gap:16px;align-items:start}
+  .who .ic{width:34px;height:34px;border-radius:9px;background:var(--teal2);color:var(--teal);display:grid;place-items:center} .who .ic svg{width:18px;height:18px}
+  .who b{display:block;font-size:18px} .who span{display:block;font-size:15px;color:var(--mut);margin-top:4px;line-height:1.45}
+
+  /* 11 cost */
+  .cost{display:grid;grid-template-columns:1fr 620px;gap:110px;margin-top:40px;align-items:start}
+  .price{font-size:210px;font-weight:700;letter-spacing:-.05em;line-height:1}
+  .price small{display:block;font-size:21px;font-weight:400;color:var(--mut);letter-spacing:0;margin-top:8px}
+  .seg{margin-top:54px;height:60px;display:flex;border-radius:6px;overflow:hidden;background:var(--paper2)}
+  .seg i{display:block;height:100%;width:0;transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+  .f.on .seg i{width:calc(var(--w)*1%)}
+  .seg i:nth-child(1){background:var(--ink)} .seg i:nth-child(2){background:#5c5f68;transition-delay:.2s} .seg i:nth-child(3){background:var(--teal);transition-delay:.35s} .seg i:nth-child(4){background:#8fb8b1;transition-delay:.45s}
+  .legend{display:flex;gap:28px;margin-top:20px;font-size:16px;color:var(--mut);flex-wrap:wrap}
+  .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:8px;vertical-align:-1px;background:var(--c)}
+  .legend b{color:var(--ink);font-family:var(--mono);font-weight:500}
+  .fine{font-size:13px;color:var(--faint);margin-top:22px;line-height:1.5;max-width:800px}
+  .cmp h4{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:500;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .cmp .row{display:grid;grid-template-columns:200px 1fr 110px;gap:18px;align-items:center;padding:28px 0;border-bottom:1px solid var(--line)}
+  .cmp .row .l{font-size:19px} .cmp .row .l small{display:block;font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:2px}
+  .cmp .row .t i{display:block;height:26px;border-radius:3px;background:var(--line2);width:0;transition:width 1.2s cubic-bezier(.2,.7,.2,1) .3s}
+  .cmp .row.us .t i{background:var(--teal)}
+  .f.on .cmp .row .t i{width:max(3px,calc(var(--w)*1%))}
+  .cmp .row .v{font-family:var(--mono);font-size:16px;text-align:right}
+  .cmp .row.us .v{color:var(--teal);font-weight:600}
+  .cmp .note{font-size:17px;color:var(--ink2);margin-top:30px;line-height:1.5}
+
+  /* 12 thanks */
+  .thanks{display:grid;grid-template-columns:1fr 520px;height:100%;align-items:center;gap:80px}
+  .thanks h1{color:var(--paper);font-size:120px}
+  .thanks p{font-size:28px;color:#c7cad1;margin-top:30px;line-height:1.4;max-width:800px}
+  .thanks .meta{margin-top:50px;display:flex;gap:40px;font-family:var(--mono);font-size:14px;color:#8a8e97}
+  .thanks .meta b{display:block;color:#e6e8ec;font-weight:500;font-size:15px;margin-bottom:4px}
+  .thanks .qrbox{justify-self:end;text-align:center}
+  .qr{width:260px;height:260px;fill:var(--paper);background:var(--paper);padding:18px;border-radius:12px;box-sizing:content-box}
+  .qr path{fill:var(--dark)}
+  .thanks .qrbox span{display:block;font-family:var(--mono);font-size:14px;color:#8a8e97;margin-top:18px}
+
+  @page{size:1920px 1080px;margin:0}
+  @media print{
+    html,body{overflow:visible;background:#fff;width:1920px;height:auto}
+    #stage{position:static;transform:none!important;width:1920px;height:auto;overflow:visible}
+    section.slide{position:relative;opacity:1;visibility:visible;transform:none;height:1080px;width:1920px;page-break-after:always;break-inside:avoid;overflow:hidden}
+    section.slide:last-of-type{page-break-after:auto}
+    #help,#notes,#clock,#foot,#prog{display:none}
+    .f,.on{opacity:1!important;transform:none!important}
+    section.slide>*{animation:none!important}
+    .stack .node,.stack .w,.stack .wl,.stack .dot,.stack .steps div,.net .spoke,.net .hub,.map .cl,.map .brief,.know .arrow,.know .pp.new,.loop .arc,.loop .node{opacity:1!important;transform:none!important}
+    .loop .arc{stroke-dashoffset:0!important}
+    .net .tangle{opacity:.08!important}
+    .hbar .r .t i{width:calc(var(--w)*1%)!important} .seg i{width:calc(var(--w)*1%)!important} .cmp .row .t i{width:max(3px,calc(var(--w)*1%))!important}
+    .donut .fg{stroke-dasharray:var(--d) 1000!important}
+    .pipe .card{left:918px!important;border-color:var(--teal)!important}
+    .stack .steps div{color:var(--ink)!important}
+    .vid video{display:none}.vid.ready .ph{display:flex}
+  }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="help">→ next · ← back · T timer · N notes · V video · F fullscreen</div>
+  <div id="prog"></div>
+
+  <!-- 1 TITLE -->
+  <section class="slide dark" data-beat="0" data-notes="Team V. Relay MKE — one shared record for ComForce, closed only when the resident says help arrived. (Advance.)">
+    <div class="title">
+      <div>
+        <div class="team"><b>V</b> Team V <span style="color:#50555e">·</span> Hacksgiving 2026 <span style="color:#50555e">·</span> ComForce MKE</div>
+        <h1>Relay MKE</h1>
+        <p>One shared record for every request ComForce receives — <b>closed only when the resident says help arrived.</b></p>
+        <div class="meta"><div><b>Jordan</b> answers the phone</div><div><b>One board</b> for eight divisions</div><div><b>Proof</b> a funder can audit</div></div>
+      </div>
+      <svg class="loop" viewBox="0 0 640 640" id="loop">
+        <circle class="ring" cx="320" cy="320" r="230"/>
+        <!-- arcs between nodes (5 nodes at -90, -18, 54, 126, 198 deg) -->
+        <path class="arc" d="M320 90 A230 230 0 0 1 538.7 249"/>
+        <path class="arc" d="M538.7 249 A230 230 0 0 1 455.2 506"/>
+        <path class="arc" d="M455.2 506 A230 230 0 0 1 184.8 506"/>
+        <path class="arc last" d="M184.8 506 A230 230 0 0 1 101.3 249"/>
+        <path class="arc" d="M101.3 249 A230 230 0 0 1 320 90"/>
+        <g class="node"><circle cx="320" cy="90" r="9"/><text x="320" y="56" text-anchor="middle">Intake<tspan class="s" x="320" dy="18">a call, a text, a form</tspan></text></g>
+        <g class="node"><circle cx="538.7" cy="249" r="9"/><text x="566" y="254">Coordinate<tspan class="s" x="566" dy="18">one person claims it</tspan></text></g>
+        <g class="node"><circle cx="455.2" cy="506" r="9"/><text x="470" y="548">Deliver<tspan class="s" x="470" dy="18">partner or volunteer</tspan></text></g>
+        <g class="node last"><circle cx="184.8" cy="506" r="9"/><text x="170" y="548" text-anchor="end">Verify<tspan class="s" x="170" dy="18">the resident says so</tspan></text></g>
+        <g class="node"><circle cx="101.3" cy="249" r="9"/><text x="74" y="254" text-anchor="end">Report<tspan class="s" x="74" dy="18">to the City, to funders</tspan></text></g>
+        <text class="c" x="320" y="314" text-anchor="middle">One request</text>
+        <text class="c2" x="320" y="340" text-anchor="middle">one record, start to finish</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 2 ABOUT -->
+  <section class="slide" data-beat="8" data-notes="ComForce runs eight divisions on volunteers' phones. Relay gives them one phone number answered by Jordan, our AI; one board every division works from; and one proof — the resident's own confirmation — that a funder can audit.">
+    <div class="k"><span class="n">About</span><span class="sep"></span>what we built</div>
+    <h2>ComForce runs eight divisions on volunteers' phones. Relay gives them <em>one number, one board, one proof.</em></h2>
+    <div class="about">
+      <div>
+        <div class="three">
+          <div class="f"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><div><b>One number</b><span>Jordan answers in English or Spanish and logs the request while the caller is still talking. The resident gets a tracking code by text.</span></div></div>
+          <div class="f"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg></div><div><b>One board</b><span>Every division sees the same card. One person claims it, a partner is dispatched, a volunteer gets a run sheet. Nobody chases the same family twice.</span></div></div>
+          <div class="f"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div><div><b>One proof</b><span>After delivery Relay asks the resident: did it arrive? Their answer — not the helper's — closes the case and lands in the funder report.</span></div></div>
+        </div>
+        <div class="divs f"><span>Housing</span><span>Food</span><span>Safety</span><span>Youth</span><span>Mediation</span><span>Re-entry</span><span>Health</span><span>Outreach</span><span class="all">one record</span></div>
+      </div>
+      <div class="shot f from-r"><div class="bar"><i></i><i></i><i></i></div><img src="img/board.png" alt="Relay board"></div>
+    </div>
+  </section>
+
+  <!-- 3 PROBLEM 1 -->
+  <section class="slide" data-beat="20" data-notes="Problem one, information sharing. Eight divisions and a dozen partners coordinate by text, Facebook and memory — every line in this tangle is a phone. Relay puts one record in the middle: a partner directory with live capacity, and one tap to dispatch — Jordan calls the partner, records the answer, texts the volunteer a run sheet.">
+    <div class="k"><span class="n">01 / 05</span><span class="sep"></span>Information sharing &amp; coordination</div>
+    <h2>Today every line in this picture is a phone. <em>Relay puts one record in the middle.</em></h2>
+    <div class="ps">
+      <div class="txt">
+        <div class="blk"><div class="lab p">The problem</div><p>Eight divisions and a dozen partners coordinate by text, Facebook and memory. Who has beds tonight? Who is already on the 35th Street family? <b>Nobody can see the whole picture.</b></p></div>
+        <div class="blk f"><div class="lab s">How Relay solves it</div><p>A shared partner network with live capacity, and one tap to dispatch: Jordan calls the partner, records the answer, and texts the volunteer a run sheet.</p><div class="mod"><b>Partner Network + Dispatch</b> · /partners · <span class="tag sim">partner call simulated</span></div></div>
+      </div>
+      <div class="viz">
+        <svg class="net" viewBox="0 0 1100 620" id="net">
+          <g class="tangle" id="tangle"></g>
+          <g id="spokes"></g>
+          <g id="nodes"></g>
+          <g class="hub" id="hub"><circle cx="550" cy="310" r="58"/><text x="550" y="305">Relay</text><text x="550" y="326" style="font-weight:400;font-size:13px">one record</text></g>
+          <text class="cap gap" x="0" y="612" id="netcap">68 connections to keep in your head</text>
+          <text class="cap" x="1100" y="612" text-anchor="end">8 divisions · 9 partners</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 PROBLEM 2 -->
+  <section class="slide" data-beat="38" data-notes="Problem two, requests and referrals. A resident calls. Jordan logs the request live — it's on the board as New before the call ends. One person claims it. A partner is dispatched. Delivered. And then the step nobody else does: Relay asks the resident, and only their answer moves it to Verified.">
+    <div class="k"><span class="n">02 / 05</span><span class="sep"></span>Community requests &amp; referrals</div>
+    <h2>A request moves through five states. <em>Only the resident can move it to the last one.</em></h2>
+    <div class="ps">
+      <div class="txt">
+        <div class="blk"><div class="lab p">The problem</div><p>Requests arrive on whichever phone is awake. They get handled or forgotten; nobody knows which. <b>"Done" means the helper said so.</b></p></div>
+        <div class="blk f"><div class="lab s">How Relay solves it</div><p>Phone, text or web becomes one card in under a minute. Claim-to-own, dispatch, deliver — then Relay texts the resident, or Jordan calls back in their language: <b>did it arrive?</b></p><div class="mod"><b>Jordan + the Relay Board</b> · /board · /phone · <span class="tag live">live in the demo</span></div></div>
+      </div>
+      <div class="viz">
+        <div class="pipe" id="pipe">
+          <div class="ph">
+            <div class="bub"><small>Resident · 11:38 PM</small>Hi, we're out of food until Friday and I have 3 kids. We're near 35th and Burleigh.</div>
+            <div class="bub j"><small>Jordan</small>Got it — food for a family of four near 35th &amp; Burleigh. Your request number is R-SHE5. A responder will reach out.</div>
+          </div>
+          <div class="lane" style="left:0"><h5>New</h5><div class="ghost"></div><div class="ghost g2"></div></div>
+          <div class="lane" style="left:226px"><h5>Claimed</h5><div class="ghost"></div></div>
+          <div class="lane" style="left:452px"><h5>In progress</h5><div class="ghost"></div><div class="ghost g2"></div></div>
+          <div class="lane" style="left:678px"><h5>Delivered</h5><div class="ghost"></div></div>
+          <div class="lane v" style="left:904px"><h5>Verified</h5><div class="ghost"></div><div class="ghost g2"></div></div>
+          <div class="card f"><div class="id">R-SHE5 · 11:38 PM</div><b>Family of 4 needs food until Friday</b><div class="chips"><i>Food</i><i>Critical</i><i>Sherman Park</i></div><div class="st" id="cardst">logged by Jordan · 0:41 into the call</div></div>
+          <div class="f" style="position:absolute;width:0;height:0"></div><div class="f" style="position:absolute;width:0;height:0"></div><div class="f" style="position:absolute;width:0;height:0"></div><div class="f" style="position:absolute;width:0;height:0"></div>
+          <div class="who"><span><b>New</b> Jordan</span><span><b>Claimed</b> Marcus T.</span><span><b>In progress</b> Hunger Task Force dispatched</span><span><b>Delivered</b> volunteer</span><span><b>Verified</b> the resident — “Yes, got it, thank you”</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 PROBLEM 3 -->
+  <section class="slide" data-beat="56" data-notes="Problem three, data and impact. Every request logs itself. The City's Countdown tracks 26 clusters; Relay shows 145 of 203 requests inside them, and 124 confirmed by the resident — 67 percent — the one number the City itself doesn't measure. One click drafts the grant in the funder's vocabulary.">
+    <div class="k"><span class="n">03 / 05</span><span class="sep"></span>Data collection &amp; impact measurement <span class="tag">synthetic 2026 data</span></div>
+    <h2>The same numbers the City reports — <em>plus the one it can't.</em></h2>
+    <div class="ps">
+      <div class="txt">
+        <div class="blk"><div class="lab p">The problem</div><p>Impact is reconstructed at grant time from memory and screenshots. The City's follow-up figure is <b>self-reported by the responder</b>; the resident is never asked.</p></div>
+        <div class="blk f"><div class="lab s">How Relay solves it</div><p>Every request logs itself. Outcomes are verified by residents and mapped to the City's 26 Countdown clusters. One click drafts the grant application in the funder's own vocabulary.</p><div class="mod"><b>Impact Studio + Grants</b> · /impact · /grants · CSV export</div></div>
+      </div>
+      <div class="viz">
+        <div class="charts">
+          <div class="f">
+            <div class="hbar">
+              <div class="r"><div class="l">Requests logged<small>Jan – Nov 2026</small></div><div class="t"><i style="--w:100"></i></div><div class="v">203</div></div>
+              <div class="r"><div class="l">Delivered<small>partner or volunteer</small></div><div class="t"><i style="--w:91.6"></i></div><div class="v">186</div></div>
+              <div class="r"><div class="l">Inside Countdown clusters<small>City's 26 priority areas</small></div><div class="t"><i style="--w:71.4"></i></div><div class="v">145</div></div>
+              <div class="r hl"><div class="l">Confirmed by the resident<small>text reply or Jordan call-back</small></div><div class="t"><i style="--w:61.1"></i></div><div class="v">124</div></div>
+              <div class="city"><div>City report today</div><div class="t">resident confirmation: not measured</div></div>
+            </div>
+          </div>
+          <div class="f">
+            <svg class="donut" viewBox="0 0 380 380"><circle class="bg" cx="190" cy="190" r="150"/><circle class="fg" cx="190" cy="190" r="150" style="--d:631"/><text class="big" x="190" y="196" text-anchor="middle" data-count>67<tspan style="font-size:40px;font-weight:500;fill:#6f727b">%</tspan></text><text class="sm" x="190" y="232" text-anchor="middle">of deliveries confirmed by the resident</text></svg>
+            <div class="cap"><b>21 of 26</b> clusters reached · median time to help <b>2 h 05 m</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 PROBLEM 4 -->
+  <section class="slide" data-beat="74" data-notes="Problem four, awareness and decision support. Where is help being asked for, and where isn't it arriving? Neighborhood Pulse shows need against delivery by cluster — the coral ones are where requests outrun help — and writes a weekly brief. Counts only. Never people.">
+    <div class="k"><span class="n">04 / 05</span><span class="sep"></span>Community awareness &amp; decision support</div>
+    <h2>Where is help asked for — and <em>where isn't it arriving?</em></h2>
+    <div class="ps">
+      <div class="txt">
+        <div class="blk"><div class="lab p">The problem</div><p>Leaders decide where to send people from anecdote. By the time a pattern is obvious, <b>it's a month old.</b></p></div>
+        <div class="blk f"><div class="lab s">How Relay solves it</div><p>Need vs. delivery by neighbourhood, refreshed as requests close. Coral marks clusters where requests outrun help. A weekly brief writes itself for the team meeting.</p><div class="mod"><b>Neighborhood Pulse</b> · /pulse · counts only — never people</div></div>
+      </div>
+      <div class="viz">
+        <svg class="map" viewBox="0 0 1100 620" id="map">
+          <g class="grid" id="mgrid"></g>
+          <g id="clusters"></g>
+          <g class="brief f" transform="translate(760 40)">
+            <rect x="0" y="0" width="330" height="200" rx="10"/>
+            <text class="h" x="22" y="34">WEEKLY BRIEF · WK 46</text>
+            <text class="t b" x="22" y="68">3 clusters need outreach</text>
+            <text class="t" x="22" y="98">Metcalfe Park: 11 requests, 4 delivered</text>
+            <text class="t" x="22" y="124">Garden Homes: housing up 2× vs Oct</text>
+            <text class="t" x="22" y="150">Sherman Park: verified 9 of 9 ✓</text>
+            <text class="h" x="22" y="182">DRAFTED BY RELAY · EDIT BEFORE SENDING</text>
+          </g>
+          <g transform="translate(0 600)"><circle cx="6" cy="-4" r="6" fill="#0e6b63" opacity=".75"/><text class="leg" x="20" y="0">help delivered</text><circle cx="180" cy="-4" r="6" fill="#d9482b"/><text class="leg" x="194" y="0">requests outrun help</text><text class="leg" x="1100" y="0" text-anchor="end">26 Countdown clusters · size = requests</text></g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 PROBLEM 5 -->
+  <section class="slide" data-beat="90" data-notes="Problem five, training and knowledge. Volunteers turn over; the knowledge leaves with them. ComForce's playbooks are written once into Relay. A new volunteer asks the Guide — and it answers only from those playbooks, with the source. Every response also gets a room, so the handoff survives the person.">
+    <div class="k"><span class="n">05 / 05</span><span class="sep"></span>Training &amp; knowledge sharing</div>
+    <h2>Volunteers come and go. <em>The playbook shouldn't leave with them.</em></h2>
+    <div class="ps">
+      <div class="txt">
+        <div class="blk"><div class="lab p">The problem</div><p>How to handle an eviction notice, who to call at 2 AM, what not to promise — it lives in the heads of people who <b>burn out in eighteen months.</b></p></div>
+        <div class="blk f"><div class="lab s">How Relay solves it</div><p>ComForce's playbooks are written once. "Ask the Guide" answers only from them, with the source. Every response gets a room, so the next shift reads the thread instead of starting over.</p><div class="mod"><b>Volunteer Guide + Response Rooms</b> · /guide</div></div>
+      </div>
+      <div class="viz">
+        <div class="know" id="know">
+          <div class="people" id="people"></div>
+          <div class="turn">18-month volunteer turnover</div>
+          <div class="book"><div><b>ComForce playbooks — written once, in Relay</b><span>Housing · Food · Safety escalation · Mediation · After-hours · What we never promise</span></div><div class="docs"><i>housing.md</i><i>safety.md</i><i>after-hours.md</i><i>+9</i></div></div>
+          <div class="arrow f"></div>
+          <div class="chat">
+            <div class="q f">A family just got a 5-day eviction notice — what do I do first, and who do I <b>not</b> call?</div>
+            <div class="a f">First: photograph the notice and log it as Housing · Critical so the lead is paged. Call Legal Action of Wisconsin (414-278-7722) — not the landlord. Don't promise rent money; ComForce doesn't hold emergency funds.<small>from housing.md §2 "Eviction notices" · last edited by Vaun, Sep 2026</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 STACK -->
+  <section class="slide" data-beat="105" data-manual data-notes="How it's built. Click through: the resident calls a Twilio number; ElevenLabs runs Jordan's voice; Claude turns the transcript into a structured request; it's written to Supabase — the one record. The Next.js board reads it live; dispatch goes out by Resend; the Pulse map reads the same rows; and the loop closes with a Twilio text back to the resident. Pay-per-use everywhere.">
+    <div class="k"><span class="n">How it's built</span><span class="sep"></span>one record in the middle · pay-per-use around it</div>
+    <h2>Every part is a current, rentable service. <em>Nothing has a seat licence.</em></h2>
+    <div class="stack" id="stack">
+      <svg class="wires" viewBox="0 0 1680 720">
+        <defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker></defs>
+        <path class="w f" data-g="1" d="M212 330 C 330 330, 340 162, 458 162" marker-end="url(#arr)"/>
+        <text class="wl f" data-g="1" x="300" y="228" text-anchor="middle">voice call</text>
+        <path class="w f" data-g="2" d="M552 162 H 738" marker-end="url(#arr)"/>
+        <text class="wl f" data-g="2" x="645" y="150" text-anchor="middle">media stream</text>
+        <path class="w f ai" data-g="3" d="M832 162 H 1018" marker-end="url(#arr)"/>
+        <text class="wl f" data-g="3" x="925" y="150" text-anchor="middle">transcript</text>
+        <path class="w f ai" data-g="4" d="M1022 186 C 960 205, 905 265, 886 342" marker-end="url(#arr)"/>
+        <text class="wl f" data-g="4" x="968" y="300" text-anchor="start">structured request</text>
+        <path class="w f" data-g="5" d="M886 365 H 1130" marker-end="url(#arr)"/>
+        <text class="wl f" data-g="5" x="1008" y="353" text-anchor="middle">live · every 2 s</text>
+        <path class="w f" data-g="6" d="M1306 376 C 1350 410, 1350 555, 1268 596" marker-end="url(#arr)"/>
+        <text class="wl f" data-g="6" x="1358" y="492" text-anchor="start">dispatch</text>
+        <path class="w f" data-g="7" d="M762 410 C 715 445, 715 560, 740 596" marker-end="url(#arr)"/>
+        <text class="wl f" data-g="7" x="700" y="500" text-anchor="end">same rows</text>
+        <path class="w f vf" data-g="8" d="M820 490 C 820 610, 165 610, 165 452" marker-end="url(#arr)"/>
+        <text class="wl f" data-g="8" x="490" y="618" text-anchor="middle" style="fill:#0e6b63">“did it arrive?” · SMS reply or Jordan calls back</text>
+      </svg>
+      <div class="node on" style="left:80px;top:300px"><div class="lg person"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><b>Resident</b><span>any phone · no app</span></div>
+      <div class="node f" style="left:420px;top:120px" data-g="1"><div class="lg"><img src="img/logos/twilio.svg" alt="Twilio"></div><b>Twilio</b><span>voice + SMS · $0.10/min</span></div>
+      <div class="node f" style="left:700px;top:120px" data-g="2"><div class="lg dk"><img src="img/logos/elevenlabs.svg" alt="ElevenLabs"></div><b>ElevenLabs Agents</b><span>Jordan's voice · EN / ES</span></div>
+      <div class="node f" style="left:980px;top:120px" data-g="3"><div class="lg"><img src="img/logos/claude.svg" alt="Claude"></div><b>Claude</b><span>structure · triage · redaction</span></div>
+      <div class="node rec f" style="left:720px;top:300px;width:200px" data-g="4"><div class="lg"><img src="img/logos/supabase.svg" alt="Supabase"></div><b>Supabase Postgres</b><span>the record · ComForce owns it</span></div>
+      <div class="node f" style="left:1120px;top:300px;width:200px" data-g="5"><div class="lg multi"><img src="img/logos/nextdotjs.svg" alt="Next.js"><img src="img/logos/react.svg" alt="React"><img src="img/logos/vercel.svg" alt="Vercel"></div><b>Relay Board</b><span>Next 16 · React 19 · Vercel</span></div>
+      <div class="node f" style="left:1120px;top:560px;width:200px" data-g="6"><div class="lg dk"><img src="img/logos/resend.svg" alt="Resend"></div><b>Resend</b><span>partner handoff · run sheet</span></div>
+      <div class="node f" style="left:700px;top:560px" data-g="7"><div class="lg"><img src="img/logos/leaflet.svg" alt="Leaflet"></div><b>Neighborhood Pulse</b><span>Leaflet · cluster overlays</span></div>
+      <div class="steps" id="steps">
+        <div><span class="num">01</span>Resident calls the number ComForce already gives out</div>
+        <div><span class="num">02</span>Twilio streams the call to Jordan</div>
+        <div><span class="num">03</span>Claude turns the transcript into a request</div>
+        <div><span class="num">04</span>Written to the one record</div>
+        <div><span class="num">05</span>Board updates live for every division</div>
+        <div><span class="num">06</span>One tap dispatches a partner</div>
+        <div><span class="num">07</span>Pulse map reads the same rows</div>
+        <div><span class="num">08</span>Resident confirms — the loop closes</div>
+      </div>
+      <div class="costs">voice <b>$0.10</b>/min · SMS <b>$0.008</b> · AI ≈ <b>$0.02</b>/request<br>hosting <b>$25</b>/mo · everything else <b>$0</b> at this volume</div>
+      <div class="hint">→ reveals the next connection</div>
+    </div>
+  </section>
+
+  <!-- 9 DEMO VIDEO -->
+  <section class="slide" data-beat="125" data-notes="Demo. Resident calls from a seat in the room; Jordan logs it; a coordinator claims and dispatches; the resident confirms. If the live call fails, press V to play the recording.">
+    <div class="k"><span class="n">Demo</span><span class="sep"></span>two minutes, first ring to “yes, it arrived” <span class="tag live">live</span></div>
+    <h2>A resident is about to call ComForce from a seat in this room.</h2>
+    <div class="vid" id="vid">
+      <video id="demovid" src="../demo-backup.mp4" preload="metadata" playsinline></video>
+      <div class="ph">
+        <div class="play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></div>
+        <b>Demo video</b>
+        <span>Backup if the live call fails. Drop <code>presentation/demo-backup.mp4</code> next to this folder and press <code>V</code>.</span>
+      </div>
+      <div class="chap"><div><b>0:00</b>Resident calls · Jordan answers · card appears on the board</div><div><b>0:35</b>Coordinator claims · partner dispatched · volunteer texted</div><div><b>1:20</b>Delivered · “did it arrive?” text to the resident</div><div><b>1:45</b>Resident replies yes · card turns Verified</div></div>
+    </div>
+  </section>
+
+  <!-- 10 BENEFITS -->
+  <section class="slide" data-notes="What changes for ComForce: three phones become one record; the helper saying done becomes the resident saying it arrived; stories become evidence. Residents never install anything, the team keeps their phones, funders get a number they can audit.">
+    <div class="k"><span class="n">What changes</span><span class="sep"></span>for ComForce, residents and funders</div>
+    <h2>Three things that were impossible on Monday are routine on Tuesday.</h2>
+    <div class="ba">
+      <div class="f"><h3>Coordination</h3><div class="was">Three phones, three versions of the truth</div><div class="now">One record every division works from</div><p>Claim-to-own stops duplicate effort. Partners are dispatched with one tap and their answer is on the card.</p></div>
+      <div class="f"><h3>Outcome</h3><div class="was">“Done” — because the helper said so</div><div class="now">“Arrived” — because the resident said so</div><p>Text or call-back in the resident's language. Unanswered requests reopen instead of disappearing.</p></div>
+      <div class="f"><h3>Evidence</h3><div class="was">Impact rebuilt from memory at grant time</div><div class="now">A funder report that writes itself</div><p>Mapped to the City's 26 Countdown clusters. CSV out any time — ComForce owns every row.</p></div>
+    </div>
+    <div class="who">
+      <div class="f"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></div><div><b>Residents</b><span>Any phone. Nothing to install, no account, their language.</span></div></div>
+      <div class="f"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div><b>ComForce team</b><span>The phones they already carry. Guardrails built in: PII stripped before any AI, humans make every decision, 988 on the first call.</span></div></div>
+      <div class="f"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div><div><b>Funders</b><span>City DCWS and seven others get a verified rate, by cluster, in their own template.</span></div></div>
+    </div>
+  </section>
+
+  <!-- 11 COST -->
+  <section class="slide" data-notes="Everything you just watched cost about a dollar sixty-six at list prices — mostly the phone minutes. About three hundred dollars a year for all eight divisions. findhelp charges up to seventy-five thousand for a directory that never asks the resident.">
+    <div class="k"><span class="n">Cost</span><span class="sep"></span>list prices · nothing negotiated</div>
+    <h2>Everything you just watched cost <em>$1.66.</em></h2>
+    <div class="cost">
+      <div class="f">
+        <div class="price"><span data-count>$1.66</span><small>per request · $2.72 per resident-verified outcome · 203 requests in 2026</small></div>
+        <div class="seg"><i style="--w:54"></i><i style="--w:3"></i><i style="--w:1.5"></i><i style="--w:41.5"></i></div>
+        <div class="legend"><span style="--c:#17181c">Voice ≈ 9 min <b>$0.90</b></span><span style="--c:#5c5f68">SMS × 6 <b>$0.05</b></span><span style="--c:#0e6b63">AI <b>$0.02</b></span><span style="--c:#8fb8b1">Hosting share <b>$0.69</b></span></div>
+        <div class="fine">Twilio $0.10/min · $0.0083/SMS · Claude + ElevenLabs ≈ $0.02 · Vercel + Supabase $25/mo spread over the month's requests. Runs on phones volunteers already carry. Excludes volunteer time and the goods delivered.</div>
+      </div>
+      <div class="cmp f">
+        <h4>Per year, all eight divisions</h4>
+        <div class="row"><div class="l">findhelp<small>enterprise</small></div><div class="t"><i style="--w:100"></i></div><div class="v">$75,000</div></div>
+        <div class="row"><div class="l">findhelp<small>entry tier</small></div><div class="t"><i style="--w:7.2"></i></div><div class="v">$5,400</div></div>
+        <div class="row us"><div class="l">Relay MKE<small>at 2026 volume</small></div><div class="t"><i style="--w:0.4"></i></div><div class="v">≈ $300</div></div>
+        <div class="note">No seats, no licences, no onboarding fee. ComForce owns the data and can leave with a CSV. The only thing we'd buy on Monday is a Twilio number.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 THANKS -->
+  <section class="slide dark" data-notes="Thank you. Team V. The code, the research on twenty programs and this deck are at the repo.">
+    <div class="thanks">
+      <div>
+        <div class="k"><span class="n" style="color:#6fc2b7">Team V</span><span class="sep"></span>Hacksgiving 2026 · ComForce MKE</div>
+        <h1>Thank you.</h1>
+        <p>One engine for all eight divisions. ComForce owns every record. <b style="color:#fff">Ready Monday.</b></p>
+        <div class="meta"><div><b>Code</b>github.com/aditya9064/hacksgiving-2026</div><div><b>Research</b>20 programs, 41-page playbook</div><div><b>Live</b>the number on the next table</div></div>
+      </div>
+      <div class="qrbox"><svg class="qr" viewBox="0 0 33 33" shape-rendering="crispEdges"><path d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM9 0h1v1h-1zM10 0h1v1h-1zM11 0h1v1h-1zM13 0h1v1h-1zM17 0h1v1h-1zM18 0h1v1h-1zM19 0h1v1h-1zM20 0h1v1h-1zM21 0h1v1h-1zM23 0h1v1h-1zM26 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM29 0h1v1h-1zM30 0h1v1h-1zM31 0h1v1h-1zM32 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM9 1h1v1h-1zM13 1h1v1h-1zM14 1h1v1h-1zM15 1h1v1h-1zM17 1h1v1h-1zM26 1h1v1h-1zM32 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM11 2h1v1h-1zM13 2h1v1h-1zM15 2h1v1h-1zM16 2h1v1h-1zM17 2h1v1h-1zM18 2h1v1h-1zM20 2h1v1h-1zM21 2h1v1h-1zM26 2h1v1h-1zM28 2h1v1h-1zM29 2h1v1h-1zM30 2h1v1h-1zM32 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM10 3h1v1h-1zM12 3h1v1h-1zM14 3h1v1h-1zM15 3h1v1h-1zM16 3h1v1h-1zM20 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM29 3h1v1h-1zM30 3h1v1h-1zM32 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM13 4h1v1h-1zM15 4h1v1h-1zM17 4h1v1h-1zM18 4h1v1h-1zM21 4h1v1h-1zM22 4h1v1h-1zM23 4h1v1h-1zM24 4h1v1h-1zM26 4h1v1h-1zM28 4h1v1h-1zM29 4h1v1h-1zM30 4h1v1h-1zM32 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM10 5h1v1h-1zM11 5h1v1h-1zM13 5h1v1h-1zM14 5h1v1h-1zM15 5h1v1h-1zM16 5h1v1h-1zM18 5h1v1h-1zM20 5h1v1h-1zM24 5h1v1h-1zM26 5h1v1h-1zM32 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h1v1h-1zM27 6h1v1h-1zM28 6h1v1h-1zM29 6h1v1h-1zM30 6h1v1h-1zM31 6h1v1h-1zM32 6h1v1h-1zM8 7h1v1h-1zM9 7h1v1h-1zM10 7h1v1h-1zM11 7h1v1h-1zM14 7h1v1h-1zM15 7h1v1h-1zM21 7h1v1h-1zM24 7h1v1h-1zM0 8h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM9 8h1v1h-1zM11 8h1v1h-1zM13 8h1v1h-1zM14 8h1v1h-1zM15 8h1v1h-1zM16 8h1v1h-1zM17 8h1v1h-1zM26 8h1v1h-1zM27 8h1v1h-1zM28 8h1v1h-1zM29 8h1v1h-1zM30 8h1v1h-1zM0 9h1v1h-1zM3 9h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM8 9h1v1h-1zM19 9h1v1h-1zM20 9h1v1h-1zM21 9h1v1h-1zM23 9h1v1h-1zM26 9h1v1h-1zM27 9h1v1h-1zM29 9h1v1h-1zM30 9h1v1h-1zM32 9h1v1h-1zM0 10h1v1h-1zM3 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM10 10h1v1h-1zM12 10h1v1h-1zM15 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM28 10h1v1h-1zM30 10h1v1h-1zM31 10h1v1h-1zM1 11h1v1h-1zM2 11h1v1h-1zM3 11h1v1h-1zM4 11h1v1h-1zM5 11h1v1h-1zM8 11h1v1h-1zM9 11h1v1h-1zM10 11h1v1h-1zM11 11h1v1h-1zM12 11h1v1h-1zM14 11h1v1h-1zM16 11h1v1h-1zM21 11h1v1h-1zM24 11h1v1h-1zM25 11h1v1h-1zM28 11h1v1h-1zM29 11h1v1h-1zM30 11h1v1h-1zM31 11h1v1h-1zM32 11h1v1h-1zM0 12h1v1h-1zM1 12h1v1h-1zM2 12h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM6 12h1v1h-1zM9 12h1v1h-1zM10 12h1v1h-1zM15 12h1v1h-1zM18 12h1v1h-1zM21 12h1v1h-1zM23 12h1v1h-1zM25 12h1v1h-1zM27 12h1v1h-1zM28 12h1v1h-1zM29 12h1v1h-1zM1 13h1v1h-1zM2 13h1v1h-1zM5 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM10 13h1v1h-1zM11 13h1v1h-1zM13 13h1v1h-1zM14 13h1v1h-1zM15 13h1v1h-1zM16 13h1v1h-1zM20 13h1v1h-1zM23 13h1v1h-1zM24 13h1v1h-1zM26 13h1v1h-1zM31 13h1v1h-1zM32 13h1v1h-1zM0 14h1v1h-1zM4 14h1v1h-1zM5 14h1v1h-1zM6 14h1v1h-1zM9 14h1v1h-1zM11 14h1v1h-1zM19 14h1v1h-1zM22 14h1v1h-1zM24 14h1v1h-1zM25 14h1v1h-1zM26 14h1v1h-1zM27 14h1v1h-1zM28 14h1v1h-1zM29 14h1v1h-1zM31 14h1v1h-1zM3 15h1v1h-1zM5 15h1v1h-1zM7 15h1v1h-1zM8 15h1v1h-1zM12 15h1v1h-1zM13 15h1v1h-1zM14 15h1v1h-1zM16 15h1v1h-1zM18 15h1v1h-1zM19 15h1v1h-1zM20 15h1v1h-1zM21 15h1v1h-1zM23 15h1v1h-1zM24 15h1v1h-1zM25 15h1v1h-1zM26 15h1v1h-1zM29 15h1v1h-1zM30 15h1v1h-1zM0 16h1v1h-1zM1 16h1v1h-1zM2 16h1v1h-1zM3 16h1v1h-1zM5 16h1v1h-1zM6 16h1v1h-1zM7 16h1v1h-1zM10 16h1v1h-1zM11 16h1v1h-1zM13 16h1v1h-1zM16 16h1v1h-1zM17 16h1v1h-1zM19 16h1v1h-1zM22 16h1v1h-1zM24 16h1v1h-1zM25 16h1v1h-1zM27 16h1v1h-1zM28 16h1v1h-1zM29 16h1v1h-1zM32 16h1v1h-1zM1 17h1v1h-1zM3 17h1v1h-1zM4 17h1v1h-1zM5 17h1v1h-1zM10 17h1v1h-1zM12 17h1v1h-1zM17 17h1v1h-1zM19 17h1v1h-1zM20 17h1v1h-1zM23 17h1v1h-1zM26 17h1v1h-1zM27 17h1v1h-1zM29 17h1v1h-1zM30 17h1v1h-1zM32 17h1v1h-1zM2 18h1v1h-1zM4 18h1v1h-1zM5 18h1v1h-1zM6 18h1v1h-1zM7 18h1v1h-1zM8 18h1v1h-1zM9 18h1v1h-1zM11 18h1v1h-1zM14 18h1v1h-1zM15 18h1v1h-1zM17 18h1v1h-1zM20 18h1v1h-1zM22 18h1v1h-1zM24 18h1v1h-1zM25 18h1v1h-1zM26 18h1v1h-1zM27 18h1v1h-1zM28 18h1v1h-1zM30 18h1v1h-1zM31 18h1v1h-1zM7 19h1v1h-1zM9 19h1v1h-1zM10 19h1v1h-1zM15 19h1v1h-1zM17 19h1v1h-1zM18 19h1v1h-1zM19 19h1v1h-1zM20 19h1v1h-1zM26 19h1v1h-1zM27 19h1v1h-1zM28 19h1v1h-1zM29 19h1v1h-1zM30 19h1v1h-1zM31 19h1v1h-1zM1 20h1v1h-1zM3 20h1v1h-1zM4 20h1v1h-1zM6 20h1v1h-1zM9 20h1v1h-1zM13 20h1v1h-1zM14 20h1v1h-1zM15 20h1v1h-1zM16 20h1v1h-1zM19 20h1v1h-1zM20 20h1v1h-1zM21 20h1v1h-1zM22 20h1v1h-1zM25 20h1v1h-1zM28 20h1v1h-1zM29 20h1v1h-1zM0 21h1v1h-1zM1 21h1v1h-1zM7 21h1v1h-1zM8 21h1v1h-1zM9 21h1v1h-1zM10 21h1v1h-1zM12 21h1v1h-1zM13 21h1v1h-1zM15 21h1v1h-1zM17 21h1v1h-1zM18 21h1v1h-1zM21 21h1v1h-1zM23 21h1v1h-1zM24 21h1v1h-1zM26 21h1v1h-1zM30 21h1v1h-1zM32 21h1v1h-1zM0 22h1v1h-1zM6 22h1v1h-1zM8 22h1v1h-1zM9 22h1v1h-1zM12 22h1v1h-1zM13 22h1v1h-1zM14 22h1v1h-1zM15 22h1v1h-1zM16 22h1v1h-1zM18 22h1v1h-1zM20 22h1v1h-1zM25 22h1v1h-1zM29 22h1v1h-1zM31 22h1v1h-1zM0 23h1v1h-1zM2 23h1v1h-1zM7 23h1v1h-1zM9 23h1v1h-1zM10 23h1v1h-1zM11 23h1v1h-1zM12 23h1v1h-1zM15 23h1v1h-1zM21 23h1v1h-1zM22 23h1v1h-1zM25 23h1v1h-1zM26 23h1v1h-1zM27 23h1v1h-1zM28 23h1v1h-1zM29 23h1v1h-1zM30 23h1v1h-1zM32 23h1v1h-1zM0 24h1v1h-1zM4 24h1v1h-1zM6 24h1v1h-1zM7 24h1v1h-1zM10 24h1v1h-1zM15 24h1v1h-1zM16 24h1v1h-1zM17 24h1v1h-1zM22 24h1v1h-1zM23 24h1v1h-1zM24 24h1v1h-1zM25 24h1v1h-1zM26 24h1v1h-1zM27 24h1v1h-1zM28 24h1v1h-1zM31 24h1v1h-1zM32 24h1v1h-1zM8 25h1v1h-1zM9 25h1v1h-1zM12 25h1v1h-1zM13 25h1v1h-1zM14 25h1v1h-1zM18 25h1v1h-1zM19 25h1v1h-1zM21 25h1v1h-1zM23 25h1v1h-1zM24 25h1v1h-1zM28 25h1v1h-1zM30 25h1v1h-1zM32 25h1v1h-1zM0 26h1v1h-1zM1 26h1v1h-1zM2 26h1v1h-1zM3 26h1v1h-1zM4 26h1v1h-1zM5 26h1v1h-1zM6 26h1v1h-1zM10 26h1v1h-1zM12 26h1v1h-1zM14 26h1v1h-1zM15 26h1v1h-1zM16 26h1v1h-1zM18 26h1v1h-1zM20 26h1v1h-1zM21 26h1v1h-1zM23 26h1v1h-1zM24 26h1v1h-1zM26 26h1v1h-1zM28 26h1v1h-1zM30 26h1v1h-1zM31 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM8 27h1v1h-1zM9 27h1v1h-1zM10 27h1v1h-1zM11 27h1v1h-1zM12 27h1v1h-1zM13 27h1v1h-1zM14 27h1v1h-1zM15 27h1v1h-1zM20 27h1v1h-1zM21 27h1v1h-1zM22 27h1v1h-1zM23 27h1v1h-1zM24 27h1v1h-1zM28 27h1v1h-1zM29 27h1v1h-1zM30 27h1v1h-1zM0 28h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM4 28h1v1h-1zM6 28h1v1h-1zM8 28h1v1h-1zM9 28h1v1h-1zM13 28h1v1h-1zM18 28h1v1h-1zM19 28h1v1h-1zM21 28h1v1h-1zM24 28h1v1h-1zM25 28h1v1h-1zM26 28h1v1h-1zM27 28h1v1h-1zM28 28h1v1h-1zM29 28h1v1h-1zM32 28h1v1h-1zM0 29h1v1h-1zM2 29h1v1h-1zM3 29h1v1h-1zM4 29h1v1h-1zM6 29h1v1h-1zM8 29h1v1h-1zM11 29h1v1h-1zM13 29h1v1h-1zM15 29h1v1h-1zM16 29h1v1h-1zM20 29h1v1h-1zM22 29h1v1h-1zM23 29h1v1h-1zM24 29h1v1h-1zM25 29h1v1h-1zM28 29h1v1h-1zM29 29h1v1h-1zM30 29h1v1h-1zM32 29h1v1h-1zM0 30h1v1h-1zM2 30h1v1h-1zM3 30h1v1h-1zM4 30h1v1h-1zM6 30h1v1h-1zM8 30h1v1h-1zM9 30h1v1h-1zM10 30h1v1h-1zM11 30h1v1h-1zM12 30h1v1h-1zM13 30h1v1h-1zM18 30h1v1h-1zM19 30h1v1h-1zM22 30h1v1h-1zM26 30h1v1h-1zM27 30h1v1h-1zM29 30h1v1h-1zM0 31h1v1h-1zM6 31h1v1h-1zM9 31h1v1h-1zM11 31h1v1h-1zM13 31h1v1h-1zM16 31h1v1h-1zM19 31h1v1h-1zM20 31h1v1h-1zM21 31h1v1h-1zM22 31h1v1h-1zM25 31h1v1h-1zM28 31h1v1h-1zM29 31h1v1h-1zM30 31h1v1h-1zM0 32h1v1h-1zM1 32h1v1h-1zM2 32h1v1h-1zM3 32h1v1h-1zM4 32h1v1h-1zM5 32h1v1h-1zM6 32h1v1h-1zM8 32h1v1h-1zM9 32h1v1h-1zM11 32h1v1h-1zM13 32h1v1h-1zM16 32h1v1h-1zM17 32h1v1h-1zM18 32h1v1h-1zM19 32h1v1h-1zM22 32h1v1h-1zM24 32h1v1h-1zM25 32h1v1h-1zM26 32h1v1h-1zM27 32h1v1h-1zM31 32h1v1h-1z"/></svg><span>repo · playbook · this deck</span></div>
+    </div>
+  </section>
+
+  <div id="foot"><div class="l"><b>Relay MKE</b> · Team V</div><div id="count"></div></div>
+  <div id="clock">2:00</div>
+  <div id="notes"></div>
+</div>
+
+<script>
+(() => {
+  const stage = document.getElementById('stage');
+  const slides = [...document.querySelectorAll('section.slide')];
+  const count = document.getElementById('count'), notes = document.getElementById('notes'), clock = document.getElementById('clock'), prog = document.getElementById('prog');
+  let i = 0, timers = [];
+  const fit = () => { const s = Math.min(innerWidth/1920, innerHeight/1080); stage.style.transform = `translate(-50%,-50%) scale(${s})`; };
+  addEventListener('resize', fit); fit();
+
+  /* ---------- generated visuals ---------- */
+  // slide 1 loop
+  const loop = document.getElementById('loop');
+  const loopArcs = [...loop.querySelectorAll('.arc')], loopNodes = [...loop.querySelectorAll('.node')];
+  function playLoop(){ loopArcs.forEach(a => a.classList.remove('on')); loopNodes.forEach(n => n.classList.remove('on'));
+    loopNodes[0].classList.add('on');
+    loopArcs.forEach((a, k) => timers.push(setTimeout(() => { a.classList.add('on'); loopNodes[(k+1)%5].classList.add('on'); }, 600 + k*700))); }
+
+  // slide 3 network
+  (() => {
+    const divs = ['Housing','Food','Safety','Youth','Mediation','Re-entry','Health','Outreach'];
+    const parts = ['Hunger TF','Sojourner','Legal Action','Pantry 27th','Shelter','211','988','Church','Clinic'];
+    const pts = [];
+    divs.forEach((d, k) => { const a = -Math.PI/2 + k*(2*Math.PI/8); pts.push({x: 550 + Math.cos(a)*150, y: 310 + Math.sin(a)*150, l: d, p: false}); });
+    parts.forEach((d, k) => { const a = -Math.PI/2 + 0.2 + k*(2*Math.PI/9); pts.push({x: 550 + Math.cos(a)*280*1.6, y: 310 + Math.sin(a)*280*0.95, l: d, p: true}); });
+    const t = document.getElementById('tangle'), sp = document.getElementById('spokes'), nd = document.getElementById('nodes');
+    let seed = 7; const rnd = () => (seed = (seed*9301+49297)%233280)/233280;
+    let n = 0;
+    for (let a = 0; a < pts.length; a++) for (let b = a+1; b < pts.length; b++) if (rnd() < 0.5) { n++; const l = document.createElementNS('http://www.w3.org/2000/svg','line'); l.setAttribute('x1',pts[a].x); l.setAttribute('y1',pts[a].y); l.setAttribute('x2',pts[b].x); l.setAttribute('y2',pts[b].y); t.appendChild(l); }
+    document.getElementById('netcap').textContent = n + ' connections to keep in your head';
+    pts.forEach(p => {
+      const l = document.createElementNS('http://www.w3.org/2000/svg','line'); l.setAttribute('class','spoke'); l.setAttribute('x1',p.x); l.setAttribute('y1',p.y); l.setAttribute('x2',550); l.setAttribute('y2',310); sp.appendChild(l);
+      const g = document.createElementNS('http://www.w3.org/2000/svg','g'); g.setAttribute('class','n' + (p.p ? ' p' : ''));
+      const dx = p.x < 540 ? -16 : p.x > 560 ? 16 : 0, anchor = dx < 0 ? 'end' : dx > 0 ? 'start' : 'middle', dy = dx ? 5 : (p.y < 310 ? -16 : 26);
+      g.innerHTML = `<circle cx="${p.x}" cy="${p.y}" r="${p.p?7:9}"/><text x="${p.x+dx}" y="${p.y+dy}" text-anchor="${anchor}">${p.l}</text>`; nd.appendChild(g);
+    });
+  })();
+  const net = document.getElementById('net');
+  const netState = on => { net.querySelector('#tangle').classList.toggle('off', on); net.querySelector('#hub').classList.toggle('on', on); net.querySelectorAll('.spoke').forEach((s, k) => setTimeout(() => s.classList.toggle('on', on), on ? k*45 : 0)); document.getElementById('netcap').textContent = on ? '17 connections — all to one place' : net.dataset.n; document.getElementById('netcap').classList.toggle('gap', !on); };
+  net.dataset.n = document.getElementById('netcap').textContent;
+
+  // slide 6 map
+  (() => {
+    const g = document.getElementById('mgrid'); let h = '';
+    for (let y = 20; y < 570; y += 22) for (let x = 10; x < 720; x += 22) { const d = Math.hypot(x-360, y-290); if (d < 300 + 40*Math.sin(x/37) ) h += `<circle cx="${x}" cy="${y}" r="1.6"/>`; }
+    g.innerHTML = h;
+    const cl = document.getElementById('clusters'); let seed = 3; const rnd = () => (seed = (seed*9301+49297)%233280)/233280;
+    const gaps = new Set([4, 11, 19]); const names = {4:'Metcalfe Park', 11:'Garden Homes', 19:'Amani', 7:'Sherman Park'}; let s = '';
+    for (let k = 0; k < 26; k++) { const a = rnd()*Math.PI*2, r = 40 + rnd()*230; const x = 360 + Math.cos(a)*r*1.1, y = 290 + Math.sin(a)*r*0.9; const sz = 8 + rnd()*22; const gap = gaps.has(k);
+      s += `<g class="cl${gap?' gap':''}" style="transition-delay:${k*40}ms"><circle class="base" cx="${x}" cy="${y}" r="${sz}"/><circle class="ring" cx="${x}" cy="${y}" r="${sz}"/>${names[k] ? `<text x="${x+sz+6}" y="${y+4}">${names[k]}</text>` : ''}</g>`; }
+    cl.innerHTML = s;
+  })();
+  const mapState = on => document.querySelectorAll('#clusters .cl').forEach(c => c.classList.toggle('on', on));
+
+  // slide 7 people
+  (() => {
+    const ppl = document.getElementById('people'); const ic = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+    const names = ['Vaun','Marcus','Keisha','Tasha','Andre','Dion','Rosa','Jamal','Lena','Omar','new','new','new'];
+    ppl.innerHTML = names.map((n, k) => `<div class="pp${k>=10?' new f':''}${[1,3,4,6,8].includes(k)?' leaves':''}">${ic}${n==='new'?'joins 2027':n}</div>`).join('');
+  })();
+  const knowState = on => document.querySelectorAll('#people .leaves').forEach(p => p.classList.toggle('gone', on));
+
+  /* ---------- engine ---------- */
+  const frags = s => [...s.querySelectorAll('.f')];
+  const demovid = document.getElementById('demovid');
+  demovid.addEventListener('loadeddata', () => document.getElementById('vid').classList.add('ready'));
+  demovid.addEventListener('error', () => document.getElementById('vid').classList.remove('ready'));
+  const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  function countUp(el, instant){
+    const node = [...el.childNodes].find(n => n.nodeType === 3 && n.textContent.trim()); if (!node) return;
+    const m = node.textContent.trim().match(/^(\$?)(\d+)(?:\.(\d+))?$/); if (!m || el.dataset.done) return;
+    el.dataset.done = 1; if (instant) return;
+    const pre = m[1], target = parseFloat(m[2] + (m[3] ? '.' + m[3] : '')), dec = m[3] ? m[3].length : 0, t0 = performance.now(), dur = 1300;
+    const tick = now => { const k = Math.min(1, (now - t0) / dur); node.textContent = pre + (target * ease(k)).toFixed(dec); if (k < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  }
+  function hooks(s){
+    const step = frags(s).filter(f => f.classList.contains('on')).length; s.dataset.step = step;
+    const pipe = s.querySelector('#pipe'); if (pipe) { pipe.dataset.step = Math.min(5, step); const st = ['', 'logged by Jordan · 0:41 into the call', 'claimed by Marcus T. · 11:46 PM', 'Hunger Task Force dispatched · run sheet texted', 'delivered 1:32 PM · “did it arrive?” sent', 'verified by the resident · 1:50 PM']; document.getElementById('cardst').textContent = st[Math.min(5, step)] || st[1]; }
+    if (s.querySelector('#net')) netState(step >= 1);
+    if (s.querySelector('#map')) mapState(step >= 1);
+    if (s.querySelector('#know')) knowState(step >= 1);
+    if (s.querySelector('#stack')) { const k = s.querySelectorAll('.w.on').length; [...document.querySelectorAll('#steps div')].forEach((d, j) => d.classList.toggle('on', j < k)); }
+    if (s.querySelector('#loop') && step === 0 && !s.dataset.played) { s.dataset.played = 1; playLoop(); }
+  }
+  const on = (f, instant) => { f.classList.add('on'); f.querySelectorAll('[data-count]').forEach(v => countUp(v, instant)); if (f.matches('[data-count]')) countUp(f, instant); };
+  const revealAll = s => { clearTimers(); frags(s).forEach(f => on(f, true)); hooks(s); };
+  const cascade = s => { const fs = frags(s); fs.forEach((f, k) => timers.push(setTimeout(() => { on(f); hooks(s); }, 800 + k*380))); };
+  function show(n, all){
+    n = Math.max(0, Math.min(slides.length-1, n)); clearTimers();
+    slides.forEach((s, k) => s.classList.toggle('active', k===n));
+    const s = slides[n];
+    frags(s).forEach(f => { f.classList.remove('on'); f.querySelectorAll('[data-done]').forEach(v => delete v.dataset.done); delete f.dataset.done; });
+    delete s.dataset.played;
+    if (!s.querySelector('#demovid') && !demovid.paused) demovid.pause();
+    i = n; count.textContent = String(n+1).padStart(2,'0') + ' / ' + slides.length; notes.textContent = s.dataset.notes || '';
+    prog.style.width = ((n)/(slides.length-1)*100) + '%';
+    history.replaceState(null, '', '#' + (n+1));
+    hooks(s);
+    if (all) revealAll(s); else if (s.hasAttribute('data-manual')) { if (s.querySelector('#loop')) playLoop(); } else cascade(s);
+    if (s.querySelector('#loop') && !all) playLoop();
+  }
+  function next(){
+    const s = slides[i], hidden = frags(s).filter(x => !x.classList.contains('on'));
+    if (hidden.length) {
+      if (s.hasAttribute('data-manual')) { // one connection per click: wire + label + node
+        clearTimers(); const g = hidden[0].dataset.g; const grp = g ? hidden.filter(f => f.dataset.g === g) : [hidden[0]]; grp.forEach(f => on(f)); hooks(s);
+      } else revealAll(s);
+      return;
+    }
+    if (i < slides.length-1) show(i+1);
+  }
+  function prev(){ if (i > 0) show(i-1, true); }
+
+  let left = 120, timer = null;
+  const fmt = v => Math.floor(Math.abs(v)/60) + ':' + String(Math.abs(v)%60).padStart(2,'0');
+  const paint = () => { clock.textContent = (left<0?'-':'') + fmt(left); clock.className = left < 0 ? 'over' : left <= 20 ? 'warn' : ''; };
+  const toggle = () => { if (timer) { clearInterval(timer); timer = null; } else timer = setInterval(() => { left--; paint(); }, 1000); };
+
+  addEventListener('keydown', e => {
+    if (['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(e.key)) { e.preventDefault(); if (i===0 && !timer && left===120) toggle(); next(); }
+    else if (['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)) { e.preventDefault(); prev(); }
+    else if (e.key==='Home') show(0); else if (e.key==='End') show(slides.length-1, true);
+    else if (e.key.toLowerCase()==='t') toggle(); else if (e.key.toLowerCase()==='r') { left = 120; paint(); }
+    else if (e.key.toLowerCase()==='n') notes.classList.toggle('on');
+    else if (e.key.toLowerCase()==='v') { if (document.getElementById('vid').classList.contains('ready')) demovid.paused ? demovid.play() : demovid.pause(); }
+    else if (e.key.toLowerCase()==='f') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+  });
+  stage.addEventListener('click', e => { if (e.clientX > innerWidth/2) next(); else prev(); });
+  let tx = 0; addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive:true}); addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 40) dx < 0 ? next() : prev(); });
+
+  setTimeout(() => document.getElementById('help').classList.add('hide'), 5000);
+  addEventListener('hashchange', () => { const n = (parseInt(location.hash.slice(1)) || 1) - 1; if (n !== i) show(n, true); });
+  if (location.search.includes('print')) { slides.forEach(s => { s.classList.add('active'); frags(s).forEach(f => f.classList.add('on')); hooks(s); }); document.querySelectorAll('.loop .arc,.loop .node').forEach(a => a.classList.add('on')); return; }
+  const start = (parseInt(location.hash.slice(1)) || 1) - 1;
+  show(Math.max(0, start), start > 0);
+  paint();
+})();
+</script>
+</body>
+</html>
