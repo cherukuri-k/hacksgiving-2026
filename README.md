@@ -79,7 +79,7 @@ We studied about 20 programs and platforms (Cure Violence, Advance Peace, READI 
 │   └── voice/                    ← Jordan persona prompts (intake + partner dispatch) + ElevenLabs agent setup script
 ├── data/
 │   └── synthetic/                ← synthetic demo data only
-└── presentation/                 ← pitch, slides, demo assets
+└── presentation/                 ← 2:00 pitch: animated HTML deck, script, demo runbook, PDF
 ```
 
 ## Team

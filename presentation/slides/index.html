@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relay MKE — Hacksgiving 2026 pitch</title>
+<style>
+  :root{
+    --bg:#070d1a; --bg-2:#0c1526; --ink:#f3f6fb; --ink-2:#b7c2d6; --muted:#7f8ca3;
+    --brand:#19a7ec; --brand-2:#0b93d5; --green:#2fd48a; --red:#ff5a5f; --amber:#ffb545;
+    --line:rgba(255,255,255,.09); --card:rgba(255,255,255,.045);
+    --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#000;color:var(--ink);font-family:var(--font);overflow:hidden;-webkit-font-smoothing:antialiased}
+  button{font:inherit}
+
+  /* ---------- stage: fixed 1920×1080 scaled to window ---------- */
+  #stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:0 0;background:var(--bg);overflow:hidden}
+  #stage::before{content:"";position:absolute;inset:0;background:
+    radial-gradient(1200px 700px at 85% -10%, rgba(25,167,236,.18), transparent 60%),
+    radial-gradient(900px 600px at -10% 110%, rgba(47,212,138,.10), transparent 60%);pointer-events:none}
+  .grid{position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:120px 120px;opacity:.35;mask-image:radial-gradient(ellipse at center,#000 30%,transparent 80%);pointer-events:none}
+
+  section.slide{position:absolute;inset:0;padding:110px 140px;opacity:0;visibility:hidden;transform:translateX(80px);transition:opacity .55s cubic-bezier(.2,.7,.2,1),transform .65s cubic-bezier(.2,.7,.2,1),visibility 0s .6s}
+  section.slide.active{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+  section.slide.past{transform:translateX(-80px)}
+
+  /* ---------- chrome ---------- */
+  #bar{position:absolute;left:0;top:0;height:6px;background:linear-gradient(90deg,var(--brand),var(--green));width:0;transition:width .5s;z-index:5}
+  #foot{position:absolute;left:140px;right:140px;bottom:48px;display:flex;justify-content:space-between;align-items:center;font-size:20px;color:var(--muted);letter-spacing:.02em;z-index:5}
+  #foot b{color:var(--ink-2);font-weight:600}
+  #clock{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink-2)}
+  #clock.warn{color:var(--amber)} #clock.over{color:var(--red)}
+  #notes{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);color:#fff;padding:36px 140px;font-size:30px;line-height:1.45;transform:translateY(100%);transition:transform .3s;z-index:6;max-height:50%;overflow:auto;border-top:2px solid var(--brand)}
+  #notes.on{transform:none}
+  #help{position:absolute;right:140px;top:40px;font-size:18px;color:var(--muted);opacity:.7;z-index:5;transition:opacity 1s}#help.hide{opacity:0}
+
+  /* ---------- fragments ---------- */
+  .f{opacity:0;transform:translateY(22px);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
+  .f.on{opacity:1;transform:none}
+
+  /* ---------- type ---------- */
+  .kicker{font-size:26px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);font-weight:700;margin-bottom:26px}
+  h1{font-size:112px;line-height:1;letter-spacing:-.035em;font-weight:800}
+  h2{font-size:76px;line-height:1.06;letter-spacing:-.03em;font-weight:800;max-width:1500px}
+  h2 em,h1 em{font-style:normal;color:var(--brand)}
+  .lead{font-size:38px;line-height:1.35;color:var(--ink-2);max-width:1400px;margin-top:34px}
+  .pill{display:inline-flex;align-items:center;gap:12px;padding:10px 22px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:24px;color:var(--ink-2)}
+
+  /* ---------- slide 1 ---------- */
+  .logo{display:flex;align-items:center;gap:26px;margin-bottom:60px}
+  .mark{width:96px;height:96px;border-radius:26px;background:linear-gradient(135deg,var(--brand),#2fd48a);display:grid;place-items:center;font-weight:900;font-size:58px;color:#06101d;box-shadow:0 20px 60px -10px rgba(25,167,236,.6)}
+  .logo .t{font-size:34px;font-weight:700;color:var(--ink-2);letter-spacing:.02em}
+  .tag{margin-top:40px;font-size:44px;color:var(--ink-2);letter-spacing:-.01em}
+  .tag b{color:var(--ink);font-weight:800}
+  .tag .v{color:var(--green)}
+  .s1-foot{position:absolute;left:140px;bottom:120px;display:flex;gap:18px}
+
+  /* ---------- slide 2: story ---------- */
+  .story{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;height:100%}
+  .phones{position:relative;height:720px}
+  .ph{position:absolute;width:300px;height:560px;border-radius:44px;background:#111b2f;border:2px solid rgba(255,255,255,.12);box-shadow:0 40px 80px -30px rgba(0,0,0,.8);padding:60px 18px 20px;transition:transform .7s cubic-bezier(.2,.7,.2,1),opacity .6s;opacity:0;transform:translateY(60px) rotate(0deg)}
+  .ph.on{opacity:1}
+  .ph:nth-child(1).on{transform:translate(0,40px) rotate(-8deg)}
+  .ph:nth-child(2).on{transform:translate(250px,0) rotate(0deg);z-index:2}
+  .ph:nth-child(3).on{transform:translate(500px,60px) rotate(8deg)}
+  .ph::before{content:"";position:absolute;top:22px;left:50%;width:110px;height:22px;margin-left:-55px;border-radius:12px;background:#000}
+  .ph .app{font-size:15px;color:var(--muted);margin:0 6px 10px;display:flex;align-items:center;gap:8px}
+  .ph .app i{width:20px;height:20px;border-radius:6px;display:inline-block}
+  .msg{background:#1d2a45;border-radius:18px;padding:12px 14px;font-size:17px;line-height:1.3;margin:8px 4px;color:#e6ecf7;opacity:0;transform:scale(.9);transition:all .4s cubic-bezier(.2,.9,.3,1.3)}
+  .msg.me{background:var(--brand-2);color:#fff;margin-left:50px}
+  .ph.on .msg{opacity:1;transform:none}
+  .ph.on .msg:nth-of-type(2){transition-delay:.35s}.ph.on .msg:nth-of-type(3){transition-delay:.7s}.ph.on .msg:nth-of-type(4){transition-delay:1.05s}
+  .q{position:absolute;inset:auto 0 0 0;height:160px;display:grid;place-items:center;font-size:120px;font-weight:900;color:var(--red);opacity:0;transform:scale(.6);transition:all .5s cubic-bezier(.2,.9,.3,1.4)}
+  .q.on{opacity:1;transform:none}
+  .punch{font-size:60px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-top:40px}
+  .punch .r{color:var(--red)}
+
+  /* ---------- slide 3: loop ---------- */
+  .loop{display:flex;align-items:flex-start;gap:0;margin-top:70px}
+  .node{flex:1;position:relative;text-align:center}
+  .node .c{width:190px;height:190px;border-radius:50%;margin:0 auto;display:grid;place-items:center;border:3px solid var(--brand);background:rgba(25,167,236,.08);font-size:30px;font-weight:700;color:var(--ink);transition:all .5s}
+  .node .n{font-size:22px;color:var(--muted);margin-top:16px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+  .arrow{width:90px;height:4px;background:var(--brand);position:relative;opacity:.8;flex:none;margin-top:93px}
+  .arrow::after{content:"";position:absolute;right:-2px;top:-9px;border:11px solid transparent;border-left:16px solid var(--brand)}
+  .loop.broken .node.verify .c{border-color:var(--red);background:rgba(255,90,95,.12);color:var(--red);border-style:dashed;animation:shake .6s cubic-bezier(.36,.07,.19,.97) both}
+  .loop.broken .node.verify .n{color:var(--red)}
+  .loop.broken .arrow.v{background:var(--red)}.loop.broken .arrow.v::after{border-left-color:var(--red)}
+  @keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-8px)}40%,60%{transform:translateX(8px)}}
+  .logos{display:flex;flex-wrap:wrap;gap:14px;margin-top:60px}
+  .logos .pill{font-size:22px;padding:8px 18px}
+  .logos .pill.x{text-decoration:line-through;color:var(--muted)}
+  .fix{margin-top:50px;font-size:46px;font-weight:800;letter-spacing:-.02em}
+  .fix .g{color:var(--green)}
+
+  /* ---------- slide 4: flow ---------- */
+  .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:26px;margin-top:70px}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:34px 30px 30px;min-height:420px;position:relative;transition:border-color .5s,box-shadow .5s}
+  .step.on{border-color:rgba(25,167,236,.6);box-shadow:0 0 0 1px rgba(25,167,236,.25),0 30px 60px -30px rgba(25,167,236,.5)}
+  .step .k{padding-right:70px;font-size:20px;letter-spacing:.14em;color:var(--brand);text-transform:uppercase;font-weight:700}
+  .step h3{font-size:36px;letter-spacing:-.02em;margin:14px 0 14px;line-height:1.1}
+  .step p{font-size:24px;line-height:1.35;color:var(--ink-2)}
+  .step .ico{position:absolute;right:26px;top:26px;width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:rgba(25,167,236,.15);color:var(--brand)}
+  .step.v.on{border-color:rgba(47,212,138,.7);box-shadow:0 0 0 1px rgba(47,212,138,.3),0 30px 60px -30px rgba(47,212,138,.6)}
+  .step.v .k,.step.v .ico{color:var(--green)}.step.v .ico{background:rgba(47,212,138,.15)}
+  .jordan{display:inline-flex;align-items:center;gap:10px;margin-top:18px;font-size:20px;color:var(--ink-2)}
+  .dot{width:12px;height:12px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(47,212,138,.7);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(47,212,138,.7)}70%{box-shadow:0 0 0 14px rgba(47,212,138,0)}100%{box-shadow:0 0 0 0 rgba(47,212,138,0)}}
+  .wave{display:inline-flex;gap:4px;align-items:flex-end;height:26px}
+  .wave i{width:5px;background:var(--brand);border-radius:3px;animation:wv 1s ease-in-out infinite}
+  .wave i:nth-child(2){animation-delay:.15s}.wave i:nth-child(3){animation-delay:.3s}.wave i:nth-child(4){animation-delay:.45s}.wave i:nth-child(5){animation-delay:.6s}
+  @keyframes wv{0%,100%{height:8px}50%{height:26px}}
+  .only{margin-top:46px;font-size:40px;font-weight:700;color:var(--ink-2)}
+  .only b{color:var(--green)}
+
+  /* ---------- slide 5: numbers ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-top:60px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:36px 34px}
+  .kpi .v{font-size:104px;font-weight:800;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+  .kpi .v small{font-size:46px;color:var(--muted);font-weight:700;letter-spacing:0}
+  .kpi .l{font-size:24px;color:var(--ink-2);margin-top:16px;line-height:1.3}
+  .kpi .c{font-size:20px;color:var(--muted);margin-top:10px}
+  .kpi.hi{border-color:rgba(47,212,138,.6);background:rgba(47,212,138,.07)}
+  .kpi.hi .v{color:var(--green)}
+  .kpi.hi .c{color:var(--green);font-weight:700}
+  .cluster{margin-top:50px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .cluster i{width:52px;height:52px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:18px;color:var(--muted);transition:all .35s}
+  .cluster.on i.hit{background:rgba(25,167,236,.25);border-color:var(--brand);color:#fff}
+  .cluster .lbl{margin-left:18px;font-size:26px;color:var(--ink-2)}
+
+  /* ---------- slide 6: guardrails + cost ---------- */
+  .two{display:grid;grid-template-columns:1.1fr .9fr;gap:90px;margin-top:50px;align-items:start}
+  .rules{list-style:none;display:grid;gap:22px}
+  .rules li{display:flex;gap:22px;align-items:flex-start;font-size:32px;line-height:1.25;color:var(--ink)}
+  .rules li .ck{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:rgba(47,212,138,.15);color:var(--green);font-weight:900;font-size:26px;margin-top:2px}
+  .rules li.no .ck{background:rgba(255,90,95,.15);color:var(--red)}
+  .rules li span small{display:block;font-size:22px;color:var(--muted);margin-top:4px}
+  .cost{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:40px}
+  .cost .big{font-size:120px;font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--green)}
+  .cost .big small{font-size:36px;color:var(--ink-2);font-weight:600;letter-spacing:0;margin-left:10px}
+  .bars{margin-top:36px;display:grid;gap:18px}
+  .b{display:grid;grid-template-columns:230px 1fr 170px;align-items:center;gap:18px;font-size:24px;color:var(--ink-2)}
+  .b .tr{height:22px;border-radius:11px;background:rgba(255,255,255,.07);overflow:hidden}
+  .b .fl{height:100%;width:0;border-radius:11px;background:var(--muted);transition:width 1.4s cubic-bezier(.2,.7,.2,1)}
+  .b.us .fl{background:var(--green)}
+  .b .n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:var(--ink)}
+  .bars.on .b:nth-child(1) .fl{width:100%}.bars.on .b:nth-child(2) .fl{width:7.2%}.bars.on .b:nth-child(3) .fl{width:.4%;min-width:6px}
+
+  /* ---------- slide 7: close ---------- */
+  .close{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;height:100%}
+  .big3{display:grid;gap:26px;margin-top:40px}
+  .big3 .row{font-size:44px;font-weight:700;display:flex;gap:22px;align-items:center}
+  .big3 .row i{width:16px;height:16px;border-radius:50%;background:var(--brand);flex:none}
+  .cta{margin-top:70px;font-size:50px;font-weight:800;letter-spacing:-.02em;line-height:1.15}
+  .cta .g{color:var(--green)}
+  .shot{position:relative;border-radius:28px;overflow:hidden;border:1px solid var(--line);box-shadow:0 60px 120px -40px rgba(0,0,0,.9);transform:perspective(1600px) rotateY(-10deg) rotateX(2deg);transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+  .shot img{display:block;width:100%}
+  .shot.on{transform:perspective(1600px) rotateY(-4deg)}
+  .ring{position:absolute;left:50%;top:50%;width:360px;height:360px;margin:-180px 0 0 -180px;border-radius:50%;border:3px solid var(--brand);opacity:0;animation:ring 2.4s ease-out infinite;pointer-events:none}
+  .ring.d{animation-delay:1.2s}
+  @keyframes ring{0%{transform:scale(.3);opacity:.9}100%{transform:scale(1.6);opacity:0}}
+  .qr{position:absolute;right:140px;bottom:120px;display:flex;align-items:center;gap:20px;font-size:22px;color:var(--muted)}
+  .qr code{font-size:24px;color:var(--ink-2);background:var(--card);border:1px solid var(--line);padding:8px 14px;border-radius:10px}
+
+  @page{size:1920px 1080px;margin:0}
+  @media print{
+    html,body{overflow:visible;background:#000;width:1920px;height:auto}
+    #stage{position:static;transform:none!important;width:1920px;height:auto;background:none;overflow:visible}
+    section.slide:last-of-type{page-break-after:auto}
+    section.slide{position:relative;opacity:1;visibility:visible;transform:none;height:1080px;width:1920px;page-break-after:always;break-inside:avoid;background:var(--bg);overflow:hidden}
+    .grid{display:none}
+    .f,.ph,.msg,.q,.step,.cluster i.hit,.shot{opacity:1!important;transform:none!important}
+    .bars .b:nth-child(1) .fl{width:100%}.bars .b:nth-child(2) .fl{width:7.2%}.bars .b:nth-child(3) .fl{width:.4%;min-width:6px}
+    #foot,#help,#notes,#bar{display:none}
+    .loop .node.verify .c{border-color:var(--red);background:rgba(255,90,95,.12);color:var(--red);border-style:dashed}.loop .node.verify .n{color:var(--red)}.loop .arrow.v{background:var(--red)}.loop .arrow.v::after{border-left-color:var(--red)}
+  }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="grid"></div>
+  <div id="bar"></div>
+  <div id="help">→ next · ← back · T timer · N notes · F fullscreen</div>
+
+  <!-- 1 · Title -->
+  <section class="slide" data-notes="Relay MKE. Every request, every responder, every outcome — verified. (Advance immediately.)">
+    <div class="logo"><div class="mark">R</div><div class="t">Hacksgiving 2026 × ComForce MKE</div></div>
+    <h1>Relay <em>MKE</em></h1>
+    <div class="tag"><b>Every request.</b> <b>Every responder.</b> <b>Every outcome — <span class="v">verified.</span></b></div>
+    <div class="s1-foot">
+      <span class="pill">📞 Call · text · web intake</span>
+      <span class="pill">🤝 Partner dispatch</span>
+      <span class="pill">✅ Resident-verified loop</span>
+      <span class="pill">📊 Funder-ready evidence</span>
+    </div>
+  </section>
+
+  <!-- 2 · Story -->
+  <section class="slide" data-notes="Friday night, a house fire on 35th Street. The family's cousin messages ComForce on Facebook. A neighbor calls Vaun. A pantry posts in a group chat. Three people try to help. Two duplicate each other. A week later nobody can say whether that family got housed — the only record lives in three phones. That's the problem. Not caring. Not capacity. Coordination, and proof.">
+    <div class="story">
+      <div>
+        <div class="kicker">Friday night · 35th Street</div>
+        <h2>A house fire.<br>Three people try to help.</h2>
+        <p class="lead f">Two of them duplicate each other. A week later, nobody can say whether the family got housed — the only record lives in three phones.</p>
+        <div class="punch f">Not caring. Not capacity.<br><span class="r">Coordination — and proof.</span></div>
+      </div>
+      <div class="phones">
+        <div class="ph f"><div class="app"><i style="background:#1877f2"></i>Messenger</div><div class="msg">my cousin's house burned on 35th last night, 5 of them, 2 kids</div><div class="msg me">On it. Do they have somewhere tonight?</div><div class="msg">idk</div></div>
+        <div class="ph f"><div class="app"><i style="background:#2fd48a"></i>Phone · Vaun</div><div class="msg">Missed call · 11:42 PM</div><div class="msg">Voicemail · "the fire on 35th… the family's at the church, they need food and a place…"</div><div class="msg me">Calling back</div></div>
+        <div class="ph f"><div class="app"><i style="background:#25d366"></i>Group chat · Pantry</div><div class="msg">anyone know the family from the 35th st fire?</div><div class="msg me">we can bring boxes tmrw</div><div class="msg">someone already did?</div><div class="msg">which someone</div></div>
+        <div class="q f">?</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · The loop that breaks -->
+  <section class="slide" data-notes="Every one of ComForce's eight divisions runs the same loop: intake, coordinate, deliver, verify, report. We studied twenty programs — Cure Violence, CAHOOTS, Unite Us, findhelp, CompStat. Every one breaks at the same place: verify. Help gets marked done by the helper, and the resident is never asked. (PAUSE) Relay MKE is built around that one missing step.">
+    <div class="kicker">The same loop in all 8 divisions</div>
+    <h2>Every program we studied<br>breaks at the <em>same step.</em></h2>
+    <div class="loop" id="loop">
+      <div class="node"><div class="c">Intake</div><div class="n">call · text · web</div></div><div class="arrow"></div>
+      <div class="node"><div class="c">Coordinate</div><div class="n">who takes it</div></div><div class="arrow"></div>
+      <div class="node"><div class="c">Deliver</div><div class="n">food · shelter · ride</div></div><div class="arrow v"></div>
+      <div class="node verify"><div class="c">Verify</div><div class="n">did it arrive?</div></div><div class="arrow v"></div>
+      <div class="node"><div class="c">Report</div><div class="n">to funders</div></div>
+    </div>
+    <div class="logos f">
+      <span class="pill x">Cure Violence</span><span class="pill x">CAHOOTS</span><span class="pill x">Unite Us</span><span class="pill x">findhelp</span><span class="pill x">NYPD CompStat</span><span class="pill x">Crisis Cleanup</span><span class="pill">+14 more in <b>docs/research</b></span>
+    </div>
+    <div class="fix f">Help is marked "done" by the helper. <span class="g">The resident is never asked.</span></div>
+  </section>
+
+  <!-- 4 · What we built -->
+  <section class="slide" data-notes="A resident calls ComForce. Jordan — our AI — answers in English or Spanish, listens, and logs the request on the shared board while they're still talking. The resident gets a tracking code by text. A coordinator taps Dispatch. Jordan calls the partner, records their answer, and hands the volunteer a run sheet. After delivery, Relay texts the resident: did it arrive? No reply? Jordan calls them back, in their language. Only the resident's yes counts.">
+    <div class="kicker">What we built</div>
+    <h2>One shared record — and <em>Jordan</em>, who picks up the phone.</h2>
+    <div class="flow">
+      <div class="step f"><div class="ico">📞</div><div class="k">1 · Intake</div><h3>Resident calls</h3><p>Jordan answers in English or Spanish, listens, logs the request on the board <b>while they're still talking</b>. Tracking code arrives by text.</p><div class="jordan"><span class="wave"><i></i><i></i><i></i><i></i><i></i></span> live transcript</div></div>
+      <div class="step f"><div class="ico">🗂</div><div class="k">2 · Coordinate</div><h3>One board</h3><p>Redacted, triaged, safety-screened. Claim-to-own, so two people never chase the same family.</p></div>
+      <div class="step f"><div class="ico">🤝</div><div class="k">3 · Dispatch</div><h3>Jordan calls the partner</h3><p>Asks if they can take it, records the answer, emails the handoff, hands the volunteer a GPS run sheet.</p><div class="jordan"><span class="dot"></span> partner on the line</div></div>
+      <div class="step f"><div class="ico">🚚</div><div class="k">4 · Deliver</div><h3>Volunteer marks delivered</h3><p>Relay texts the resident: <i>"Did it arrive? 1 · 2 · 3"</i></p></div>
+      <div class="step v f"><div class="ico">✅</div><div class="k">5 · Verify</div><h3>No reply? Jordan calls back</h3><p>In the language they called in. Only the resident's <b>"yes"</b> turns the card green.</p><div class="jordan"><span class="dot"></span> call-back</div></div>
+    </div>
+    <div class="only f">The helper can't close a case. <b>Only the resident can.</b></div>
+  </section>
+
+  <!-- 5 · Proof -->
+  <section class="slide" data-notes="That verified loop is what turns stories into evidence. ComForce's main funder, the City's wellness office, just launched the Countdown: 26 clusters, 88 percent of homicide victims. Relay shows 71 percent of ComForce's work landing inside those clusters, median time to help two hours, and 67 percent confirmed by the resident — the one number the City itself doesn't measure. (PAUSE) One click drafts the grant application in the funder's own vocabulary.">
+    <div class="kicker">Proof a funder can audit — request by request</div>
+    <h2>Same numbers the City reports.<br>Plus <em>the one it can't.</em></h2>
+    <div class="kpis">
+      <div class="kpi f"><div class="v"><span data-count="71">0</span><small>%</small></div><div class="l">of requests inside DCWS <b>Countdown</b> clusters</div><div class="c">26 clusters · 88.5 % of homicide victims</div></div>
+      <div class="kpi f"><div class="v"><span data-count="21">0</span><small>/26</small></div><div class="l">clusters where ComForce delivered help</div><div class="c">5 with no activity — useful to the City too</div></div>
+      <div class="kpi f"><div class="v"><span data-count="2">0</span><small>h </small><span data-count="5">0</span><small>m</small></div><div class="l">median first contact → help delivered</div><div class="c">DCWS reports total hours only</div></div>
+      <div class="kpi hi f"><div class="v"><span data-count="67">0</span><small>%</small></div><div class="l">of help <b>confirmed by the resident</b></div><div class="c">DCWS: not measured</div></div>
+    </div>
+    <div class="cluster f" id="cluster">
+      <i class="hit">1</i><i class="hit">2</i><i class="hit">3</i><i class="hit">4</i><i class="hit">5</i><i class="hit">6</i><i class="hit">7</i><i class="hit">8</i><i>9</i><i class="hit">10</i><i class="hit">11</i><i class="hit">12</i><i class="hit">13</i><i class="hit">14</i><i>15</i><i class="hit">16</i><i class="hit">17</i><i class="hit">18</i><i>19</i><i class="hit">20</i><i class="hit">21</i><i>22</i><i class="hit">23</i><i>24</i><i class="hit">25</i><i class="hit">26</i>
+      <span class="lbl">→ one click: grant application drafted in the funder's vocabulary. Nothing invented.</span>
+    </div>
+  </section>
+
+  <!-- 6 · Responsible + cost -->
+  <section class="slide" data-notes="Guardrails are built in: it never scores or predicts a person, PII is stripped before any AI sees it, humans make every decision, and a caller in crisis hears 988 and Sojourner on the first call. It runs on volunteers' own phones for about a dollar sixty-six a request. findhelp charges up to seventy-five thousand a year.">
+    <div class="kicker">Responsible by design · nearly free to run</div>
+    <h2>Guardrails first. Then the <em>price tag.</em></h2>
+    <div class="two">
+      <ul class="rules">
+        <li class="no f"><span class="ck">✕</span><span>Never identifies, scores or predicts a person<small>Needs by neighborhood — never people. Synthetic data only.</small></span></li>
+        <li class="f"><span class="ck">✓</span><span>PII stripped before any AI sees it<small>Contact details live apart from the case.</small></span></li>
+        <li class="f"><span class="ck">✓</span><span>AI drafts. Humans decide.<small>Claim, dispatch, deliver — all human taps.</small></span></li>
+        <li class="f"><span class="ck">✓</span><span>Crisis → 988 · 211 · Sojourner on the first call<small>Case flagged, ComForce lead paged. Partners see the need, never the details.</small></span></li>
+        <li class="f"><span class="ck">✓</span><span>English · Spanish · honest Hmong routing<small>No fake fluency — a Hmong-speaking partner calls back.</small></span></li>
+      </ul>
+      <div class="cost f">
+        <div class="big">$1.66<small>per request</small></div>
+        <div style="font-size:24px;color:var(--ink-2);margin-top:14px">Voice minutes + texts + AI + hosting, at list price. Runs on volunteers' own phones.</div>
+        <div class="bars" id="bars">
+          <div class="b"><span>findhelp</span><div class="tr"><div class="fl"></div></div><span class="n">$75,000/yr</span></div>
+          <div class="b"><span>findhelp (entry)</span><div class="tr"><div class="fl"></div></div><span class="n">$5,400/yr</span></div>
+          <div class="b us"><span>Relay MKE</span><div class="tr"><div class="fl"></div></div><span class="n">~$300/yr</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · Close -->
+  <section class="slide" data-notes="One engine for all eight divisions. ComForce owns the data. Deployable Monday. Now — Koushik is going to call ComForce from his seat. Watch the board.">
+    <div class="close">
+      <div>
+        <div class="kicker">Relay MKE</div>
+        <h2>Built for ComForce.<br>Ready <em>Monday.</em></h2>
+        <div class="big3">
+          <div class="row f"><i></i>One engine for all 8 divisions</div>
+          <div class="row f"><i></i>ComForce owns and can export every record</div>
+          <div class="row f"><i></i>Works on the phones volunteers already carry</div>
+        </div>
+        <div class="cta f">Now — a resident is about to call ComForce<br><span class="g">from a seat in this room.</span></div>
+      </div>
+      <div class="shot f"><img src="board.png" alt="Relay Board"></div>
+    </div>
+    <div class="qr">repo <code>github.com/aditya9064/hacksgiving-2026</code></div>
+  </section>
+
+  <div id="foot"><span><b>Relay MKE</b> · Hacksgiving 2026 · ComForce MKE</span><span id="clock">2:00</span><span id="count">1 / 7</span></div>
+  <div id="notes"></div>
+</div>
+
+<script>
+(() => {
+  const stage = document.getElementById('stage');
+  const slides = [...document.querySelectorAll('section.slide')];
+  const bar = document.getElementById('bar'), count = document.getElementById('count'), notes = document.getElementById('notes'), clock = document.getElementById('clock');
+  let i = 0;
+
+  function fit(){ const s = Math.min(innerWidth/1920, innerHeight/1080); stage.style.transform = `translate(-50%,-50%) scale(${s})`; stage.style.transformOrigin='center'; stage.style.left='50%'; stage.style.top='50%'; }
+  addEventListener('resize', fit); fit();
+
+  function frags(s){ return [...s.querySelectorAll('.f')]; }
+  function onEnter(s){
+    if (s.querySelector('#loop')) setTimeout(() => s.querySelector('#loop').classList.add('broken'), 1400);
+    s.querySelectorAll('[data-count]').forEach(el => {
+      const to = +el.dataset.count, t0 = performance.now(), dur = 1400;
+      const tick = t => { const p = Math.min(1, (t - t0)/dur), e = 1 - Math.pow(1-p, 3); el.textContent = Math.round(to*e); if (p < 1) requestAnimationFrame(tick); };
+      requestAnimationFrame(tick);
+    });
+  }
+  function show(n, revealAll){
+    n = Math.max(0, Math.min(slides.length-1, n));
+    slides.forEach((s, k) => { s.classList.toggle('active', k===n); s.classList.toggle('past', k<n); });
+    const s = slides[n];
+    frags(s).forEach(f => f.classList.toggle('on', !!revealAll));
+    if (revealAll) { s.querySelectorAll('#bars,#cluster').forEach(e => e.classList.add('on')); }
+    else { s.querySelectorAll('#bars,#cluster').forEach(e => e.classList.remove('on')); s.querySelector('#loop')?.classList.remove('broken'); }
+    i = n; bar.style.width = ((n+1)/slides.length*100) + '%'; count.textContent = `${n+1} / ${slides.length}`; notes.textContent = s.dataset.notes || '';
+    location.hash = n+1; onEnter(s);
+  }
+  const nested = f => f.querySelectorAll('#bars,#cluster');
+  function next(){
+    const s = slides[i], f = frags(s).find(x => !x.classList.contains('on'));
+    if (f) { f.classList.add('on'); nested(f).forEach(e => e.classList.add('on')); return; }
+    if (i < slides.length-1) show(i+1);
+  }
+  function prev(){
+    const on = frags(slides[i]).filter(x => x.classList.contains('on'));
+    if (on.length) { const f = on[on.length-1]; f.classList.remove('on'); nested(f).forEach(e => e.classList.remove('on')); return; }
+    if (i > 0) show(i-1, true);
+  }
+
+  // 2:00 countdown — press T to start/pause, R to reset
+  let left = 120, timer = null;
+  const paint = () => { const m = Math.floor(Math.abs(left)/60), s = Math.abs(left)%60; clock.textContent = (left<0?'-':'') + m + ':' + String(s).padStart(2,'0'); clock.className = left < 0 ? 'over' : left <= 20 ? 'warn' : ''; };
+  const toggle = () => { if (timer) { clearInterval(timer); timer = null; } else timer = setInterval(() => { left--; paint(); }, 1000); };
+
+  addEventListener('keydown', e => {
+    if (['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(e.key)) { e.preventDefault(); if (i===0 && !timer && left===120) toggle(); next(); }
+    else if (['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)) { e.preventDefault(); prev(); }
+    else if (e.key==='Home') show(0); else if (e.key==='End') show(slides.length-1, true);
+    else if (e.key.toLowerCase()==='t') toggle(); else if (e.key.toLowerCase()==='r') { left = 120; paint(); }
+    else if (e.key.toLowerCase()==='n') notes.classList.toggle('on');
+    else if (e.key.toLowerCase()==='f') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+  });
+  stage.addEventListener('click', e => { if (e.clientX > innerWidth/2) next(); else prev(); });
+  let tx = 0; addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive:true}); addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 40) dx < 0 ? next() : prev(); });
+
+  setTimeout(() => document.getElementById('help').classList.add('hide'), 5000);
+  addEventListener('hashchange', () => { const n = (parseInt(location.hash.slice(1)) || 1) - 1; if (n !== i) show(n); });
+  if (location.search.includes('print')) {
+    document.querySelectorAll('.f').forEach(f => f.classList.add('on'));
+    document.querySelectorAll('#bars,#cluster').forEach(e => e.classList.add('on'));
+    document.querySelectorAll('[data-count]').forEach(el => el.textContent = el.dataset.count);
+    document.getElementById('loop').classList.add('broken');
+    slides.forEach(s => s.classList.add('active'));
+    return;
+  }
+  show(Math.max(0, (parseInt(location.hash.slice(1)) || 1) - 1));
+  paint();
+})();
+</script>
+</body>
+</html>
