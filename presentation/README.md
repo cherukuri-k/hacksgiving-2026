@@ -26,7 +26,7 @@ Swipe works on a phone or tablet, so a teammate can advance from the front row i
 
 ## Slide → script map
 
-1. Title (0:00) · 2. The problem — Friday-night timeline (0:05) · 3. Five steps, the fourth skipped (0:25) · 4. The five hackathon tracks → five Relay modules (0:40) · 5. One record, two screens — phone + board (1:00) · 6. The stack — cheap, current, fast (1:15) · 7. Proof — the ledger + 67 % / 71 % / 21 of 26 (1:30) · 8. Guardrails (1:42) · 9. Demo hand-off (1:52) · **demo** · 10. Cost $1.66 + close + QR · 11. Backup video · 12–13. Appendix for Q&A
+1. Title (0:00) · 2. The problem — Friday-night timeline (0:05) · 3. Five steps, the fourth skipped (0:25) · 4. The five hackathon tracks → five Relay modules (0:40) · 5. One record, two screens — phone + board (1:00) · 6. Architecture diagram — channels → Jordan (ElevenLabs + Claude) → the record → outputs (1:15) · 7. Proof — the ledger + 67 % / 71 % / 21 of 26 (1:30) · 8. Guardrails (1:42) · 9. Demo hand-off (1:52) · **demo** · 10. Cost $1.66 + close + QR · 11. Backup video · 12–13. Appendix for Q&A
 
 9. **Demo video (backup only)** — placeholder until `presentation/demo-backup.mp4` exists; then it plays that file, `V` = play/pause. Skip it when the live demo works.
 
