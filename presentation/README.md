@@ -33,7 +33,7 @@ Appendix for Q&A, not part of the 2:00: 10. Tech stack · 11. Limits & next step
 
 ### Visual language
 
-Deep-navy stage, warm-white serif headlines, two accents — **orange = the resident / human**, **blue = Relay / Jordan**. The recurring motif is the **ring**: the loop that breaks on slide 3 (Verify crumbles) and closes on slide 5 (seven stations, a dot travelling the circuit); gauges on slide 6, the seal on slide 8 and the top-right progress ring all reuse it. Slides wipe in like a curtain; fragments wipe left→right. `LIVE` / `SIMULATED` / `SYNTHETIC 2026 DATA` tags sit on anything a judge might question. Every screenshot is the real app (`slides/img/`, captured from `localhost:3077`). Top-right ring is slide progress + number; bottom-left is the 2:00 timer.
+White stage, near-black serif headlines, two accents — **orange = the resident / human**, **blue = Relay / Jordan**. The recurring motif is the **ring**: the loop that breaks on slide 3 (Verify crumbles) and closes on slide 5 (seven stations, a dot travelling the circuit); gauges on slide 6, the seal on slide 8 and the top-right progress ring all reuse it. Slides wipe in like a curtain; fragments wipe left→right. `LIVE` / `SIMULATED` / `SYNTHETIC 2026 DATA` tags sit on anything a judge might question. Every screenshot is the real app (`slides/img/`, captured from `localhost:3077`). Top-right ring is slide progress + number; bottom-left is the 2:00 timer.
 
 Numbers on slides 6 and 7 come from `/grants` on the seeded 2026 data (71 % · 21/26 · 2 h 5 m · 67 % · $1.66 per request). If the seed changes, update both the deck and the script.
 
