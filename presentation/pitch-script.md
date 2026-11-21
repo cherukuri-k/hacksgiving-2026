@@ -1,6 +1,6 @@
 # Pitch script — 2:00
 
-Spoken at a normal pace this is ~290 words, which lands at 1:55. Beats match the deck's clock (top-left). **Bold** = advance the slide. Nothing animates on its own: each → is one step (problem → solution, one card move, one stack connection), so press as you speak. Slides 10–12 are spoken after the demo, inside the Q&A/wrap-up.
+Spoken at a normal pace this is ~310 words, which lands right at 2:00 — if the clock is past 1:45 when you reach slide 9, press through the stack without narrating each arrow. **Bold** = advance the slide; **→** = one press inside a slide. Nothing animates on its own, so press as you speak. Slides 11–13 are spoken after the demo, inside the Q&A/wrap-up.
 
 ---
 
@@ -8,35 +8,39 @@ Spoken at a normal pace this is ~290 words, which lands at 1:55. Beats match the
 
 We're Team V. This is Relay MKE: one shared record for every request ComForce receives — and it only closes when the *resident* says help arrived.
 
-**Slide 2 · 0:08 — About**
+**Slide 2 · 0:08 — About** *(→ ×3: phone, board, proof)*
 
-ComForce runs eight divisions on volunteers' phones. Relay gives them one number, one board, one proof. Jordan — our AI — answers the phone in English or Spanish. Every division sees the same card. And a funder can audit every outcome.
+One number **→** Jordan, our AI, answers in English or Spanish. One board **→** every division works from the same card. One proof **→** a funder can audit. Every screen you'll see is the running app.
 
-**Slide 3 · 0:20 — Problem 1 · Information sharing**
+**Slide 3 · 0:18 — Five problems** *(→ ×1)*
 
-Today, every line in this picture is a phone call or a Facebook message. Nobody can see the whole picture. Relay puts one record in the middle, with a live partner network: who has beds tonight, one tap to dispatch.
+ComForce gave us five problem areas. They look like five problems. They're one: there is no shared record. **→** Give every request one record, and each problem becomes a screen.
 
-**Slide 4 · 0:38 — Problem 2 · Requests**
+**Slide 4 · 0:28 — Problem 1 · Information sharing** *(→ questions · → hub · → real screen)*
 
-A request moves through five states — new, claimed, in progress, delivered, verified. Only the resident can move it to the last one. Relay texts them, or Jordan calls back in their language: *did it arrive?*
+Today, every line in this picture is a phone call or a Facebook message **→** and nobody can answer these. **→** Relay puts one record in the middle. **→** This is the real screen: who has capacity tonight, one tap to dispatch.
 
-**Slide 5 · 0:56 — Problem 3 · Data**
+**Slide 5 · 0:44 — Problem 2 · Requests** *(→ ×5 moves the card · → real screen)*
 
-So ComForce reports the same numbers the City does — plus the one the City can't: 67 % of deliveries confirmed by the resident, mapped to the 26 Countdown clusters, with the grant draft written for you.
+Today a request is handled or forgotten — nobody can tell. In Relay it's a card: **→** logged by Jordan, **→** claimed, **→** dispatched, **→** delivered — then Relay asks the resident, *did it arrive?* **→** Only their yes verifies it. **→** That's the board you'll see live.
 
-**Slide 6 · 1:14 — Problem 4 · Awareness**
+**Slide 6 · 1:02 — Problem 3 · Data** *(→ 203 · → 186 · → 124 · → real screen)*
 
-Need versus delivery, by neighbourhood, as it happens. Coral is where requests outrun help. The weekly brief writes itself.
+Impact used to be rebuilt from memory. Now every request counts itself: **→** 203 logged, **→** 186 delivered, **→** 124 confirmed by the resident — 67 %, the one number the City's own report can't measure. **→** One click drafts the grant.
 
-**Slide 7 · 1:30 — Problem 5 · Training**
+**Slide 7 · 1:16 — Problem 4 · Awareness** *(→ map · → gaps + brief · → real screen)*
 
-Volunteers burn out in eighteen months. The playbook shouldn't leave with them. Write it once; *Ask the Guide* answers only from it, with the source.
+Decisions ran on anecdote. **→** Now: every cluster, live. **→** Coral is where requests outrun help, and the weekly brief writes itself. **→** Counts only — never people.
 
-**Slide 8 · 1:45 — Stack** *(one click per arrow)*
+**Slide 8 · 1:30 — Problem 5 · Training** *(→ leave · → playbook · → answer · → real screen)*
 
-Every part is a current, rentable service. Twilio carries the call, ElevenLabs is Jordan's voice, Claude structures it, Supabase is the one record ComForce owns, the board updates live, Resend hands off to partners, and the loop closes back with the resident. No seat licences.
+Every volunteer carries a piece of how ComForce works **→** and in eighteen months it walks out with them. **→** Write it once. **→** Ask the Guide answers only from the playbook, with the source. **→**
 
-**Slide 9 · 2:05 — Demo**
+**Slide 9 · 1:44 — Stack** *(one press per arrow, ×8)*
+
+Every part is a rentable service: Twilio carries the call, ElevenLabs is Jordan's voice, Claude structures it, Supabase is the one record ComForce owns. The board, the partner hand-off and the map all read that record — and the loop closes with the resident. No seat licences.
+
+**Slide 10 · 2:05 — Demo**
 
 A resident is about to call ComForce from a seat in this room. *(hand off — see demo-runbook.md)*
 
@@ -44,8 +48,8 @@ A resident is about to call ComForce from a seat in this room. *(hand off — se
 
 **After the demo**
 
-**Slide 10 — Benefits.** Three things that were impossible on Monday are routine on Tuesday: one record every division works from; "arrived" because the resident said so; a funder report that writes itself.
+**Slide 11 — Benefits.** Three things that were impossible on Monday are routine on Tuesday: one record every division works from; "arrived" because the resident said so; a funder report that writes itself.
 
-**Slide 11 — Cost.** Everything you just watched cost $1.66 — $2.72 per resident-verified outcome. About $300 a year for all eight divisions, against $5,400 to $75,000 for the nearest commercial product.
+**Slide 12 — Cost.** Everything you just watched cost $1.66 — $2.72 per resident-verified outcome. About $300 a year for all eight divisions, against $5,400 to $75,000 for the nearest commercial product.
 
-**Slide 12 — Thank you.** Code, research and the playbook are in the repo. Ready Monday.
+**Slide 13 — Thank you.** Code, research and the playbook are in the repo. Ready Monday.

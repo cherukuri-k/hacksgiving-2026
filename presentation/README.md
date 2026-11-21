@@ -4,28 +4,31 @@
 
 | File | What it is |
 | --- | --- |
-| [slides/index.html](slides/index.html) | The deck. Single self-contained HTML file, 12 slides, 1920×1080, scales to any screen. Open in Chrome, press **F**. |
-| [Relay-MKE-pitch.pdf](Relay-MKE-pitch.pdf) | Static export of the deck (12 pages, every animation in its final state). Backup if the laptop dies. |
+| [slides/index.html](slides/index.html) | The deck. One HTML file plus `slides/img/`, 13 slides, 1920×1080, scales to any screen. Open in Chrome, press **F**. |
+| [Relay-MKE-pitch.pdf](Relay-MKE-pitch.pdf) | Static export of the deck (13 pages, every slide in its final state). Backup if the laptop dies. |
 | [pitch-script.md](pitch-script.md) | Word-for-word 2:00 script with beat timings matching the deck. |
 | [demo-runbook.md](demo-runbook.md) | The 2:00 demo, second by second: who does what, pre-flight checklist, what to do when something breaks. |
 | `slides/img/` | Real app screenshots used on slides; `slides/img/logos/` holds vendor logos for the stack slide. |
 
 ## Slide map
 
-| # | Slide | Beat | What animates |
-| --- | --- | --- | --- |
-| 1 | Team V · Relay MKE | 0:00 | Request rail draws itself on load, a pulse rides it; Verify step in coral |
-| 2 | About — one number, one board, one proof | 0:08 | Points cascade, board screenshot |
-| 3 | Problem 1 · Information sharing | 0:20 | Tangle of 17 phone lines fades, one hub + spokes replaces it |
-| 4 | Problem 2 · Requests & referrals | 0:38 | One card moves New → Claimed → In progress → Delivered → Verified |
-| 5 | Problem 3 · Data & impact | 0:56 | Bars grow, 67 % donut counts up, “City: not measured” |
-| 6 | Problem 4 · Awareness & decisions | 1:14 | Dot-matrix map; three coral gap clusters pulse; weekly brief |
-| 7 | Problem 5 · Training | 1:30 | Volunteers fade out / join; playbook Q&A with source line |
-| 8 | Tech stack | 1:45 | Each → reveals the next logo + flowing arrow (8 presses) |
-| 9 | Demo | 2:05 | Hand-off to live demo. **V** plays `demo-backup.mp4` if it exists |
-| 10 | Benefits | after demo | Was/now columns |
-| 11 | Cost — $1.66 | after demo | Price counts up, cost bar segments grow, findhelp comparison |
-| 12 | Thank you | — | QR to the repo |
+Slides 4–8 share one rhythm, shown by the pill top-right: **Today → With Relay → In the app**. The headline swaps from the problem to the fix, the diagram transforms, and the last press shrinks the diagram to a thumbnail while the real app screenshot slides in with pinned callouts.
+
+| # | Slide | Beat | Presses | What happens |
+| --- | --- | --- | --- | --- |
+| 1 | Team V · Relay MKE | 0:00 | — | Request rail draws itself on load, a pulse rides it; Verify step in coral |
+| 2 | About — one number, one board, one proof | 0:08 | 3 | Three real screens: phone, board, grants |
+| 3 | Five problems, one thing missing | 0:18 | 1 | Five illustrated tiles flip from broken to solved and connect to "one shared record" |
+| 4 | Problem 1 · Information sharing | 0:28 | 3 | Tangle + unanswerable questions → one hub → `/partners` |
+| 5 | Problem 2 · Requests & referrals | 0:44 | 6 | Resident's phone + board: card moves through five lanes, "did it arrive?" text goes back, YES verifies → `/board` |
+| 6 | Problem 3 · Data & impact | 1:02 | 4 | 203 dots, one per request: logged → delivered → resident-confirmed (67 %) → `/grants` |
+| 7 | Problem 4 · Awareness & decisions | 1:16 | 3 | Anecdotes → cluster map → coral gaps + weekly brief → `/pulse` |
+| 8 | Problem 5 · Training | 1:30 | 4 | Volunteers leave with their know-how → playbook + new volunteers → cited answer → `/guide` |
+| 9 | Tech stack | 1:44 | 8 | Each press reveals the next logo + flowing arrow |
+| 10 | Demo | 2:05 | — | Hand-off to live demo. **V** plays `demo-backup.mp4` if it exists |
+| 11 | Benefits | after demo | 2 | Was/now columns |
+| 12 | Cost — $1.66 | after demo | 2 | Price counts up, cost bar segments grow, findhelp comparison |
+| 13 | Thank you | — | — | QR to the repo |
 
 ## Keys
 
@@ -36,7 +39,7 @@
 | Home / End | First / last slide |
 | T · R | Start-stop / reset the clock |
 | N | Speaker notes overlay |
-| V | Play `../demo-backup.mp4` on slide 9 |
+| V | Play `../demo-backup.mp4` on slide 10 |
 | F | Fullscreen |
 | `#7` in the URL | Deep-link to a slide with everything revealed |
 
