@@ -25,7 +25,7 @@ Swipe works on a phone or tablet, so a teammate can advance from the front row i
 
 ## Slide → script map
 
-1. Title (0:00) · 2. The story (0:05) · 3. The loop that breaks (0:30) · 4. What we built — annotated board (0:50) · 5. Data flow, first ring → "yes, it arrived" (1:00) · 6. Proof funders can audit (1:15) · 7. Responsible + cost (1:35) · 8. Close → demo (1:50)
+1. Title (0:00) · 2. The story — Friday-night timeline (0:05) · 3. The ring breaks — Verify falls out (0:30) · 4. One record, two screens — phone + board (0:50) · 5. The ring closes — seven stations, first ring → "yes, it arrived" (1:00) · 6. Evidence ledger + gauges (1:15) · 7. Guardrails, then the price tag (1:35) · 8. Close → demo (1:50)
 
 9. **Demo video (backup only)** — placeholder until `presentation/demo-backup.mp4` exists; then it plays that file, `V` = play/pause. Skip it when the live demo works.
 
@@ -33,7 +33,7 @@ Appendix for Q&A, not part of the 2:00: 10. Tech stack · 11. Limits & next step
 
 ### Visual language
 
-Dark stage, one green accent, uppercase tracked captions, `● LIVE` / `◦ SIMULATED` / `◦ SYNTHETIC DATA` tags on anything a judge might question. Every screenshot is the real app (`slides/img/`, captured from `localhost:3077`). Bottom-left glyph row is the slide progress; bottom-right is the page number.
+Deep-navy stage, warm-white serif headlines, two accents — **orange = the resident / human**, **blue = Relay / Jordan**. The recurring motif is the **ring**: the loop that breaks on slide 3 (Verify crumbles) and closes on slide 5 (seven stations, a dot travelling the circuit); gauges on slide 6, the seal on slide 8 and the top-right progress ring all reuse it. Slides wipe in like a curtain; fragments wipe left→right. `LIVE` / `SIMULATED` / `SYNTHETIC 2026 DATA` tags sit on anything a judge might question. Every screenshot is the real app (`slides/img/`, captured from `localhost:3077`). Top-right ring is slide progress + number; bottom-left is the 2:00 timer.
 
 Numbers on slides 6 and 7 come from `/grants` on the seeded 2026 data (71 % · 21/26 · 2 h 5 m · 67 % · $1.66 per request). If the seed changes, update both the deck and the script.
 
