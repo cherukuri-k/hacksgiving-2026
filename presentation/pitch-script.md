@@ -30,7 +30,7 @@
 
 ## 0:50 — Slides 4–5 · What we built (25 s)
 
-*Slide 4 (annotated board + phone) for the first paragraph; advance to slide 5 (the data-flow thread) at "A coordinator taps Dispatch."*
+*Slide 4 (phone + board, one record) for the first paragraph; advance to slide 5 (the ring closes) at "A coordinator taps Dispatch."*
 
 > A resident calls ComForce. Jordan — our AI — answers in English or Spanish, listens, and logs the request on the shared board **while they're still talking.** The resident gets a tracking code by text.
 >
