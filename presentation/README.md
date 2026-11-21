@@ -17,7 +17,8 @@
 | `←` click left half | Previous |
 | `T` / `R` | Pause-resume / reset the clock (bottom center; amber at 0:20, red when over) |
 | `N` | Presenter notes overlay (the script for the current slide) |
-| `V` | Play / pause the backup demo video (slide 9) |
+| `P` | Presenter cue line in the footer — current beat and next beat; turns amber if you're 5 s behind |
+| `V` | Play / pause the backup demo video (slide 11) |
 | `F` | Fullscreen |
 | `#3` in the URL | Jump straight to slide 3 |
 
@@ -25,7 +26,7 @@ Swipe works on a phone or tablet, so a teammate can advance from the front row i
 
 ## Slide → script map
 
-1. Title (0:00) · 2. The story — Friday-night timeline (0:05) · 3. The ring breaks — Verify falls out (0:30) · 4. One record, two screens — phone + board (0:50) · 5. The ring closes — seven stations, first ring → "yes, it arrived" (1:00) · 6. Evidence ledger + gauges (1:15) · 7. Guardrails, then the price tag (1:35) · 8. Close → demo (1:50)
+1. Title (0:00) · 2. The problem — Friday-night timeline (0:05) · 3. Five steps, the fourth skipped (0:25) · 4. The five hackathon tracks → five Relay modules (0:40) · 5. One record, two screens — phone + board (1:00) · 6. The stack — cheap, current, fast (1:15) · 7. Proof — the ledger + 67 % / 71 % / 21 of 26 (1:30) · 8. Guardrails (1:42) · 9. Demo hand-off (1:52) · **demo** · 10. Cost $1.66 + close + QR · 11. Backup video · 12–13. Appendix for Q&A
 
 9. **Demo video (backup only)** — placeholder until `presentation/demo-backup.mp4` exists; then it plays that file, `V` = play/pause. Skip it when the live demo works.
 
@@ -33,13 +34,13 @@ Appendix for Q&A, not part of the 2:00: 10. Tech stack · 11. Limits & next step
 
 ### Visual language
 
-White stage, near-black serif headlines, two accents — **orange = the resident / human**, **blue = Relay / Jordan**. The recurring motif is the **ring**: the loop that breaks on slide 3 (Verify crumbles) and closes on slide 5 (seven stations, a dot travelling the circuit); gauges on slide 6, the seal on slide 8 and the top-right progress ring all reuse it. Slides wipe in like a curtain; fragments wipe left→right. `LIVE` / `SIMULATED` / `SYNTHETIC 2026 DATA` tags sit on anything a judge might question. Every screenshot is the real app (`slides/img/`, captured from `localhost:3077`). Top-right ring is slide progress + number; bottom-left is the 2:00 timer.
+White stage, one sans typeface, near-black text and a single blue accent. Red appears once — for the step every program skips; green for resident-verified; amber for anything simulated. No decoration: thin rules, numbered lists, plain tables, full-sentence headlines, and large real screenshots. Fragments cascade in automatically after a slide change, so one press per slide is enough; `←` goes back to the previous slide fully revealed; loading `#n` shows that slide fully revealed. `LIVE IN THE DEMO` / `SIMULATED` / `SYNTHETIC 2026 DATA` tags sit on anything a judge might question. Footer: left = deck name, centre = 2:00 timer (+ beat cue with `P`), right = slide counter and a thin top progress bar.
 
-Numbers on slides 6 and 7 come from `/grants` on the seeded 2026 data (71 % · 21/26 · 2 h 5 m · 67 % · $1.66 per request). If the seed changes, update both the deck and the script.
+Numbers on slides 7 and 10 come from `/grants` on the seeded 2026 data (71 % · 21/26 · 2 h 5 m · 67 % · $1.66 per request). If the seed changes, update both the deck and the script.
 
 ## Regenerate screenshots and the PDF
 
-Screenshots: with the app running on `:3077`, capture `/board` and `/grants` at 1600×1000 and `/phone?number=4145550188` at 390×844 (2× scale) into `slides/img/` — `board.png`, `grants.png`, `phone-home.png`, `phone-messages.png`, `phone-dialer.png`.
+Screenshots: with the app running on `:3077`, capture `/board` and `/grants` at 1600×1000 and `/phone?number=4145550188` at 390×844 (2× scale) into `slides/img/` — `board.png`, `grants.png`, `phone-home.png`, `phone-messages.png`, `phone-dialer.png`; plus `/partners`, `/pulse`, `/guide`, `/impact` as `partners.png`, `pulse.png`, `guide.png`, `impact.png` for the tracks slide.
 
 PDF (one page per slide, all build steps revealed):
 
