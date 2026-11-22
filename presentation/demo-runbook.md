@@ -26,7 +26,7 @@ Starts the moment slide 11 (the demo slide) is on screen; slides 12–14 (benefi
 
 1. **Network.** Laptop on a hotspot, not venue Wi-Fi. Phone on cellular.
 2. **Server.** `cd src && npx next build && npx next start -p 3077` (production build — the dev server white-screens over the tunnel).
-3. **Tunnel.** `cloudflared tunnel --url http://localhost:3077`. Copy the URL into `src/.env.local` → `PUBLIC_BASE_URL`, then `set -a; . src/.env.local; set +a; node tools/voice/create-agent.mjs` so Jordan's tools point at this URL. Restart the server. In ElevenLabs → Agents → Jordan → Settings → Post-call webhook, paste `<tunnel>/api/voice/elevenlabs`.
+3. **Tunnel.** Run `tools/voice/retunnel.sh`. It starts a fresh tunnel, writes the URL into `src/.env.local`, re-points Jordan's three agents, rebuilds, restarts the server and checks the result from outside (about 2 minutes; it resets the board). Then do the one step it prints: in ElevenLabs → Agents → Settings → Post-call webhook, paste `<tunnel>/api/voice/elevenlabs`. **The tunnel dies silently whenever the laptop sleeps or changes network**, so run `tools/voice/retunnel.sh --check` again right before you walk up — it changes nothing and must say OK.
 4. **Demo timing.** In `src/.env.local`: `FOLLOWUP_SMS_WAIT_MS=8000` (Jordan calls back 8 s after Delivered). Default is 15 s; don't go below 6 s or the verification text and the ring overlap.
 5. **Fresh board.** Settings → *Reset demo* so the live request is the top card. Confirm the counter in the sidebar shows **7** new.
 6. **Phones.** Open `<tunnel>/phone?number=4145550188` on the Resident's phone, tap Phone → Call once to grant the mic, hang up, then **Clear** the thread from the laptop (`/phone` → Clear) so no stale texts show. Screen auto-lock off. Volume up. Do Not Disturb **on** (so a real text doesn't pop over the demo).
@@ -38,6 +38,7 @@ Starts the moment slide 11 (the demo slide) is on screen; slides 12–14 (benefi
 | Symptom | Do this | Cost |
 | --- | --- | --- |
 | Jordan doesn't pick up / mic denied | Resident taps **Messages → "Text a request"** instead. Same card lands on the board. Say: *"Same intake, by text."* | 0 s |
+| Jordan says he's "having trouble" logging the request | The tunnel is dead, so his tool can't reach the app. On stage: use the text fallback above. Before the demo: `tools/voice/retunnel.sh`. | 0 s |
 | Card doesn't appear on the board within 10 s | Presenter opens `/r` and pastes the request text. Keep talking. | 10 s |
 | Call-back doesn't ring | Resident taps **"1 · yes it arrived"** in Messages. Card still flips to Verified. | 0 s |
 | Tunnel dies mid-demo | Resident's phone is dead; laptop tab `/phone?number=4145550199` (localhost) becomes the resident. Presenter drives both. | 5 s |
