@@ -18,7 +18,7 @@ Slides 4–5 share one rhythm, shown by the pill top-right: **Today → With Rel
 | --- | --- | --- | --- |
 | 1 | Team V · Relay MKE | — | "Relay MKE" on one line with the tagline under it. On the right, Milwaukee's neighbourhoods wipe in and the last two months of requests replay the way Relay works: a request comes in, a line runs to the partner that took it and back, and the dot turns teal when the resident said the help arrived |
 | 2 | About — one number, one board, one proof | 1 | Three real screens: phone, board, grants |
-| 3 | Five problems, one thing missing | 2 | Five tiles flip from broken to solved and connect to "one shared record"; then 01–03 are tagged "live in the demo" and 04–05 "next" |
+| 3 | Five problems, one thing missing | 2 | The five problems sit in a row. First press: a solution card drops in under each, joined by a wire that draws itself. Second press: five wires curve down from the solution cards into "One shared record", which lights up. A dot keeps travelling along every wire |
 | 4 | Problem 4 · Awareness & decisions | 2 | Anecdotes over a map of Milwaukee → the City's 26 clusters appear, sized by requests; coral hotspots are called out; weekly brief → `/pulse` |
 | 5 | Problem 5 · Training | 2 | Volunteers leave with their know-how → playbook, new volunteers, cited answer → `/guide` |
 | 6 | Guardrails | 2 | Name, address and phone are redacted before the AI sees the message; four rules |

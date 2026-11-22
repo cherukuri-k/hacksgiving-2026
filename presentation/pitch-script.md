@@ -1,8 +1,8 @@
 # Pitch script — 2:00, spoken slowly
 
-212 spoken words. At a slow, clear pace (around 115 words a minute) that is about 1:51 of talking in total: roughly 1:27 before the demo and 0:24 after it, which leaves about 9 seconds for pauses and animations. Not yet timed aloud — rehearse once with the clock (**T**). **→** = one press. Nothing moves until you press; some presses play a short sequence, so pause and let it finish. If the demo runs long, press **End** to jump straight to the scorecard.
+200 spoken words. At a slow, clear pace (around 115 words a minute) that is about 1:44 of talking in total: roughly 1:20 before the demo and 0:24 after it, which leaves about 16 seconds for pauses and animations. Not yet timed aloud — rehearse once with the clock (**T**). **→** = one press. Nothing moves until you press; some presses play a short sequence, so pause and let it finish. If the demo runs long, press **End** to jump straight to the scorecard.
 
-The deck no longer has separate slides for problems 1, 2 and 3. The demo shows all three live — it ends on the Grants page — and the overview slide says so.
+The deck no longer has separate slides for problems 1, 2 and 3. The demo shows all three live — it ends on the Grants page.
 
 ---
 
@@ -18,7 +18,7 @@ We are Team V. This is Relay MKE. One shared record for every request ComForce r
 
 **Slide 3 — Five problems** *(→ ×2)*
 
-ComForce gave us five problems. They are really one: there is no shared record. **→** Give every request one record, and each problem becomes a screen. **→** The first three you will watch live in a minute. Here are the other two.
+ComForce gave us five problems. **→** We built a screen for each one. **→** And all five run on one shared record. That was the one thing missing.
 
 **Slide 4 — Problem 4 · Awareness** *(→ map · → real screen)*
 
