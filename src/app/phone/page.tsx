@@ -24,7 +24,30 @@ const OPENING = "Hey, this is Jordan with ComForce. What's going on today?";
  * arrives as a notification → Messages. Outbound texts come straight from the server's SMS log; replies typed
  * here run through the same handler as the Twilio webhook. Renders full-bleed on a real phone, in a bezel on a laptop.
  */
+/**
+ * On a handheld whose browser lays the page out wider than its screen (Safari page zoom below
+ * 100%, "request desktop site"), everything would render at a fraction of its size. Returns how
+ * much to scale the phone UI back up and the box to lay it out in, or null when nothing is off.
+ */
+function useHandheldFit() {
+  const [fit, setFit] = useState<{ scale: number; w: number; h: number } | null>(null);
+  useEffect(() => {
+    const desk = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const measure = () => {
+      const portrait = window.innerHeight >= window.innerWidth;
+      const device = portrait ? Math.min(screen.width, screen.height) : Math.max(screen.width, screen.height);
+      const scale = window.innerWidth / device;
+      setFit(!desk.matches && scale > 1.1 ? { scale, w: window.innerWidth / scale, h: window.innerHeight / scale } : null);
+    };
+    const raf = requestAnimationFrame(measure);
+    window.addEventListener("resize", measure);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", measure); };
+  }, []);
+  return fit;
+}
+
 export default function ResidentPhone() {
+  const fit = useHandheldFit();
   const [number, setNumber] = useState(DEFAULT_NUMBER);
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [draft, setDraft] = useState("");
@@ -174,8 +197,9 @@ export default function ResidentPhone() {
   const timer = `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, "0")}`;
 
   return (
-    <div className="min-h-screen bg-bg">
-      <div className="mx-auto hidden max-w-[1100px] items-center justify-between px-6 py-5 md:flex">
+    <div className={`bg-bg ${fit ? "origin-top-left overflow-hidden" : "min-h-screen"}`}
+      style={fit ? { width: fit.w, height: fit.h, transform: `scale(${fit.scale})`, "--fit": fit.scale, "--fw": `${fit.w}px`, "--fh": `${fit.h}px` } as React.CSSProperties : undefined}>
+      <div className="mx-auto hidden max-w-[1100px] items-center justify-between px-6 py-5 desk:flex">
         <Link href="/board" className="flex items-center gap-2.5" title="Back to Relay Board"><Logo /><div><div className="text-[14px] font-bold leading-tight">Relay MKE</div><div className="text-[11.5px] text-muted">Resident&apos;s phone</div></div></Link>
         <div className="flex items-center gap-2">
           <Link href="/board" className="inline-flex items-center gap-1 rounded-lg border border-line bg-surface px-2.5 py-1.5 text-[12.5px] font-medium text-ink-2 hover:bg-surface-2"><ArrowLeft size={13} /> Board</Link>
@@ -183,7 +207,7 @@ export default function ResidentPhone() {
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-[1100px] grid-cols-1 gap-10 md:px-6 md:pb-16 lg:grid-cols-[380px_1fr]">
+      <div className="mx-auto grid max-w-[1100px] grid-cols-1 gap-10 desk:px-6 desk:pb-16 deskwide:grid-cols-[380px_1fr]">
         <Frame>
           {/* Jordan calling back (after delivery) — sits over everything */}
           <AnimatePresence>
@@ -290,7 +314,7 @@ export default function ResidentPhone() {
           </>)}
         </Frame>
 
-        <div className="hidden space-y-5 pt-2 lg:block">
+        <div className="hidden space-y-5 pt-2 deskwide:block">
           <div>
             <h1 className="text-[22px] font-bold leading-tight">The resident&apos;s phone</h1>
             <p className="mt-2 max-w-[560px] text-[14px] leading-relaxed text-ink-2">
@@ -538,9 +562,9 @@ function LiveCallback({ req, partner }: { req: HelpRequest; partner?: Partner })
 
 function Frame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto w-full md:w-[360px] md:h-[720px] md:rounded-[40px] md:bg-[#111827] md:p-[10px] md:shadow-[0_30px_60px_-20px_rgba(0,0,0,.35)]">
-      <div className="relative flex h-[100dvh] w-full max-w-[100vw] flex-col overflow-hidden bg-bg pt-[env(safe-area-inset-top)] md:h-full md:max-w-none md:rounded-[32px] md:pt-0">
-        <div className="hidden items-center justify-between bg-surface/90 px-6 pb-1 pt-3 text-[11px] font-semibold md:flex"><span>9:41</span><span className="flex items-center gap-1 text-ink-2"><Signal size={12} /><Wifi size={12} /><Battery size={14} /></span></div>
+    <div className="mx-auto w-full desk:w-[360px] desk:h-[720px] desk:rounded-[40px] desk:bg-[#111827] desk:p-[10px] desk:shadow-[0_30px_60px_-20px_rgba(0,0,0,.35)]">
+      <div className="relative flex h-[var(--fh,100dvh)] w-full max-w-[var(--fw,100vw)] flex-col overflow-hidden bg-bg pt-[calc(env(safe-area-inset-top)/var(--fit,1))] desk:h-full desk:max-w-none desk:rounded-[32px] desk:pt-0">
+        <div className="hidden items-center justify-between bg-surface/90 px-6 pb-1 pt-3 text-[11px] font-semibold desk:flex"><span>9:41</span><span className="flex items-center gap-1 text-ink-2"><Signal size={12} /><Wifi size={12} /><Battery size={14} /></span></div>
         {children}
       </div>
     </div>

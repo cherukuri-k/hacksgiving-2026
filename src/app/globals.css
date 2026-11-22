@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
+/* A desktop is a wide window driven by a mouse. A phone can report a wide page too (page zoom
+   below 100%, "request desktop site"), so width alone must not decide it. Used by /phone. */
+@custom-variant desk (@media (min-width: 768px) and (hover: hover) and (pointer: fine));
+@custom-variant deskwide (@media (min-width: 1024px) and (hover: hover) and (pointer: fine));
+
 :root {
   --bg: #f4f5f7;
   --surface: #ffffff;
