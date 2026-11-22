@@ -22,6 +22,17 @@ export function StatCard({ icon, label, value, sub, tint = "none", bar, valueCla
   );
 }
 
+/** One figure in a plain strip: label, number, one line of context. No icon, no tint. Wrap several in `card grid divide-x divide-line`. */
+export function Figure({ label, value, sub, tone = "text-ink" }: { label: string; value: ReactNode; sub: string; tone?: string }) {
+  return (
+    <div className="px-5 py-4">
+      <div className="text-[12px] text-muted">{label}</div>
+      <div className={`num mt-1.5 text-[28px] font-semibold leading-none tracking-tight ${tone}`}>{value}</div>
+      <div className="mt-1.5 text-[12px] text-muted">{sub}</div>
+    </div>
+  );
+}
+
 export function SectionCard({ title, action, children, className = "" }: { title: ReactNode; action?: ReactNode; children: ReactNode; className?: string }) {
   return (
     <section className={`card ${className}`}>

@@ -1,14 +1,20 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { BookOpen, Search, Sparkles, Send, Plus, Clock, Users, Shield } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { AppShell, Btn } from "@/components/AppShell";
-import { StatCard, SectionCard } from "@/components/ui/StatCard";
-import { NeedChip } from "@/components/ui/Chip";
+import { Figure, SectionCard } from "@/components/ui/StatCard";
 import { useSnapshot } from "@/lib/client/useSnapshot";
 import { useMe } from "@/lib/client/me";
 import { NEED_LABEL, type Need, type Playbook } from "@/lib/types";
 
 const SUGGESTED = ["What do I do if a neighbor dispute mentions a weapon?", "Can We Energies shut off heat in November?", "A tenant got a 5-day notice, what's the first step?", "Family displaced by fire tonight, who do I call first?"];
+
+const needsText = (needs: Need[]) => needs.map((n) => NEED_LABEL[n]).join(" · ");
+/** Playbook dates are plain "YYYY-MM-DD"; build the date locally so it never slips a day across time zones. */
+const day = (iso: string, withYear = false) => {
+  const [y, m, d] = iso.slice(0, 10).split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("en-US", { month: "short", day: "numeric", ...(withYear ? { year: "numeric" } : {}) });
+};
 
 export default function GuidePage() {
   const { data } = useSnapshot(5000);
@@ -29,6 +35,7 @@ export default function GuidePage() {
   const list = playbooks.filter((p) => tag === "all" || p.tags.includes(tag)).filter((p) => !q || (p.title + p.body).toLowerCase().includes(q.toLowerCase()));
   const open = playbooks.find((p) => p.id === openId) ?? list[0];
   const unclaimed = (data?.requests ?? []).filter((r) => r.status === "new").length;
+  const newest = playbooks.map((p) => p.updatedAt).sort().at(-1);
 
   const ask = async (text = question) => {
     if (!text.trim()) return;
@@ -45,19 +52,20 @@ export default function GuidePage() {
     }
   };
 
+  const filter = (on: boolean) => `rounded-md border px-2.5 py-1 text-[12px] font-medium ${on ? "border-ink bg-ink text-white" : "border-line bg-surface text-ink-2 hover:bg-surface-2"}`;
+
   return (
     <AppShell
-      title={<>Volunteer Guide <span className="chip chip-soft bg-purple-soft text-purple">Institutional memory</span></>}
+      title="Volunteer Guide"
       subtitle="How ComForce actually does the work, written down once so it survives staff turnover. Ask in plain English."
       badge={unclaimed}
       me={me.name}
       actions={<><Btn variant="solid" href="mailto:TeamComForceMKE@gmail.com?subject=New%20Relay%20playbook"><Plus size={15} /> New playbook</Btn><Btn href="mailto:TeamComForceMKE@gmail.com?subject=Playbook%20edit%20suggestion">Suggest an edit</Btn></>}
     >
-      <div className="grid grid-cols-4 gap-3.5 mb-5">
-        <StatCard icon={<BookOpen size={14} />} label="Playbooks" value={playbooks.length} sub="field-tested procedures" />
-        <StatCard icon={<Clock size={14} />} label="Last Updated" value={playbooks.length ? new Date(Math.max(...playbooks.map((p) => +new Date(p.updatedAt)))).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—"} sub="kept current by the team" tint="blue" valueClass="!text-[22px]" />
-        <StatCard icon={<Users size={14} />} label="Needs Covered" value={tags.length} sub={`of ${Object.keys(NEED_LABEL).length} need types`} tint="purple" />
-        <StatCard icon={<Shield size={14} />} label="Safety Rule" value="Pairs" sub="never respond alone" tint="orange" valueClass="!text-[22px]" />
+      <div className="card mb-3.5 grid grid-cols-3 divide-x divide-line">
+        <Figure label="Playbooks" value={playbooks.length} sub="procedures written by the team" />
+        <Figure label="Need types covered" value={<>{tags.length}<span className="text-[16px] font-medium text-muted"> of {Object.keys(NEED_LABEL).length}</span></>} sub="at least one playbook each" />
+        <Figure label="Last edited" value={newest ? day(newest) : "—"} sub="most recent change to any playbook" />
       </div>
 
       <div className="grid grid-cols-3 gap-3.5">
@@ -68,64 +76,79 @@ export default function GuidePage() {
               <input value={q} onChange={(e) => setQ(e.target.value)} className="input" placeholder="Search playbooks..." />
             </div>
             <div className="flex flex-wrap gap-1.5">
-              <button onClick={() => setTag("all")} className={`chip ${tag === "all" ? "!bg-brand !text-white !border-brand" : ""}`}>All</button>
-              {tags.map((t) => <button key={t} onClick={() => setTag(t)} className={`chip ${tag === t ? "!bg-brand !text-white !border-brand" : ""}`}>{NEED_LABEL[t]}</button>)}
+              <button onClick={() => setTag("all")} aria-pressed={tag === "all"} className={filter(tag === "all")}>All</button>
+              {tags.map((t) => <button key={t} onClick={() => setTag(t)} aria-pressed={tag === t} className={filter(tag === t)}>{NEED_LABEL[t]}</button>)}
             </div>
           </div>
-          <SectionCard title="Playbooks" action={<span className="count">{list.length}</span>}>
+          <SectionCard title="Playbooks" action={<span className="num text-[11.5px] text-muted">{list.length} of {playbooks.length}</span>}>
             <ul className="divide-y divide-line">
-              {list.map((p) => (
-                <li key={p.id}>
-                  <button onClick={() => setOpenId(p.id)} className={`w-full text-left px-4 py-3 hover:bg-surface-2 ${open?.id === p.id ? "bg-brand-soft/60 border-l-2 border-brand" : "border-l-2 border-transparent"}`}>
-                    <div className="text-[13.5px] font-medium">{p.title}</div>
-                    <div className="mt-1.5 flex items-center justify-between"><div className="flex gap-1">{p.tags.slice(0, 2).map((t) => <NeedChip key={t} need={t} />)}</div><span className="text-[11px] text-muted">{p.updatedAt}</span></div>
-                  </button>
-                </li>
-              ))}
+              {list.map((p) => {
+                const on = open?.id === p.id;
+                return (
+                  <li key={p.id}>
+                    <button onClick={() => setOpenId(p.id)} aria-pressed={on} className={`grid w-full grid-cols-[1fr_auto] items-baseline gap-x-3 px-4 py-3 text-left hover:bg-surface-2 ${on ? "bg-surface-2" : ""}`}>
+                      <span className={`text-[13.5px] ${on ? "font-semibold" : "font-medium"}`}>{p.title}</span>
+                      <span className="num text-[11.5px] text-muted">{day(p.updatedAt)}</span>
+                      <span className="col-span-2 mt-0.5 text-[11.5px] text-muted">{needsText(p.tags)}</span>
+                    </button>
+                  </li>
+                );
+              })}
+              {!list.length && <li className="px-4 py-3 text-[13px] text-muted">No playbook matches that search.</li>}
             </ul>
           </SectionCard>
         </div>
 
-        <SectionCard title={open?.title ?? "Select a playbook"} action={open && <span className="text-[11.5px] text-muted">Updated {open.updatedAt}</span>}>
+        <SectionCard title={open?.title ?? "Select a playbook"} action={open && <span className="text-[11.5px] text-muted">Edited {day(open.updatedAt, true)}</span>}>
           {open && (
-            <div className="p-5">
-              <div className="flex gap-1 mb-4">{open.tags.map((t) => <NeedChip key={t} need={t} />)}</div>
-              <ol className="space-y-3">
+            <div className="px-5 pb-5 pt-4">
+              <div className="text-[12px] text-muted">{needsText(open.tags)}</div>
+              <ol className="mt-3 divide-y divide-line border-y border-line">
                 {open.body.split("\n").map((line, i) => {
                   const m = line.match(/^(\d+)\.\s*(.*)$/);
                   return (
-                    <li key={i} className="flex gap-3 text-[13.5px] leading-relaxed">
-                      <span className="num mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-soft text-[11.5px] font-semibold text-brand">{m ? m[1] : i + 1}</span>
+                    <li key={i} className="grid grid-cols-[22px_1fr] gap-x-2 py-2.5 text-[13.5px] leading-relaxed">
+                      <span className="num font-semibold text-muted">{m ? m[1] : i + 1}</span>
                       <span>{m ? m[2] : line}</span>
                     </li>
                   );
                 })}
               </ol>
-              <div className="mt-5 rounded-lg bg-surface-2 px-3 py-2.5 text-[12px] text-ink-2 flex items-center gap-2"><Shield size={13} className="text-brand" /> If weapons are present or someone is in immediate danger, leave and call 911. Then notify the on-call lead.</div>
+              <p className="mt-4 text-[12.5px] leading-relaxed text-ink-2"><span className="font-semibold text-red">Every visit.</span> Go in pairs, never alone. If weapons are present or someone is in immediate danger, leave and call 911, then notify the on-call lead.</p>
             </div>
           )}
         </SectionCard>
 
-        <SectionCard title={<span className="flex items-center gap-2"><Sparkles size={15} className="text-brand" /> Ask the Guide</span>} action={<span className="chip chip-soft bg-brand-soft text-brand">answers only from playbooks</span>}>
+        <SectionCard title="Ask the Guide" action={<span className="text-[11.5px] text-muted">answers only from these playbooks</span>}>
           <div className="flex flex-col h-[560px]">
-            <div className="flex-1 overflow-auto p-4 space-y-3">
+            <div className="flex-1 overflow-auto">
               {!thread.length && (
-                <div className="space-y-2">
-                  <div className="text-[12.5px] text-muted">Try one of these:</div>
-                  {SUGGESTED.map((s) => <button key={s} onClick={() => ask(s)} className="block w-full text-left rounded-lg border border-line bg-surface px-3 py-2 text-[13px] hover:border-brand hover:bg-brand-soft/40">{s}</button>)}
+                <div>
+                  <div className="px-4 pb-1.5 pt-3 text-[12px] text-muted">Questions volunteers ask</div>
+                  <ul className="divide-y divide-line border-y border-line">
+                    {SUGGESTED.map((s) => <li key={s}><button onClick={() => ask(s)} className="block w-full px-4 py-2.5 text-left text-[13px] hover:bg-surface-2">{s}</button></li>)}
+                  </ul>
                 </div>
               )}
-              {thread.map((m, i) => (
-                <div key={i} className={`max-w-[92%] rounded-xl px-3.5 py-2.5 text-[13px] leading-relaxed whitespace-pre-line ${m.role === "you" ? "ml-auto bg-brand text-white" : "bg-surface-2 text-ink"}`}>
-                  {m.text}
-                  {m.sources && m.sources.length > 0 && <div className="mt-2 flex flex-wrap gap-1">{m.sources.map((s) => { const p = playbooks.find((x) => x.id === s); return p ? <button key={s} onClick={() => setOpenId(s)} className="chip !text-[10.5px] hover:border-brand">{p.title}</button> : null; })}</div>}
-                </div>
-              ))}
-              {busy && <div className="rounded-xl bg-surface-2 px-3.5 py-2.5 text-[13px] text-muted w-fit"><span className="blink">Reading playbooks…</span></div>}
+              <div className="space-y-4 p-4">
+                {thread.map((m, i) => m.role === "you" ? (
+                  <p key={i} className="text-[13.5px] font-semibold leading-snug">{m.text}</p>
+                ) : (
+                  <div key={i} className="border-l-2 border-line pl-3">
+                    <p className="whitespace-pre-line text-[13px] leading-relaxed">{m.text}</p>
+                    {m.sources && m.sources.length > 0 && (
+                      <p className="mt-2 text-[12px] text-muted">From:{" "}
+                        {m.sources.map((s, k) => { const p = playbooks.find((x) => x.id === s); return p ? <span key={s}>{k > 0 && ", "}<button onClick={() => setOpenId(s)} className="font-medium text-ink underline decoration-line underline-offset-2 hover:decoration-ink">{p.title}</button></span> : null; })}
+                      </p>
+                    )}
+                  </div>
+                ))}
+                {busy && <p className="text-[13px] text-muted"><span className="blink">Reading the playbooks…</span></p>}
+              </div>
             </div>
             <form onSubmit={(e) => { e.preventDefault(); ask(); }} className="border-t border-line p-3 flex gap-2">
-              <input value={question} onChange={(e) => setQuestion(e.target.value)} className="input !pl-3" placeholder="Ask how we handle something…" />
-              <button disabled={busy || !question.trim()} className="rounded-lg bg-brand px-3.5 text-white disabled:opacity-40"><Send size={15} /></button>
+              <input value={question} onChange={(e) => setQuestion(e.target.value)} className="input !pl-3" placeholder="Ask how we handle something…" aria-label="Your question" />
+              <button disabled={busy || !question.trim()} className="rounded-lg bg-brand px-4 text-[13px] font-medium text-white disabled:opacity-40">Ask</button>
             </form>
           </div>
         </SectionCard>

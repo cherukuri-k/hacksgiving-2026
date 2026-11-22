@@ -2,6 +2,7 @@ import { NEEDS, NEIGHBORHOODS, type Need, type StructuredIntake, type Urgency } 
 import { redactPII } from "./redact";
 import { detectSafety, isMissingPerson, mayBeMinor } from "../safety";
 import { complete, llmConfigured, parseJson } from "./llm";
+import { plainText, rankPlaybooks } from "./guide";
 
 const KEYWORDS: Record<Need, RegExp> = {
   food: /\b(food|grocer\w*|hungry|eat|pantry|meals?|formula|diapers?)\b/i,
@@ -173,11 +174,7 @@ export async function draftFunderNarrative(stats: Record<string, unknown>): Prom
 
 /** Answers a volunteer's question from the organization's own playbooks. Falls back to keyword retrieval. */
 export async function answerFromPlaybooks(question: string, playbooks: { id: string; title: string; body: string; tags: string[] }[]): Promise<{ answer: string; sources: string[] }> {
-  const q = question.toLowerCase();
-  const scored = playbooks
-    .map((p) => ({ p, score: (p.title + " " + p.body + " " + p.tags.join(" ")).toLowerCase().split(/\W+/).filter((w) => w.length > 3 && q.includes(w)).length }))
-    .sort((a, b) => b.score - a.score);
-  const top = scored.filter((s) => s.score > 0).slice(0, 2).map((s) => s.p);
+  const top = rankPlaybooks(question, playbooks);
   const sources = top.map((p) => p.id);
   const fallback = top.length
     ? `From "${top[0].title}":\n${top[0].body.split("\n").slice(0, 4).join("\n")}${top.length > 1 ? `\n\nSee also: ${top[1].title}.` : ""}`
@@ -185,11 +182,11 @@ export async function answerFromPlaybooks(question: string, playbooks: { id: str
   if (!llmConfigured() || !top.length) return { answer: fallback, sources };
   try {
     const out = await complete({
-      system: "You help community volunteers in Milwaukee. Answer ONLY from the playbooks provided, in 3-6 short numbered steps. If the playbooks do not cover it, say so. Never invent phone numbers or laws.",
+      system: "You help community volunteers in Milwaukee. Answer ONLY from the playbooks provided, in 3-6 short numbered steps. Plain text only: no Markdown, no headings, no bold. If the playbooks do not cover it, say so. Never invent phone numbers or laws.",
       user: `Playbooks:\n${top.map((p) => `## ${p.title}\n${p.body}`).join("\n\n")}\n\nQuestion: ${question}`,
       temperature: 0.2,
     });
-    return { answer: out || fallback, sources };
+    return { answer: out ? plainText(out) : fallback, sources };
   } catch {
     return { answer: fallback, sources };
   }

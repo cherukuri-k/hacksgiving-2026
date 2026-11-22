@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import { Download } from "lucide-react";
 import { AppShell, Btn, useClock } from "@/components/AppShell";
-import { SectionCard } from "@/components/ui/StatCard";
+import { Figure, SectionCard } from "@/components/ui/StatCard";
 import { useSnapshot } from "@/lib/client/useSnapshot";
 import { useMe } from "@/lib/client/me";
 import { timeAgo } from "@/lib/stats";
@@ -13,16 +13,6 @@ const PulseMap = dynamic(() => import("@/components/board/PulseMap"), { ssr: fal
 
 const needsText = (needs: Need[]) => needs.map((n) => NEED_LABEL[n]).join(" · ");
 const plural = (n: number, one: string, many = `${one}s`) => (n === 1 ? one : many);
-
-function Figure({ label, value, sub, tone = "text-ink" }: { label: string; value: React.ReactNode; sub: string; tone?: string }) {
-  return (
-    <div className="px-5 py-4">
-      <div className="text-[12px] text-muted">{label}</div>
-      <div className={`num mt-1.5 text-[28px] font-semibold leading-none tracking-tight ${tone}`}>{value}</div>
-      <div className="mt-1.5 text-[12px] text-muted">{sub}</div>
-    </div>
-  );
-}
 
 export default function PulsePage() {
   const { data } = useSnapshot();
