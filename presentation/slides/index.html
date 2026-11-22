@@ -1182,18 +1182,18 @@
   // The spoken script: [name, words] for each slide, found by something only that slide contains. "→" is one press;
   // [square brackets] are directions and are not counted as words. This is the text the presenter view and the N overlay show.
   const SCRIPT = {
-    '.title':   ['Title', `We are Team V. This is Relay MKE: one shared record for every request ComForce receives, closed only when the resident says help arrived.`],
-    '.tri':     ['About', `→ One number to call or text, in English or Spanish, no app. One board for every division. One proof for funders.`],
-    '.flow':    ['Five problems', `You gave us five problems. → We built a screen for each. → All five run on one shared record. That was the one thing missing.`],
-    '#map':     ['Problem 4 · the map', `Leaders decided from anecdote. → Now the map shows where help arrived, and where it's still missing. → [the real screen: say nothing, move on]`],
-    '#know':    ['Problem 5 · training', `Know-how left with each volunteer. → Now it's written once, and the guide answers from it. → [the real screen: move on]`],
-    '.rules4':  ['Guardrails', `Before any AI sees a message, → names, addresses and phone numbers are removed. → A person makes every decision. We never score or predict anyone, and all the data here is synthetic.`],
-    '#jcall':   ['The call', `A resident calls. Jordan, our AI, answers, logs the request, and texts a tracking code.`],
-    '#jwork':   ['The work', `A worker sees the card, with tasks already drafted. Jordan phones a partner, and the run sheet says exactly where to go.`],
-    '#jproof':  ['The proof', `Delivered is not the end. Relay asks the resident, and Jordan calls back if they don't answer.`],
+    '.title':   ['Title', `We're Team V, and this is Relay MKE. It gives ComForce one shared record for every request, and it only closes when the resident says help arrived.`],
+    '.tri':     ['About', `→ Relay is one phone number, answered by Jordan, our AI agent, in English or Spanish. One board for every division. And one proof funders can check.`],
+    '.flow':    ['Five problems', `You gave us five problem areas. → We built a screen for each one. → And all five run on one shared record, which was the one thing missing.`],
+    '#map':     ['Problem 4 · the map', `Take awareness. Leaders used to decide from what they happened to hear. → Now the map shows where help arrived, and where it is still missing. → [this is the real screen; say nothing and move on]`],
+    '#know':    ['Problem 5 · training', `Or training. Know-how used to leave with each volunteer. → Now it is written down once, and the guide answers from it. → [the real screen; move on]`],
+    '.rules4':  ['Guardrails', `And it is safe. Before any AI sees a message, → names, addresses and phone numbers are removed. → A person makes every decision. We never score or predict anyone, and all our data is synthetic.`],
+    '#jcall':   ['The call', `Here is one request, start to finish. A resident calls from any phone. Jordan answers, logs it, and texts them a tracking code.`],
+    '#jwork':   ['The work', `A ComForce worker sees the card, with tasks already drafted. Jordan phones a partner, and the run sheet says exactly where to go and who to ask for.`],
+    '#jproof':  ['The proof', `But delivered is not the end. Relay asks the resident if the help came, and if they don't reply, Jordan calls back. Only their yes closes it.`],
     '#stack':   ['How it is built', `→ A call becomes a record ComForce owns. → Every screen reads it. → And the resident closes the loop.`],
-    '#demovid': ['Demo', `Watch one request: who asked, who delivered, and the resident's own answer. [play the demo; the clock is paused]`],
-    '#yrs':     ['Cost', `→ Everything you watched cost one dollar sixty-eight. → The whole year, three hundred and thirty-six dollars, and ComForce owns the data. The commercial option costs two hundred times more.`],
+    '#demovid': ['Demo', `Now watch it for real: who asked, who delivered, and the resident's own answer. [play the demo; the clock is paused]`],
+    '#yrs':     ['Cost', `→ Everything you just watched cost one dollar sixty-eight. → A whole year costs three hundred and thirty-six dollars, and ComForce owns its data. The commercial option costs two hundred times more.`],
     '.thanks':  ['Closing', `[say this over the hands] Care is not measured by how many we reach. It is measured by how many we don't lose. Thank you.`],
   };
   for (const sel in SCRIPT) { const s = document.querySelector(sel)?.closest('section'); if (s) [s.dataset.name, s.dataset.notes] = SCRIPT[sel]; }
