@@ -158,6 +158,8 @@ export default function ResidentPhone() {
       const conv = await Conversation.startSession({
         agentId: AGENT_ID,
         connectionType: "websocket",
+        // A phone call carries the caller's number. This phone tells Jordan its own, so "text this one" works.
+        dynamicVariables: { caller_number: number, caller_last4: number.replace(/\D/g, "").slice(-4) },
         onConnect: () => { setCallState("active"); setTurns([{ role: "agent", text: OPENING }]); },
         onModeChange: ({ mode }) => setMode(mode),
         onMessage: ({ message, source }) => {
@@ -172,7 +174,7 @@ export default function ResidentPhone() {
       setCallState("ended");
       setCallErr(e instanceof Error ? e.message : "Couldn't start the call");
     }
-  }, []);
+  }, [number]);
   const hangUp = async () => {
     const c = convRef.current; convRef.current = null;
     if (c) await c.endSession().catch(() => {});

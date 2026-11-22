@@ -37,7 +37,7 @@ const toolConfig = {
   type: "webhook",
   name: "create_request",
   description:
-    "Log the caller's request on the Relay Board. Call exactly once, after you know what they need, roughly where they are, and have asked for a number to text. If the response says texted=true, tell them the code is in their messages; only spell it out if texted=false.",
+    "Log the caller's request on the Relay Board. Call once, after you know what they need, roughly where they are, and have asked where to text the code. If the response says texted=true, tell them which number the code went to; only spell it out if texted=false. Call it a second time only if the caller says the text did not arrive or gives a different number: that sends the same code again and does not create another request.",
   execution_mode: "immediate",
   pre_tool_speech: "force",
   response_timeout_secs: 20,
@@ -58,10 +58,11 @@ const toolConfig = {
         safety_level: { type: "string", enum: ["concern", "crisis"], description: "crisis = self-harm, weapon, threat to kill, overdose, a missing person. concern = abuse, feeling unsafe at home, threats, stalking." },
         safety_note: { type: "string", description: "One neutral sentence about the safety situation. No names. For a missing person: age, where and when last seen, clothing." },
         resources_shared: { type: "string", description: "Comma-separated lines you read out, from: 911, ncmec, 988, county, sojourner, 211. Example: \"988, 211\". For a missing person: \"911\" or \"911, ncmec\"." },
-        callback_ok: { type: "boolean", description: "True if the caller said the number they are calling from is fine to text back." },
-        callback_number: { type: "string", description: "A phone number the caller gave to be texted at, digits as spoken, e.g. '414 555 0123'. Omit if they want the number they're calling from." },
+        callback_ok: { type: "boolean", description: "True if the caller agreed to be texted on the number they are calling from." },
+        callback_number: { type: "string", description: "A DIFFERENT number the caller asked to be texted at, digits as spoken, e.g. '414 555 0123'. Leave out when they want the number they're calling from." },
         conversation_id: { type: "string", dynamic_variable: "system__conversation_id" },
         caller_id: { type: "string", dynamic_variable: "system__caller_id" },
+        caller_line: { type: "string", dynamic_variable: "caller_number" },
       },
     },
   },
@@ -73,6 +74,8 @@ const agentConfig = {
     agent: {
       first_message: "Hey, this is Jordan with ComForce. What's going on today?",
       language: "en",
+      // /phone passes the number of the line the call is on. Blank elsewhere (the widget on /r), where Jordan asks for a number.
+      dynamic_variables: { dynamic_variable_placeholders: { caller_number: "", caller_last4: "" } },
       prompt: { prompt, llm: process.env.ELEVENLABS_LLM ?? "gpt-4.1", temperature: 0.4, tool_ids: [] },
     },
     tts: { voice_id: VOICE_ID, model_id: "eleven_v4_turbo", stability: 0.45, speed: 1.0 },

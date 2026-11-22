@@ -13,7 +13,7 @@ Starts the moment slide 8 (the demo slide) is on screen; slides 9–11 (benefits
 | --- | --- | --- | --- |
 | 0:00 | Resident | On `/phone?number=4145550188` tap **Phone → Call**. Allow mic. | Call screen, "Calling…" then Jordan: *"Hey, this is Jordan with ComForce. What's going on today?"* |
 | 0:05 | Resident | *"Hi — we had a fire last night at 35th and Burleigh. There's five of us, two kids. We've got nowhere to sleep tonight and no food."* | Transcript bubbles on the phone. |
-| 0:25 | Resident | When Jordan asks where to text: *"Yes, you can text me at four-one-four, five-five-five, zero-one-eight-eight."* | **Board:** new card slides in at the top — Housing + Food, critical, Sherman Park. |
+| 0:25 | Resident | Jordan asks: *"Can I text a tracking code to the number you're calling from, the one ending in 0188?"* Say **"Yes, this one."** Do not read a number out. | **Board:** new card slides in at the top — Housing + Food, critical, Sherman Park. |
 | 0:35 | Resident | Jordan reads the code back. Say *"got it, thanks"* and **End**. | **Phone:** notification drops from the top — *"Relay MKE: your request is logged as R-XXXX…"* Resident taps it → Messages. |
 | 0:45 | Presenter | Click the new card. The drawer opens with the **Tasks** already drafted and tailored to the call (optional: **Approve N tasks**, one click, stays on the board). Scroll to **Connect to a partner** → **Connect** on the suggested partner. | Drawer: numbered tasks for this household, then *"Jordan is calling the partner…"* and the partner-call transcript streams in; partner accepts; **run sheet** appears (pickup → resident). |
 | 1:05 | Presenter | Click **Delivered**. | Timeline: *verification text sent*. **Phone:** text *"Did the help for R-XXXX arrive? Reply 1…"*. Resident does **not** reply. |
@@ -40,6 +40,7 @@ Starts the moment slide 8 (the demo slide) is on screen; slides 9–11 (benefits
 | Jordan doesn't pick up / mic denied | Resident taps **Messages → "Text a request"** instead. Same card lands on the board. Say: *"Same intake, by text."* | 0 s |
 | Jordan says he's "having trouble" logging the request | The tunnel is dead, so his tool can't reach the app. On stage: use the text fallback above. Before the demo: `tools/voice/retunnel.sh`. | 0 s |
 | Card doesn't appear on the board within 10 s | Presenter opens `/r` and pastes the request text. Keep talking. | 10 s |
+| Code text doesn't arrive on the phone | The resident gave Jordan a number that isn't this phone's (it shows under Phone → notes). Say *"I didn't get it, send it to this phone."* Jordan re-sends the same code; no second card. | 8 s |
 | Closing text doesn't appear | The resident hasn't hung up yet. Jordan never ends the call-back himself; tap **Hang up**. | 0 s |
 | Call-back doesn't ring | Resident taps **"1 · yes it arrived"** in Messages. Card still flips to Verified. | 0 s |
 | Tunnel dies mid-demo | Resident's phone is dead; laptop tab `/phone?number=4145550199` (localhost) becomes the resident. Presenter drives both. | 5 s |

@@ -3,18 +3,18 @@ import { intake, flagSafety } from "./actions";
 import { sendSms, CODE_TEXT, MISSING_PERSON_TEXT } from "./sms";
 import { redactPII } from "./ai/redact";
 import { summarizeCall, structureIntake } from "./ai";
+import { textDestination, type CallNumbers } from "./callText";
 import type { CallTurn, HelpRequest } from "./types";
 
+export { normalizePhone } from "./callText";
+
 /** Fields the voice agent collects mid-call and posts via its webhook tool. */
-export interface CallToolInput {
+export interface CallToolInput extends CallNumbers {
   conversation_id?: string;
-  caller_id?: string;
   what_they_need: string;
   area?: string;
   household_size?: number | string;
   urgency?: "low" | "normal" | "high" | "critical" | string;
-  callback_ok?: boolean | string;
-  callback_number?: string;
   language?: string;
   /** Jordan sets this when the caller describes risk to themselves or others */
   safety_concern?: boolean | string;
@@ -27,14 +27,49 @@ export interface CallToolInput {
 
 const yes = (v: unknown) => v === true || /^(true|yes|y|1)$/i.test(String(v ?? ""));
 
+export interface CallRequestResult {
+  request: HelpRequest;
+  shortCode: string;
+  texted: boolean;
+  /** The number the code was texted to, and the line the call is on, when known. */
+  textedTo?: string;
+  line?: string;
+  /** True when this was a second tool call in the same conversation: same request, code sent again. */
+  resent?: boolean;
+}
+
+const codeText = (r: HelpRequest) => (r.safety?.kind === "missing_person" ? MISSING_PERSON_TEXT(r.shortCode, r.language) : CODE_TEXT(r.shortCode, r.language));
+
+/** A webhook retried within this window is the same call arriving twice, not the caller asking again. */
+const RETRY_WINDOW_MS = 8000;
+
+/**
+ * Jordan calls the tool again in the same conversation when the caller says the text never
+ * came or gives a corrected number. That must not create a second request: same request, same
+ * code, sent again.
+ */
+async function resendCode(req: HelpRequest, to: string | undefined, line: string | undefined): Promise<CallRequestResult> {
+  const number = to ?? req.contactRef;
+  if (!number) return { request: req, shortCode: req.shortCode, texted: false, line, resent: true };
+  const corrected = number !== req.contactRef;
+  if (!corrected && Date.now() - Date.parse(req.createdAt) < RETRY_WINDOW_MS) return { request: req, shortCode: req.shortCode, texted: true, textedTo: number, line, resent: true };
+  const r = await sendSms(number, codeText(req));
+  const note = r.ok ? `Tracking code texted again${corrected ? " to a corrected number" : ""}${r.mocked ? " (mock SMS)" : ""}` : `Could not text code: ${r.error}`;
+  const updated = (await db.updateRequest(req.id, corrected ? { contactRef: number } : {}, { actor: "system", type: "sms_out", text: note })) ?? req;
+  return { request: updated, shortCode: updated.shortCode, texted: r.ok, textedTo: r.ok ? number : undefined, line, resent: true };
+}
+
 /** Called by the ElevenLabs agent while the resident is still on the line. Returns a tracking code it can read back. */
-export async function createRequestFromCall(input: CallToolInput): Promise<{ request: HelpRequest; shortCode: string; texted: boolean }> {
+export async function createRequestFromCall(input: CallToolInput): Promise<CallRequestResult> {
+  const { to: contactRef, line } = textDestination(input);
+  const existing = input.conversation_id ? (await db.snapshot()).requests.find((r) => r.call?.conversationId === input.conversation_id) : undefined;
+  if (existing) return resendCode(existing, contactRef, line);
+
   const parts = [input.what_they_need];
   if (input.area) parts.push(`We're near ${input.area}.`);
   const hh = Number(input.household_size);
   if (hh > 0) parts.push(`There are ${hh} of us in the household.`);
   const text = parts.join(" ");
-  const contactRef = normalizePhone(input.callback_number) ?? (yes(input.callback_ok) ? normalizePhone(input.caller_id) : undefined);
 
   const { request } = await intake({
     text,
@@ -63,13 +98,12 @@ export async function createRequestFromCall(input: CallToolInput): Promise<{ req
   // Text the code so nobody has to memorize it over the phone; the same number is the reply channel.
   let texted = false;
   if (contactRef) {
-    const body = updated.safety?.kind === "missing_person" ? MISSING_PERSON_TEXT(updated.shortCode, updated.language) : CODE_TEXT(updated.shortCode, updated.language);
-    const r = await sendSms(contactRef, body);
+    const r = await sendSms(contactRef, codeText(updated));
     texted = r.ok;
     const note = r.ok ? `Tracking code texted to the resident${r.mocked ? " (mock SMS)" : ""}` : `Could not text code: ${r.error}`;
     updated = (await db.updateRequest(updated.id, {}, { actor: "system", type: "sms_out", text: note })) ?? updated;
   }
-  return { request: updated, shortCode: updated.shortCode, texted };
+  return { request: updated, shortCode: updated.shortCode, texted, textedTo: texted ? contactRef : undefined, line };
 }
 
 export interface PostCallPayload {
@@ -133,14 +167,4 @@ export function fromElevenLabs(data: Record<string, unknown>): PostCallPayload {
       .map((t) => ({ role: t.role === "agent" ? "agent" : "caller", text: String(t.message), t: Number(t.time_in_call_secs ?? 0) })),
     provider_summary: typeof analysis.transcript_summary === "string" ? analysis.transcript_summary : undefined,
   };
-}
-
-/** Accepts "414 555 0123", "(414) 555-0123", "+1 414…", or spoken digits; returns E.164 or undefined. */
-export function normalizePhone(v?: string): string | undefined {
-  if (!v) return undefined;
-  const d = v.replace(/\D/g, "");
-  if (d.length === 10) return `+1${d}`;
-  if (d.length === 11 && d.startsWith("1")) return `+${d}`;
-  if (d.length > 11 && v.trim().startsWith("+")) return `+${d}`;
-  return undefined;
 }
