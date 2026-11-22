@@ -112,39 +112,30 @@
   .sp{position:absolute;width:0;height:0}
 
   /* 1 title */
-  .title{position:relative;height:100%;display:grid;grid-template-columns:1fr 440px;gap:80px;align-items:center}
+  .title{position:relative;height:100%;display:grid;grid-template-columns:1fr 860px;align-items:center}
   .title::before{content:'';position:absolute;left:-120px;right:-120px;top:-96px;bottom:-110px;background:radial-gradient(ellipse 60% 45% at 50% 108%,rgba(111,194,183,.16),transparent 70%),radial-gradient(circle at 1px 1px,#23262c 1px,transparent 1.5px);background-size:auto,38px 38px;pointer-events:none}
   .title>*{position:relative}
-  .title .team{font-family:var(--mono);font-size:17px;color:#8a8e97;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:16px;margin-bottom:44px}
+  .title .team{font-family:var(--mono);font-size:17px;color:#8a8e97;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:16px;margin-bottom:40px}
   .title .team b{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--paper);color:var(--dark);font-size:22px;font-weight:700;letter-spacing:0}
   .title .team i{font-style:normal;color:#50555e}
-  .title h1{color:var(--paper);font-size:236px;line-height:.9;letter-spacing:-.055em;margin-left:-8px;white-space:nowrap}
-  .title p{font-size:34px;color:#c7cad1;line-height:1.32;margin-top:36px;max-width:1040px}
+  .title h1{color:var(--paper);font-size:232px;line-height:.86;letter-spacing:-.06em;margin-left:-10px}
+  .title h1 em{display:block;font-family:var(--serif);font-style:italic;font-weight:400;font-size:262px;letter-spacing:-.02em;line-height:.9;margin-left:6px}
+  .title p{font-size:31px;color:#c7cad1;line-height:1.34;margin-top:44px;max-width:720px}
   .title p b{color:#fff;font-weight:600}
-  /* the resident's phone: a real thread from the app, with the text that closes a request marked */
-  .title .ph{position:relative;border-radius:50px;background:#0b0c0f;padding:13px;box-shadow:0 0 0 1.5px #3a3e46,0 50px 90px -30px rgba(0,0,0,.85),0 0 120px -20px rgba(111,194,183,.22)}
-  .title .ph img{display:block;width:100%;border-radius:38px}
-  .title .ph .scr{position:relative}
-  .title .ph .mark{position:absolute;left:2.82%;top:50%;width:73.85%;height:19.7%;border:3px solid #f08a6c;border-radius:20px;box-shadow:0 0 0 6px rgba(240,138,108,.16)}
-  .title .ph .mark span{position:absolute;left:-3px;top:calc(100% + 12px);white-space:nowrap;background:#f08a6c;color:#17181c;font-size:17px;font-weight:600;letter-spacing:-.01em;border-radius:8px;padding:7px 12px}
-  section.active .title .ph{animation:rise .9s cubic-bezier(.2,.7,.2,1) .25s both}
-  section.active .title .ph .mark{animation:markin .6s cubic-bezier(.2,.7,.2,1) 3.5s both}
-  @keyframes markin{from{opacity:0;transform:scale(1.06)}to{opacity:1;transform:none}}
-  .loop{width:1160px;height:160px;overflow:visible;margin-top:60px}
-  .loop .base{stroke:#2c3037;stroke-width:1.5}
-  .loop .arc{fill:none;stroke:#6fc2b7;stroke-width:3;stroke-linecap:round;stroke-dasharray:400;stroke-dashoffset:400;transition:stroke-dashoffset .9s cubic-bezier(.2,.7,.2,1)}
-  .loop .arc.on{stroke-dashoffset:0}
-  .loop .arc.last{stroke:#f08a6c}
-  .loop .node circle{fill:var(--dark);stroke:#50555e;stroke-width:2;transition:stroke .5s,fill .5s}
-  .loop .node.on circle{stroke:#6fc2b7} .loop .node.last.on circle{stroke:#f08a6c;fill:#f08a6c}
-  .loop .node text{fill:#e6e8ec;font-size:25px;font-weight:600;opacity:0;transition:opacity .6s}
-  .loop .node.on text{opacity:1}
-  .loop .node tspan.s{fill:#8a8e97;font-size:16px;font-weight:400;font-family:var(--mono)}
-  .loop .ring{fill:none;stroke:#6fc2b7;stroke-width:2;opacity:0;transform-origin:12px 30px}
-  .loop.go .ring{animation:pulse 1.8s ease-out 4.4s infinite}
-  .loop .dot{fill:#f4f1ea;opacity:0;offset-path:path('M12 30 H1148');filter:drop-shadow(0 0 8px rgba(111,194,183,.9))}
-  .loop.go .dot{animation:ride 5.2s cubic-bezier(.4,0,.4,1) 4.2s infinite}
-  @keyframes ride{0%{offset-distance:0;opacity:0}5%{opacity:1}92%{opacity:1}100%{offset-distance:100%;opacity:0}}
+  /* Milwaukee: one dot for each request logged in 2026, teal once the resident confirmed the help arrived */
+  .title .city{display:grid;grid-template-columns:1fr 532px;align-items:end;gap:30px}
+  .title .city svg{width:532px;height:950px;overflow:visible}
+  .title .city .rq{fill:#f08a6c;opacity:0;transform-box:fill-box;transform-origin:center}
+  .title .city .rq.y{fill:#6fc2b7}
+  .title .city.go .rq{animation:dotin .5s cubic-bezier(.3,1.5,.5,1) var(--t) both}
+  .title .city.go .rq.y{animation:dotin .5s cubic-bezier(.3,1.5,.5,1) var(--t) both,confirm .7s ease calc(var(--t) + .9s) both}
+  @keyframes dotin{from{opacity:0;transform:scale(0)}to{opacity:1;transform:none}}
+  @keyframes confirm{from{fill:#f08a6c}to{fill:#6fc2b7}}
+  .title .lgd{padding-bottom:96px;font-size:21px;line-height:1.3;color:#c7cad1}
+  .title .lgd div{display:flex;gap:12px;align-items:baseline;margin-top:12px}
+  .title .lgd div::before{content:'';flex:none;width:12px;height:12px;border-radius:50%;background:var(--c)}
+  .title .lgd small{display:block;font-family:var(--mono);font-size:13px;line-height:1.5;color:#6c7079;letter-spacing:.04em;text-transform:uppercase;margin-top:22px}
+  section.active .title .lgd{animation:rise .7s cubic-bezier(.2,.7,.2,1) 4.6s both}
 
   /* 2 about */
   .tri{display:grid;grid-template-columns:290px 830px 440px;gap:60px;margin-top:36px;align-items:end}
@@ -452,9 +443,9 @@
     #help,#notes,#clock,#foot,#prog{display:none}
     .f,.on{opacity:1!important;transform:none!important}
     section.slide>*{animation:none!important}
-    .title .ph,.title .ph .mark,.thanks .ty h3,.thanks .say h4,.thanks .end p{animation:none!important}
-    .stack .node,.stack .w,.stack .wl,.stack .dot,.stack .steps div,.net .spoke,.net .hub,.map .cl,.map .brief,.know .arrow,.know .pp.new,.loop .arc,.loop .node{opacity:1!important;transform:none!important}
-    .loop .arc{stroke-dashoffset:0!important}
+    .title .lgd,.title .city .rq,.thanks .ty h3,.thanks .say h4,.thanks .end p{animation:none!important}
+    .title .city .rq{opacity:1!important}
+    .stack .node,.stack .w,.stack .wl,.stack .dot,.stack .steps div,.net .spoke,.net .hub,.map .cl,.map .brief,.know .arrow,.know .pp.new{opacity:1!important;transform:none!important}
     .net .tangle{opacity:.08!important}
     .seg i{width:calc(var(--w)*1%)!important}
     .donut .fg{stroke-dasharray:var(--d) 1000!important}
@@ -474,28 +465,19 @@
     <div class="title">
       <div>
         <div class="team"><b>V</b> Team V <i>·</i> Hacksgiving 2026 <i>·</i> built for ComForce MKE</div>
-        <h1>Relay <em>MKE</em></h1>
+        <h1>Relay<em>MKE</em></h1>
         <p>One shared record for every request ComForce receives — <b>closed only when the resident says help arrived.</b></p>
-        <svg class="loop" viewBox="0 0 1160 160" id="loop">
-          <line class="base" x1="12" y1="30" x2="1148" y2="30"/>
-          <path class="arc" d="M12 30 H296"/>
-          <path class="arc" d="M296 30 H580"/>
-          <path class="arc last" d="M580 30 H864"/>
-          <path class="arc" d="M864 30 H1148"/>
-          <g class="node"><circle cx="12" cy="30" r="11"/><text x="0" y="88">Intake<tspan class="s" x="0" dy="30">call, text or form</tspan></text></g>
-          <g class="node"><circle cx="296" cy="30" r="11"/><text x="296" y="88" text-anchor="middle">Coordinate<tspan class="s" x="296" dy="30">one person claims it</tspan></text></g>
-          <g class="node"><circle cx="580" cy="30" r="11"/><text x="580" y="88" text-anchor="middle">Deliver<tspan class="s" x="580" dy="30">partner or volunteer</tspan></text></g>
-          <g class="node last"><circle cx="864" cy="30" r="11"/><text x="864" y="88" text-anchor="middle">Verify<tspan class="s" x="864" dy="30">the resident says so</tspan></text></g>
-          <g class="node"><circle cx="1148" cy="30" r="11"/><text x="1160" y="88" text-anchor="end">Report<tspan class="s" x="1160" dy="30">the City, funders</tspan></text></g>
-          <circle class="ring" cx="12" cy="30" r="14"/>
-          <circle class="dot" r="7"/>
-        </svg>
       </div>
-      <div class="ph">
-        <div class="scr">
-          <img src="img/phone-loop.png" alt="The resident's phone: three texts from Relay MKE. The request is logged, Relay asks whether the help arrived, and the last text records that it did and closes the request.">
-          <div class="mark"><span>The resident's answer closes it</span></div>
+      <div class="city" id="city">
+        <div class="lgd">
+          <div style="--c:#6fc2b7">The resident said help arrived</div>
+          <div style="--c:#f08a6c">Not yet</div>
+          <small>One dot per request<br>Milwaukee · 2026<br>synthetic demo data</small>
         </div>
+        <svg viewBox="0 0 346 618" role="img" aria-label="Map of Milwaukee's neighbourhoods with one dot for each request logged in 2026. A dot is teal where the resident confirmed that the help arrived, and coral where they have not yet.">
+          <image href="img/milwaukee-dark.svg" x="0" y="0" width="346" height="618"/>
+          <g id="reqdots"></g>
+        </svg>
       </div>
     </div>
   </section>
@@ -845,12 +827,11 @@
   addEventListener('resize', fit); fit();
 
   /* ---------- generated visuals ---------- */
-  // slide 1 loop
-  const loop = document.getElementById('loop');
-  const loopArcs = [...loop.querySelectorAll('.arc')], loopNodes = [...loop.querySelectorAll('.node')];
-  function playLoop(){ loop.classList.remove('go'); void loop.offsetWidth; loop.classList.add('go'); loopArcs.forEach(a => a.classList.remove('on')); loopNodes.forEach(n => n.classList.remove('on'));
-    loopNodes[0].classList.add('on');
-    loopArcs.forEach((a, k) => timers.push(setTimeout(() => { a.classList.add('on'); loopNodes[(k+1)%5].classList.add('on'); }, 600 + k*700))); }
+  // title: one dot per request logged in 2026 as [x*10, y*10, confirmed by the resident], oldest first. See "The title map" in presentation/README.md.
+  const DOTS = [[2026,1907,1],[2512,2464,1],[1527,1799,0],[2342,2920,0],[2505,2412,0],[1677,1704,1],[2090,2564,0],[1177,1726,1],[2970,4459,1],[1884,2396,0],[2201,2788,1],[1854,1531,0],[1480,1879,1],[2143,2221,1],[2444,4130,1],[2197,2896,1],[2932,4596,0],[1971,3941,1],[2477,3990,1],[1997,1663,0],[1455,1832,1],[1597,1822,1],[1530,1783,0],[2153,2746,1],[1510,1952,1],[2324,2189,1],[2036,2992,1],[2003,1688,0],[1985,2557,1],[1841,2971,0],[2267,2888,0],[1931,1265,1],[2360,4402,1],[1976,3524,0],[2490,4048,1],[1830,2702,1],[2624,2853,0],[1876,2842,0],[2734,2906,1],[1774,2345,1],[2098,3864,0],[1333,2003,1],[1481,1717,1],[2905,2849,1],[1336,1591,0],[2144,3964,0],[2767,2774,0],[1515,1913,1],[1792,2661,1],[1373,1956,1],[1822,1368,1],[2036,3177,1],[1826,1307,0],[1965,3019,0],[1831,2944,0],[1980,2951,1],[2100,2738,0],[1902,3206,0],[1957,1475,1],[2938,4615,0],[2021,2646,1],[1925,2076,1],[1855,2873,1],[2121,3914,1],[1881,1764,0],[2372,2769,0],[2338,4149,0],[2412,4220,0],[2129,2325,1],[1727,2898,0],[2016,2171,0],[1972,2052,1],[1453,3034,0],[2333,2892,0],[2766,2778,1],[2389,4117,1],[1659,2290,1],[2052,3937,1],[2075,2944,1],[2054,2593,0],[1835,3552,1],[2014,1916,0],[1875,1953,0],[1186,1619,1],[1920,2983,0],[1850,3448,1],[1930,2983,1],[1811,3275,1],[1938,2632,0],[1579,3077,1],[1931,1671,1],[1579,2833,1],[1808,1559,1],[2736,4581,1],[1866,3298,1],[2370,4115,1],[1394,2568,1],[2843,4331,1],[1746,3036,1],[1953,2403,1],[1939,3832,1],[1362,2412,1],[2327,2303,0],[1981,2158,1],[2824,4616,1],[1854,2871,1],[2533,4239,1],[2229,2361,1],[1328,1650,1],[1776,3831,1],[1235,1597,1],[1814,2747,1],[1667,2416,1],[2974,4603,1],[2569,4196,1],[1923,1359,0],[1891,3452,1],[1669,2535,0],[1557,2257,1],[1494,1940,0],[2020,2621,1],[2009,2971,1],[2156,2918,1],[1902,1917,1],[2579,4147,1],[2314,3026,0],[2093,2534,0],[2185,2665,0],[2454,2861,1],[2028,3332,0],[2434,4383,1],[2808,2906,1],[1434,1934,1],[1864,2484,1],[1579,2243,1],[1199,1626,0],[2492,4232,1],[1652,1831,1],[1735,1768,1],[2132,4086,1],[2177,2227,1],[1961,2916,1],[1226,1699,0],[2757,2815,1],[2199,2328,1],[2279,4094,1],[2425,4220,1],[2214,2799,1],[2941,4477,1],[1630,2913,1],[2153,3301,0],[1856,3235,1],[1591,1837,0],[2137,2382,1],[1921,1534,1],[1405,1907,1],[2289,2430,0],[2191,2918,0],[2720,2902,1],[2944,4460,1],[1542,2069,0],[1672,1918,1],[2836,2680,1],[1512,2128,1],[1931,3560,1],[2457,4178,1],[2466,2890,0],[2704,2808,0],[1887,1599,1],[2054,2713,1],[1797,2633,0],[2354,3965,1],[2266,4293,0],[2071,3978,1],[1710,2496,1],[1164,2609,1],[2331,2409,1],[1477,2862,1],[2436,3017,1],[2080,2787,1],[2830,2648,0],[1609,1761,1],[1899,1367,0],[2467,2819,0],[2522,3789,0],[2061,2281,0],[2089,3972,0],[2130,2665,0],[1670,3171,0],[2185,2366,0],[2110,2389,0],[2329,4366,0],[1827,3071,0],[2021,2971,0],[1288,1715,0],[2025,3878,0],[2982,2809,0],[1540,1901,0],[1917,2849,0],[2636,2927,0],[1975,2083,0]];
+  const city = document.getElementById('city');
+  city.querySelector('#reqdots').innerHTML = DOTS.map(([x, y, yes], k) => `<circle class="rq${yes ? ' y' : ''}" cx="${x/10}" cy="${y/10}" r="3.1" style="--t:${(.6 + k*.017).toFixed(2)}s"/>`).join('');
+  function playCity(){ city.classList.remove('go'); void city.getBoundingClientRect(); city.classList.add('go'); }
 
   // slide 3 network
   (() => {
@@ -920,7 +901,7 @@
     if (s.querySelector('#map')) { const map = document.getElementById('map'); mapState(ph >= 1); map.classList.toggle('live', ph >= 1); map.classList.toggle('gaps', !!s.querySelector('.brief.on')); }
     if (s.querySelector('#units')) document.getElementById('dots').dataset.step = s.querySelectorAll('.stat.on').length;
     if (s.querySelector('#know')) knowState(step >= 1);
-    if (s.querySelector('#loop') && step === 0 && !s.dataset.played) { s.dataset.played = 1; playLoop(); }
+    if (s.querySelector('#city') && step === 0 && !s.dataset.played) { s.dataset.played = 1; playCity(); }
   }
   const on = (f, instant) => { f.classList.add('on'); f.querySelectorAll('[data-count]').forEach(v => countUp(v, instant)); if (f.matches('[data-count]')) countUp(f, instant); };
   const revealAll = s => { clearTimers(); frags(s).forEach(f => on(f, true)); hooks(s); };
@@ -937,7 +918,7 @@
     prog.style.width = ((n)/(slides.length-1)*100) + '%';
     history.replaceState(null, '', '#' + (n+1));
     hooks(s);
-    if (all) revealAll(s); else if (s.querySelector('#loop')) playLoop();
+    if (all) revealAll(s); else if (s.querySelector('#city')) playCity();
     void s.offsetWidth; s.classList.remove('noanim');
   }
   function next(){
@@ -974,7 +955,7 @@
 
   setTimeout(() => document.getElementById('help').classList.add('hide'), 5000);
   addEventListener('hashchange', () => { const n = (parseInt(location.hash.slice(1)) || 1) - 1; if (n !== i) show(n, true); });
-  if (location.search.includes('print')) { slides.forEach(s => { s.classList.add('active'); frags(s).forEach(f => f.classList.add('on')); hooks(s); }); document.querySelectorAll('.loop .arc,.loop .node').forEach(a => a.classList.add('on')); document.getElementById('loop').classList.add('go'); return; }
+  if (location.search.includes('print')) { slides.forEach(s => { s.classList.add('active'); frags(s).forEach(f => f.classList.add('on')); hooks(s); }); return; }
   const start = (parseInt(location.hash.slice(1)) || 1) - 1;
   show(Math.max(0, start), start > 0);
   paint();
