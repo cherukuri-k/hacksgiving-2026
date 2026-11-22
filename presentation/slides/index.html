@@ -181,7 +181,7 @@
   .net .spoke.on{opacity:1;animation:flow 1.4s linear infinite}
   .net .n circle{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
   .net .n.p circle{stroke:var(--mut);stroke-dasharray:3 3}
-  .net .n text{font-size:14px;fill:var(--ink2)}
+  .net .n text{font-size:14px;fill:var(--ink2);paint-order:stroke;stroke:#faf8f3;stroke-width:5px;stroke-linejoin:round}
   .net .hub{opacity:0;transform:scale(.6);transform-origin:550px 310px;transition:opacity .7s,transform .9s cubic-bezier(.34,1.3,.4,1)}
   .net .hub.on{opacity:1;transform:none}
   .net .hub circle{fill:var(--teal)} .net .hub text{fill:#fff;font-size:16px;font-weight:600;text-anchor:middle}
@@ -815,7 +815,7 @@
 
   // slide 3 network
   (() => {
-    const divs = ['Housing','Food','Safety','Youth','Mediation','Re-entry','Health','Outreach'];
+    const divs = ['P.I.','Investigations','Missing Persons','Youth Outreach','Legal Policy','Extraction','Rapid Response','Disaster Relief']; // ComForce's divisions, per docs/challenge/comforce-mke-profile.md
     const parts = ['Hunger TF','Sojourner','Legal Action','Pantry 27th','Shelter','211','988','Church','Clinic'];
     const pts = [];
     divs.forEach((d, k) => { const a = -Math.PI/2 + k*(2*Math.PI/8); pts.push({x: 550 + Math.cos(a)*150, y: 310 + Math.sin(a)*150, l: d, p: false}); });
