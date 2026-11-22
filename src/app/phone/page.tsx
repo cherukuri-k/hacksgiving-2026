@@ -167,7 +167,8 @@ export default function ResidentPhone() {
   const [now, setNow] = useState(0);
   useEffect(() => { setNow(Date.now()); const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); }, []);
   const endedAgo = fu?.call?.endedAt && now ? now - new Date(fu.call.endedAt).getTime() : Infinity;
-  const showCall = fu && (fu.status === "calling" || fu.status === "answered" || (fu.call?.endedAt && endedAgo < 6000));
+  // The call stays on screen after Jordan records the answer; it ends only when the session does (the resident hangs up).
+  const showCall = fu && (fu.status === "calling" || (fu.call && !fu.call.endedAt) || (fu.call?.endedAt && endedAgo < 6000));
 
   const inCall = callState === "connecting" || callState === "active";
   const timer = `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, "0")}`;
@@ -462,11 +463,12 @@ function LiveCallback({ req, partner }: { req: HelpRequest; partner?: Partner })
   const convRef = useRef<Conversation | null>(null);
   const post = (body: Record<string, unknown>) => fetch("/api/followup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: req.id, ...body }) }).catch(() => {});
 
+  const onCall = !!fu.call && !fu.call.endedAt;
   useEffect(() => {
-    if (fu.status !== "answered" || fu.call?.endedAt) return;
+    if (!onCall) return;
     const t = setInterval(() => setElapsed((n) => n + 1), 1000);
     return () => clearInterval(t);
-  }, [fu.status, fu.call?.endedAt]);
+  }, [onCall]);
 
   // Hang up the live session if the overlay unmounts (e.g. the resident texted "1" meanwhile).
   useEffect(() => () => { convRef.current?.endSession().catch(() => {}); }, []);
@@ -513,7 +515,7 @@ function LiveCallback({ req, partner }: { req: HelpRequest; partner?: Partner })
   const hangUp = async () => { const c = convRef.current; convRef.current = null; if (c) await c.endSession().catch(() => {}); else await post({ action: "decline" }); };
 
   const ringing = fu.status === "calling";
-  const ended = !!fu.call?.endedAt || (!ringing && fu.status !== "answered");
+  const ended = !!fu.call?.endedAt || (!ringing && !fu.call);
   const status = ringing ? (connecting ? "Connecting…" : "Incoming call…") : ended ? "Call ended" : `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, "0")}${mode === "speaking" ? " · Jordan is speaking" : mode === "listening" ? " · listening" : ""}`;
   const outcome = fu.status === "confirmed" ? "✓ You told Jordan the help arrived" : fu.status === "partial" ? "You told Jordan part of it arrived" : fu.status === "reopened" ? "You told Jordan it didn't arrive · case reopened" : fu.status === "no_answer" ? "Jordan will try again later" : null;
 

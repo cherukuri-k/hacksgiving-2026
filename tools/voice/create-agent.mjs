@@ -136,7 +136,7 @@ const dispatchAgentConfig = {
 const followupToolConfig = {
   type: "webhook",
   name: "followup_result",
-  description: "Record whether the delivered help actually arrived for the resident. Call exactly once, as soon as the resident has answered.",
+  description: "Record whether the delivered help actually arrived for the resident. Call exactly once, as soon as the resident has answered. This does not end the call: keep talking and let the resident hang up.",
   execution_mode: "immediate",
   pre_tool_speech: "auto",
   response_timeout_secs: 20,

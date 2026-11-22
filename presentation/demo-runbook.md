@@ -18,7 +18,7 @@ Starts the moment slide 8 (the demo slide) is on screen; slides 9–11 (benefits
 | 0:45 | Presenter | Click the new card → **Dispatch** → pick the suggested partner. | Drawer: *"Jordan is calling the partner…"* then the partner-call transcript streams in; partner accepts; **run sheet** appears (pickup → resident). |
 | 1:05 | Presenter | Click **Delivered**. | Timeline: *verification text sent*. **Phone:** text *"Did the help for R-XXXX arrive? Reply 1…"*. Resident does **not** reply. |
 | 1:20 | Resident | Phone rings (Jordan's call-back). Tap **Answer**. *"Yes — everything came, thank you."* | Call transcript live on the phone and in the drawer. |
-| 1:35 | — | Jordan thanks them and hangs up. | **Board:** card flips to **Verified** (green). **Phone:** closing text *"We've recorded that the help for R-XXXX arrived…"* |
+| 1:35 | Resident | Jordan thanks them and stays on the line. **Tap Hang up.** | **Board:** card flips to **Verified** (green) as soon as the resident says yes. **Phone:** the closing text *"We've recorded that the help for R-XXXX arrived…"* arrives only after the hang-up. |
 | 1:40 | Presenter | Sidebar → **Grants** → Cluster evidence (already loaded in a second tab). | 71 % inside Countdown clusters · 21/26 · 67 % resident-confirmed · 2 h 5 m. |
 | 1:50 | Presenter | Tab **Application** → **Draft application**. | Statement of need streams in, in the funder's vocabulary. *"Every number in there came from a request you just watched happen."* Stop. |
 
@@ -40,6 +40,7 @@ Starts the moment slide 8 (the demo slide) is on screen; slides 9–11 (benefits
 | Jordan doesn't pick up / mic denied | Resident taps **Messages → "Text a request"** instead. Same card lands on the board. Say: *"Same intake, by text."* | 0 s |
 | Jordan says he's "having trouble" logging the request | The tunnel is dead, so his tool can't reach the app. On stage: use the text fallback above. Before the demo: `tools/voice/retunnel.sh`. | 0 s |
 | Card doesn't appear on the board within 10 s | Presenter opens `/r` and pastes the request text. Keep talking. | 10 s |
+| Closing text doesn't appear | The resident hasn't hung up yet. Jordan never ends the call-back himself; tap **Hang up**. | 0 s |
 | Call-back doesn't ring | Resident taps **"1 · yes it arrived"** in Messages. Card still flips to Verified. | 0 s |
 | Tunnel dies mid-demo | Resident's phone is dead; laptop tab `/phone?number=4145550199` (localhost) becomes the resident. Presenter drives both. | 5 s |
 | Everything dies | Play `presentation/demo-backup.mp4` (deck slide 8, press **V**) (record it in the dry run with QuickTime screen recording, 1:50). | — |

@@ -126,7 +126,10 @@ export async function endFollowUpCall(requestId: string) {
   const durationSec = cur.followUp.answeredAt ? Math.round((Date.now() - new Date(cur.followUp.answeredAt).getTime()) / 1000) : 0;
   const unresolved = cur.followUp.status === "answered";
   const summary = call.summary ?? (unresolved ? "Call ended before the resident answered whether the help arrived." : undefined);
-  return db.updateRequest(requestId, { followUp: { ...cur.followUp, status: unresolved ? "no_answer" : cur.followUp.status, call: { ...call, endedAt: new Date().toISOString(), durationSec, summary } } }, { actor: "ai", type: "followup_call", text: `Call-back ended · ${Math.floor(durationSec / 60)}m ${durationSec % 60}s${summary ? ` · ${summary}` : ""}` });
+  const ended = await db.updateRequest(requestId, { followUp: { ...cur.followUp, status: unresolved ? "no_answer" : cur.followUp.status, call: { ...call, endedAt: new Date().toISOString(), durationSec, summary } } }, { actor: "ai", type: "followup_call", text: `Call-back ended · ${Math.floor(durationSec / 60)}m ${durationSec % 60}s${summary ? ` · ${summary}` : ""}` });
+  // The resident has hung up: now send the written receipt that was held back during the call.
+  const { sendClosingText } = await import("./actions");
+  return (await sendClosingText(requestId)) ?? ended;
 }
 
 function residentScript(req: HelpRequest, lang: string): { turns: CallTurn[]; summary: string } {

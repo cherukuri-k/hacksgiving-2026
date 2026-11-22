@@ -205,6 +205,8 @@ export interface FollowUp {
   startedAt: string;
   answeredAt?: string;
   call?: CallRecord;
+  /** The resident answered on a live call that is still going: the written receipt is held until they hang up. */
+  closingTextPending?: "1" | "2" | "3";
 }
 
 export const LANGUAGE_LABEL: Record<string, string> = { en: "English", es: "Español", hmn: "Hmoob · Hmong", other: "Other" };
