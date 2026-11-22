@@ -1,6 +1,6 @@
 # Pitch script — 2:00, spoken slowly
 
-223 spoken words. At a slow, clear pace (around 115 words a minute) that is about 1:56 of talking in total: roughly 1:27 before the demo and 0:29 after it, which leaves about 4 seconds for pauses. Not yet timed aloud — rehearse once with the clock (**T**). **→** = one press. Nothing moves until you press; some presses play a short sequence, so pause and let it finish. If the demo runs long, press **End** to jump straight to the scorecard.
+212 spoken words. At a slow, clear pace (around 115 words a minute) that is about 1:51 of talking in total: roughly 1:27 before the demo and 0:24 after it, which leaves about 9 seconds for pauses and animations. Not yet timed aloud — rehearse once with the clock (**T**). **→** = one press. Nothing moves until you press; some presses play a short sequence, so pause and let it finish. If the demo runs long, press **End** to jump straight to the scorecard.
 
 The deck no longer has separate slides for problems 1, 2 and 3. The demo shows all three live — it ends on the Grants page — and the overview slide says so.
 
@@ -44,15 +44,11 @@ Now watch a resident call. *(hand off — see demo-runbook.md)*
 
 ## After the demo
 
-**Slide 9 — Benefits** *(→ ×2)*
-
-**→** One record. The resident's own yes. **→** A report that writes itself.
-
-**Slide 10 — Cost** *(→ ×2)*
+**Slide 9 — Cost** *(→ ×2)*
 
 **→** Everything you watched cost one dollar sixty-eight. **→** The whole year cost three hundred and thirty-six dollars. The commercial option costs more than two hundred times that.
 
-**Slide 11 — Closing** *(leave it up)*
+**Slide 10 — Closing** *(leave it up)*
 
 **→** Two hands meet and the view moves through them into this slide; it takes about three and a half seconds, so stay quiet and let it play (a second press skips it).
 
@@ -64,7 +60,6 @@ Care is not measured by how many we reach. It is measured by how many we don't l
 
 Cut in this order; each is one slide and the deck still makes sense without it:
 
-1. Slide 9, Benefits — the demo has just shown all three.
-2. Slide 2, About — the title and the overview cover it.
+1. Slide 2, About — the title and the overview cover it.
 
-To hide a slide, add `data-skip` to its `<section>` tag in `slides/index.html`. To bring back the three hidden problem slides, delete `data-skip` from them.
+To hide a slide, add `data-skip` to its `<section>` tag in `slides/index.html`. To bring back the three hidden problem slides or the Benefits slide (it sat between the demo and Cost), delete `data-skip` from them.
