@@ -4,36 +4,35 @@
 
 | File | What it is |
 | --- | --- |
-| [slides/index.html](slides/index.html) | The deck. One HTML file plus `slides/img/` and `slides/fonts/`, 12 slides, 1920×1080, scales to any screen. Works offline. Open in Chrome, press **F**. |
-| [Relay-MKE-pitch.pdf](Relay-MKE-pitch.pdf) | Static export of the deck (12 pages, every slide in its final state). Backup if the laptop dies. |
+| [slides/index.html](slides/index.html) | The deck. One HTML file plus `slides/img/` and `slides/fonts/`, 11 slides, 1920×1080, scales to any screen. Works offline. Open in Chrome, press **F**. |
+| [Relay-MKE-pitch.pdf](Relay-MKE-pitch.pdf) | Static export of the deck (11 pages, every slide in its final state). Backup if the laptop dies. |
 | [pitch-script.md](pitch-script.md) | Word-for-word 2:00 script with beat timings matching the deck. |
 | [demo-runbook.md](demo-runbook.md) | The 2:00 demo, second by second: who does what, pre-flight checklist, what to do when something breaks. |
 | `slides/img/` | Real app screenshots used on slides; `slides/img/logos/` holds vendor logos for the stack slide. |
 
 ## Slide map
 
-Slides 4–6 share one rhythm, shown by the pill top-right: **Today → With Relay → In the app**. The headline swaps from the problem to the fix, the diagram transforms, and the last press shrinks the diagram to a thumbnail while the real app screenshot slides in with pinned callouts.
+Slides 4–5 share one rhythm, shown by the pill top-right: **Today → With Relay → In the app**. The headline swaps from the problem to the fix, the diagram transforms, and the last press shrinks the diagram to a thumbnail while the real app screenshot slides in with pinned callouts.
 
 | # | Slide | Presses | What happens |
 | --- | --- | --- | --- |
 | 1 | Team V · Relay MKE | — | Request rail draws itself on load, a pulse rides it; Verify step in coral |
 | 2 | About — one number, one board, one proof | 1 | Three real screens: phone, board, grants |
-| 3 | Five problems, one thing missing | 2 | Five tiles flip from broken to solved and connect to "one shared record"; then 01–02 are tagged "live in the demo" and 03–05 "next" |
-| 4 | Problem 3 · Data & impact | 2 | 203 dots, one per request: logged → delivered → resident-confirmed (67 %) → `/grants` |
-| 5 | Problem 4 · Awareness & decisions | 2 | Anecdotes over a map of Milwaukee → the City's 26 clusters appear, sized by requests; coral hotspots are called out; weekly brief → `/pulse` |
-| 6 | Problem 5 · Training | 2 | Volunteers leave with their know-how → playbook, new volunteers, cited answer → `/guide` |
-| 7 | Guardrails | 2 | Name, address and phone are redacted before the AI sees the message; four rules |
-| 8 | Tech stack | 3 | Three numbered zones, one per press: the call becomes a record → every screen reads it → the resident closes the loop |
-| 9 | Demo | — | Hand-off to live demo. **V** plays `demo-backup.mp4` if it exists |
-| 10 | Benefits | 2 | Was/now cards, audience band |
-| 11 | Cost — $1.66 | 2 | Price counts up; findhelp vs Relay as areas drawn to scale |
-| 12 | Scorecard + thank you | — | The four criteria and three bonuses, each with where it was shown; QR to the repo |
+| 3 | Five problems, one thing missing | 2 | Five tiles flip from broken to solved and connect to "one shared record"; then 01–03 are tagged "live in the demo" and 04–05 "next" |
+| 4 | Problem 4 · Awareness & decisions | 2 | Anecdotes over a map of Milwaukee → the City's 26 clusters appear, sized by requests; coral hotspots are called out; weekly brief → `/pulse` |
+| 5 | Problem 5 · Training | 2 | Volunteers leave with their know-how → playbook, new volunteers, cited answer → `/guide` |
+| 6 | Guardrails | 2 | Name, address and phone are redacted before the AI sees the message; four rules |
+| 7 | Tech stack | 3 | Three numbered zones, one per press: the call becomes a record → every screen reads it → the resident closes the loop |
+| 8 | Demo | — | Hand-off to live demo. **V** plays `demo-backup.mp4` if it exists |
+| 9 | Benefits | 2 | Was/now cards, audience band |
+| 10 | Cost — $1.66 | 2 | Price counts up; findhelp vs Relay as areas drawn to scale |
+| 11 | Scorecard + thank you | — | The four criteria and three bonuses, each with where it was shown; QR to the repo |
 
-22 presses reach the demo. Some presses play a short sequence; pressing again mid-sequence skips to its end.
+19 presses reach the demo. Some presses play a short sequence; pressing again mid-sequence skips to its end.
 
-**The Milwaukee map (slide 5).** `slides/img/milwaukee.svg` is the City of Milwaukee's 190 neighbourhood polygons from `data/public/milwaukee-neighborhoods.geojson`, simplified and drawn at 20 px per km. Each circle sits at its cluster's coordinates from `src/lib/clusters.ts`; its size and the call-out numbers were read from the `/grants` table (2026, synthetic data) when the slide was built, so update them if the seed changes.
+**The Milwaukee map (slide 4).** `slides/img/milwaukee.svg` is the City of Milwaukee's 190 neighbourhood polygons from `data/public/milwaukee-neighborhoods.geojson`, simplified and drawn at 20 px per km. Each circle sits at its cluster's coordinates from `src/lib/clusters.ts`; its size and the call-out numbers were read from the `/grants` table (2026, synthetic data) when the slide was built, so update them if the seed changes.
 
-**Hidden slides.** Problems 1 (information sharing) and 2 (requests) each have a full slide that is switched off, because the live demo shows both. A `<section>` with `data-skip` is left out of the deck, the counter and the PDF; delete the attribute to bring a slide back, or add it to hide one.
+**Hidden slides.** Problems 1 (information sharing), 2 (requests) and 3 (data and impact) each have a full slide that is switched off, because the live demo shows all three. A `<section>` with `data-skip` is left out of the deck, the counter and the PDF; delete the attribute to bring a slide back, or add it to hide one.
 
 Type: Inter Tight (display) and Instrument Serif Italic (emphasis), both SIL Open Font License, bundled in `slides/fonts/`.
 
@@ -46,7 +45,7 @@ Type: Inter Tight (display) and Instrument Serif Italic (emphasis), both SIL Ope
 | Home / End | First / last slide |
 | T · R | Start-stop / reset the clock |
 | N | Speaker notes overlay |
-| V | Play `../demo-backup.mp4` on slide 9 |
+| V | Play `../demo-backup.mp4` on slide 8 |
 | F | Fullscreen |
 | `#7` in the URL | Deep-link to a slide with everything revealed |
 
@@ -62,4 +61,4 @@ node pdf.mjs   # Playwright: opens slides/index.html?print, prints 12 pages at 1
 
 With the app running on `:3077`, capture `/board` and `/grants` at 1600×1000 and `/phone?number=4145550188` at 390×844 (2× scale) into `slides/img/` — `board.png`, `grants.png`, `phone-home.png`, `phone-messages.png`, `phone-dialer.png`; plus `/partners`, `/pulse`, `/guide`, `/impact` as `partners.png`, `pulse.png`, `guide.png`, `impact.png`.
 
-Numbers used anywhere in the pitch come from `/grants` on the seeded 2026 data (203 requests · 186 delivered · 124 resident-confirmed = 67 % · 145/203 in clusters = 71 % · 21/26 clusters · median 2 h 05 m · $1.66 per request). If the seed changes, update the script and slides 5 and 11.
+Numbers used anywhere in the pitch come from `/grants` on the seeded 2026 data (203 requests · 186 delivered · 124 resident-confirmed = 67 % · 145/203 in clusters = 71 % · 21/26 clusters · median 2 h 05 m · $1.66 per request). If the seed changes, update the script, the map on slide 4, the cost on slide 10 and the hidden data slide.
