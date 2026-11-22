@@ -9,8 +9,10 @@
     --paper:#f4f1ea; --paper2:#ebe7dd; --ink:#17181c; --ink2:#3d3f46; --mut:#6f727b; --faint:#a3a6ad; --line:#d8d4ca; --line2:#c2bdb1;
     --teal:#0e6b63; --teal2:#d8e9e5; --coral:#d9482b; --coral2:#f7ddd5; --amber:#b7791f; --amber2:#f3e6cf;
     --dark:#15171b; --dark2:#23262c;
-    --sans:-apple-system,"Helvetica Neue",Inter,Arial,sans-serif; --mono:ui-monospace,"SF Mono",Menlo,monospace;
+    --sans:"Inter Tight",-apple-system,"Helvetica Neue",Arial,sans-serif; --serif:"Instrument Serif",Georgia,serif; --mono:ui-monospace,"SF Mono",Menlo,monospace;
   }
+  @font-face{font-family:"Inter Tight";src:url(fonts/InterTight-Variable.woff2) format("woff2");font-weight:400 800;font-display:block}
+  @font-face{font-family:"Instrument Serif";src:url(fonts/InstrumentSerif-Italic.woff2) format("woff2");font-style:italic;font-display:block}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%;background:#1a1b1e;color:var(--ink);font-family:var(--sans);overflow:hidden;-webkit-font-smoothing:antialiased}
   b{font-weight:600}
@@ -50,8 +52,8 @@
   .dark .k{color:#8a8e97} .dark .k .sep{background:#3a3e46}
   h1{font-size:150px;line-height:.95;font-weight:700;letter-spacing:-.04em}
   h2{font-size:56px;line-height:1.08;font-weight:700;letter-spacing:-.03em;max-width:1500px}
-  h2 em{font-style:normal;color:var(--teal)}
-  .dark h2 em{color:#6fc2b7}
+  h2 em,h1 em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em;font-size:1.14em;line-height:.9;margin-left:.05em;color:var(--teal)}
+  .dark h2 em,.dark h1 em{color:#6fc2b7}
   .sub{font-size:24px;color:var(--mut);line-height:1.45;margin-top:18px;max-width:1100px}
   .dark .sub{color:#a3a7b0}
   .tag{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:3px;color:var(--mut);background:var(--paper2)}
@@ -77,10 +79,17 @@
   h2.swap span{position:absolute;left:0;top:0;white-space:nowrap;transition:opacity .55s,transform .55s cubic-bezier(.2,.7,.2,1)}
   .prob[data-phase="0"] h2.swap .h1{opacity:0;transform:translateY(24px)}
   .prob:not([data-phase="0"]) h2.swap .h0{opacity:0;transform:translateY(-24px)}
-  .pv{position:relative;height:700px;margin-top:26px}
-  .pv .viz{position:absolute;top:0;left:calc((1680px - var(--vw))/2);width:var(--vw);transform-origin:0 0;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
-  .prob[data-phase="2"] .pv .viz{transform:translateX(calc((var(--vw) - 1680px)/2)) scale(var(--vs))}
-  .pv .real{position:absolute;right:0;top:0;width:1010px}
+  /* the stage: a framed canvas whose glow turns from coral (today) to teal (with Relay) */
+  .pv{position:relative;isolation:isolate;height:700px;margin-top:26px;border-radius:22px;border:1px solid #e7c3b8;overflow:hidden;background:#faf8f3 radial-gradient(circle at 1px 1px,#e3dfd4 1.2px,transparent 1.7px) 0 0/28px 28px;transition:border-color .8s}
+  .pv::before,.pv::after{content:'';position:absolute;inset:0;z-index:-1;transition:opacity .9s}
+  .pv::before{background:radial-gradient(ellipse 75% 62% at 50% 112%,rgba(217,72,43,.16),transparent 70%)}
+  .pv::after{background:radial-gradient(ellipse 75% 62% at 50% 112%,rgba(14,107,99,.17),transparent 70%);opacity:0}
+  .prob:not([data-phase="0"]) .pv{border-color:#b6d3cd}
+  .prob:not([data-phase="0"]) .pv::before{opacity:0}
+  .prob:not([data-phase="0"]) .pv::after{opacity:1}
+  .pv .viz{position:absolute;top:40px;left:calc((1680px - var(--vw))/2);width:var(--vw);transform-origin:0 0;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+  .prob[data-phase="2"] .pv .viz{transform:translateX(calc((var(--vw) - 1680px)/2 + 36px)) scale(var(--vs))}
+  .pv .real{position:absolute;right:36px;top:34px;width:960px}
   .pv .im{position:relative}
   .shot .bar span{margin-left:10px;font-family:var(--mono);font-size:11px;color:var(--mut)}
   .pin{position:absolute;opacity:0;transition:opacity .5s 1s;z-index:2}
@@ -90,14 +99,12 @@
   .pin span{position:absolute;left:20px;top:-18px;white-space:nowrap;background:var(--ink);color:#fff;font-size:16px;font-weight:600;padding:8px 13px;border-radius:8px;box-shadow:0 12px 26px -10px rgba(0,0,0,.55)}
   .pin.l span{left:auto;right:20px}
   @keyframes ping{0%{box-shadow:0 0 0 0 rgba(217,72,43,.55)}100%{box-shadow:0 0 0 18px rgba(217,72,43,0)}}
-  .pv .mod{position:absolute;left:0;top:var(--mt,380px);width:600px;padding-top:22px;border-top:3px solid var(--ink)}
+  .pv .mod{position:absolute;left:36px;top:calc(var(--mt,380px) + 36px);width:600px;padding-top:22px;border-top:3px solid var(--ink)}
   .mod b{display:block;font-size:32px;font-weight:700;letter-spacing:-.02em}
   .mod code{display:block;font-family:var(--mono);font-size:15px;color:var(--teal);margin-top:8px}
   .mod p{font-size:20px;color:var(--mut);line-height:1.4;margin-top:14px}
   .chip{position:absolute;z-index:2;background:#fff;border:1px solid var(--coral);font-size:18px;padding:11px 17px;border-radius:18px 18px 18px 4px;white-space:nowrap;box-shadow:0 14px 28px -16px rgba(217,72,43,.7);transition:opacity .5s,transform .5s cubic-bezier(.34,1.3,.4,1)}
-  .chip.f{transform:scale(.8);transition-delay:calc(var(--i,0)*.13s)}
-  .chip.f.on{transform:none}
-  .prob:not([data-phase="0"]) .chip{opacity:0!important;transform:scale(.85)!important;transition-delay:0s!important}
+  .prob:not([data-phase="0"]) .chip{opacity:0!important;transform:scale(.85)!important}
   .noanim *,.noanim *::before,.noanim *::after{transition:none!important}
   .sp{position:absolute;width:0;height:0}
 
@@ -219,7 +226,7 @@
   .units .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
   .units .stats>div{position:relative;border-top:3px dashed var(--line2);height:170px}
   .units .stats>div::before{content:'?';position:absolute;left:0;top:16px;font-size:96px;line-height:1;font-weight:700;color:var(--line2)}
-  .units .stat{position:relative;margin-top:-3px;height:170px;border-top:3px solid var(--ink);padding-top:16px;background:var(--paper)}
+  .units .stat{position:relative;margin-top:-3px;height:170px;border-top:3px solid var(--ink);padding-top:16px;background:#faf8f3}
   .units .stat b{display:block;font-size:96px;line-height:1;font-weight:700;letter-spacing:-.04em}
   .units .stat b small{font-size:42px;font-weight:600;letter-spacing:-.02em;margin-left:16px}
   .units .stat>span{display:block;font-size:20px;color:var(--mut);margin-top:10px}
@@ -275,8 +282,39 @@
   .know .turn{position:absolute;left:0;top:176px;font-family:var(--mono);font-size:13px;color:var(--coral);opacity:0;transition:opacity .6s .3s}
   .prob:not([data-step="0"]) .know .turn{opacity:1}
 
+  /* guardrails */
+  .guard{display:grid;grid-template-columns:640px 230px 1fr;align-items:center;height:440px;margin-top:26px;padding:0 44px;border-radius:22px;border:1px solid var(--line);background:#faf8f3 radial-gradient(circle at 1px 1px,#e3dfd4 1.2px,transparent 1.7px) 0 0/28px 28px}
+  .guard .lab{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:12px}
+  .guard .msg{background:#fff;border:1px solid var(--line);border-radius:18px 18px 18px 4px;padding:28px 34px;box-shadow:0 24px 50px -34px rgba(20,20,25,.45)}
+  .guard .msg p{font-size:30px;line-height:1.5;letter-spacing:-.01em}
+  .pii{position:relative;border-radius:5px;padding:0 5px;background:var(--coral2);white-space:nowrap;transition:background .45s,color .3s;transition-delay:calc(var(--i)*.28s)}
+  .pii::after{content:attr(data-r);position:absolute;inset:0;display:grid;place-items:center;font-family:var(--mono);font-size:17px;color:#fff;opacity:0;transition:opacity .4s;transition-delay:calc(var(--i)*.28s + .3s)}
+  .grd:not([data-step="0"]) .pii{background:var(--ink);color:transparent}
+  .grd:not([data-step="0"]) .pii::after{opacity:1}
+  .fork{width:230px;height:330px;overflow:visible}
+  .fork path{fill:none;stroke-width:2.5;stroke-dasharray:8 8;opacity:.16;transition:opacity .5s .8s}
+  .fork .t{stroke:var(--teal)} .fork .d{stroke:var(--ink)}
+  .fork text{font-family:var(--mono);font-size:13px;opacity:0;transition:opacity .5s 1s}
+  .grd:not([data-step="0"]) .fork path{opacity:1;animation:flow 1s linear infinite}
+  .grd:not([data-step="0"]) .fork text{opacity:1}
+  .guard .dest{display:grid;gap:30px}
+  .gbox{display:grid;grid-template-columns:84px 1fr;gap:24px;align-items:center;height:150px;padding:0 28px;border-radius:18px;border:1px solid var(--line);background:#fff;opacity:.35;filter:grayscale(1);transition:opacity .6s 1s,filter .6s 1s,border-color .6s 1s,box-shadow .6s 1s}
+  .grd:not([data-step="0"]) .gbox{opacity:1;filter:none}
+  .grd:not([data-step="0"]) .gbox.ai{border-color:var(--teal);box-shadow:0 20px 40px -28px rgba(14,107,99,.7)}
+  .gbox .lg{width:84px;height:84px;border-radius:22px;border:1px solid var(--line);display:grid;place-items:center;background:#fff}
+  .gbox .lg img{width:46px;height:46px}
+  .gbox.vault .lg{background:var(--dark);border-color:var(--dark);color:#fff} .gbox.vault .lg svg{width:38px;height:38px}
+  .gbox .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .gbox .chips i{font-style:normal;font-family:var(--mono);font-size:16px;padding:6px 11px;border-radius:6px;background:var(--teal2);color:var(--teal)}
+  .gbox.vault .chips i{background:var(--paper2);color:var(--ink)}
+  .rules4{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-top:40px}
+  .rules4>div{display:grid;grid-template-columns:60px 1fr;gap:18px;align-items:start;border-top:3px solid var(--ink);padding-top:22px}
+  .rules4 .ic{width:60px;height:60px;border-radius:16px;background:var(--teal2);color:var(--teal);display:grid;place-items:center} .rules4 .ic svg{width:30px;height:30px}
+  .rules4 b{display:block;font-size:27px;letter-spacing:-.02em;line-height:1.15} .rules4 span{display:block;font-size:19px;color:var(--mut);line-height:1.35;margin-top:8px}
+
   /* 8 stack */
-  .stack{position:relative;width:1680px;height:720px;margin-top:20px}
+  .stack{position:relative;isolation:isolate;width:1680px;height:720px;margin-top:26px}
+  .stack::before{content:'';position:absolute;inset:-12px -30px -16px;z-index:-1;border-radius:22px;border:1px solid var(--line);background:#faf8f3 radial-gradient(circle at 1px 1px,#e3dfd4 1.2px,transparent 1.7px) 0 0/28px 28px}
   .stack .node{position:absolute;display:flex;flex-direction:column;align-items:center;gap:10px;width:170px;opacity:.18;filter:grayscale(1);transition:opacity .6s,filter .6s,transform .6s cubic-bezier(.34,1.3,.4,1);transform:scale(.92)}
   .stack .node.on{opacity:1;filter:none;transform:none}
   .stack .node .lg{width:84px;height:84px;border-radius:22px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;box-shadow:0 14px 30px -18px rgba(20,20,25,.35)}
@@ -317,13 +355,15 @@
   .vid.ready .ph{display:none}
 
   /* 10 benefits */
-  .ba{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:40px}
-  .ba>div{border-top:2px solid var(--ink);padding-top:22px}
+  .ba{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:36px}
+  .ba>div{display:flex;flex-direction:column;min-height:410px;padding:34px 36px 38px;border-radius:20px;border:1px solid var(--line);background:#fff}
   .ba h3{font-size:14px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:500}
-  .ba .was{font-size:19px;color:var(--mut);margin-top:22px;text-decoration:line-through;text-decoration-color:var(--coral);text-decoration-thickness:1.5px}
-  .ba .now{font-size:44px;font-weight:600;letter-spacing:-.02em;line-height:1.2;margin-top:10px}
+  .ba .was{font-size:24px;line-height:1.3;color:var(--mut);margin-top:22px;text-decoration:line-through;text-decoration-color:var(--coral);text-decoration-thickness:2px}
+  .ba .now{font-size:50px;font-weight:700;letter-spacing:-.03em;line-height:1.08;margin-top:auto}
   .ba p{font-size:18px;color:var(--ink2);line-height:1.5;margin-top:16px}
-  .who{margin-top:140px;display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
+  .who{margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px;padding:32px 36px;border-radius:20px;background:var(--dark);color:#fff}
+  section .who .ic{background:#20343a;color:#6fc2b7}
+  section .who span{color:#a9adb6}
   .who>div{display:grid;grid-template-columns:60px 1fr;gap:16px;align-items:start}
   .who .ic{width:48px;height:48px;border-radius:12px;background:var(--teal2);color:var(--teal);display:grid;place-items:center} .who .ic svg{width:24px;height:24px}
   .who b{display:block;font-size:24px} .who span{display:block;font-size:19px;color:var(--mut);margin-top:4px;line-height:1.45}
@@ -341,21 +381,35 @@
   .legend b{color:var(--ink);font-family:var(--mono);font-weight:500}
   .fine{font-size:13px;color:var(--faint);margin-top:22px;line-height:1.5;max-width:800px}
   .cmp h4{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:500;padding-bottom:14px;border-bottom:1px solid var(--line)}
-  .cmp .row{display:grid;grid-template-columns:200px 1fr 110px;gap:18px;align-items:center;padding:28px 0;border-bottom:1px solid var(--line)}
-  .cmp .row .l{font-size:19px} .cmp .row .l small{display:block;font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:2px}
-  .cmp .row .t i{display:block;height:26px;border-radius:3px;background:var(--line2);width:0;transition:width 1.2s cubic-bezier(.2,.7,.2,1) .3s}
-  .cmp .row.us .t i{background:var(--teal)}
-  .f.on .cmp .row .t i{width:max(3px,calc(var(--w)*1%))}
-  .cmp .row .v{font-family:var(--mono);font-size:16px;text-align:right}
-  .cmp .row.us .v{color:var(--teal);font-weight:600}
+  .sq{position:relative;height:476px;margin-top:22px}
+  .sq .big{position:absolute;left:0;top:0;width:440px;height:440px;padding:22px 26px;border-radius:10px;background:var(--coral2);border:1.5px solid #e9a898;transform-origin:0 100%;transform:scale(.15);opacity:0;transition:transform 1.1s cubic-bezier(.2,.7,.2,1) .2s,opacity .5s .2s}
+  .sq .big>span,.sq .mid span{display:block;font-family:var(--mono);font-size:13px;color:#9a4a37}
+  .sq .big>b{display:block;font-size:68px;letter-spacing:-.04em;line-height:1.05;margin-top:6px;color:#8a2f1b}
+  .sq .big>small{font-size:17px;color:#9a4a37}
+  .sq .mid{position:absolute;left:-1.5px;bottom:-1.5px;width:118px;height:118px;padding:12px 13px;border-radius:8px;background:#e9a898}
+  .sq .mid b{display:block;font-size:23px;letter-spacing:-.02em;color:#6d2415;margin-top:2px}
+  .sq .us{position:absolute;left:478px;top:0;height:440px;display:flex;flex-direction:column;justify-content:flex-end;white-space:nowrap;opacity:0;transition:opacity .6s 1.2s}
+  .sq .us b{font-size:46px;letter-spacing:-.03em;color:var(--teal);line-height:1}
+  .sq .us span{font-family:var(--mono);font-size:13px;color:var(--teal);margin:6px 0 16px}
+  .sq .us i{display:block;width:28px;height:28px;border-radius:5px;background:var(--teal);animation:pingt 1.8s ease-out infinite}
+  .sq em{position:absolute;left:0;top:452px;font-style:normal;font-family:var(--mono);font-size:12px;color:var(--faint)}
+  .f.on .sq .big{transform:none;opacity:1} .f.on .sq .us{opacity:1}
+  @keyframes pingt{0%{box-shadow:0 0 0 0 rgba(14,107,99,.55)}100%{box-shadow:0 0 0 20px rgba(14,107,99,0)}}
   .cmp .note{font-size:17px;color:var(--ink2);margin-top:30px;line-height:1.5}
 
   /* 12 thanks */
-  .thanks{display:grid;grid-template-columns:1fr 520px;height:100%;align-items:center;gap:80px}
-  .thanks h1{color:var(--paper);font-size:120px}
-  .thanks p{font-size:28px;color:#c7cad1;margin-top:30px;line-height:1.4;max-width:800px}
-  .thanks .meta{margin-top:50px;display:flex;gap:40px;font-family:var(--mono);font-size:14px;color:#8a8e97}
-  .thanks .meta b{display:block;color:#e6e8ec;font-weight:500;font-size:15px;margin-bottom:4px}
+  .thanks{display:grid;grid-template-columns:1fr 340px;height:100%;align-items:center;gap:100px}
+  .sc h2{color:var(--paper)}
+  .sc .rows{margin-top:36px;border-top:1px solid #2c3037}
+  .sc .row{display:grid;grid-template-columns:48px 400px 1fr;align-items:center;min-height:76px;border-bottom:1px solid #2c3037}
+  .sc .row::before{content:'✓';width:28px;height:28px;border-radius:50%;background:#6fc2b7;color:var(--dark);display:grid;place-items:center;font-size:16px;font-weight:700}
+  .sc .row b{font-size:26px;letter-spacing:-.02em;color:#fff}
+  .sc .row b small{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;color:#e6b566;border:1px solid #6b5a36;border-radius:3px;padding:3px 6px;margin-right:12px;vertical-align:4px}
+  .sc .row span{font-size:22px;color:#b9bdc6}
+  .sc .row span i{font-style:normal;font-weight:600;color:#6fc2b7}
+  section.active .sc .row{animation:rise .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(.35s + var(--i)*.09s)}
+  .thanks .qrbox h3{font-size:56px;letter-spacing:-.03em;color:var(--paper);margin-top:40px;white-space:nowrap}
+  .thanks .qrbox p{font-family:var(--serif);font-style:italic;font-size:34px;color:#6fc2b7;margin-top:4px}
   .thanks .qrbox{justify-self:end;text-align:center}
   .qr{width:260px;height:260px;fill:var(--paper);background:var(--paper);padding:18px;border-radius:12px;box-sizing:content-box}
   .qr path{fill:var(--dark)}
@@ -373,7 +427,7 @@
     .stack .node,.stack .w,.stack .wl,.stack .dot,.stack .steps div,.net .spoke,.net .hub,.map .cl,.map .brief,.know .arrow,.know .pp.new,.loop .arc,.loop .node{opacity:1!important;transform:none!important}
     .loop .arc{stroke-dashoffset:0!important}
     .net .tangle{opacity:.08!important}
-    .hbar .r .t i{width:calc(var(--w)*1%)!important} .seg i{width:calc(var(--w)*1%)!important} .cmp .row .t i{width:max(3px,calc(var(--w)*1%))!important}
+    .seg i{width:calc(var(--w)*1%)!important}
     .donut .fg{stroke-dasharray:var(--d) 1000!important}
     .pipe .card{left:918px!important;border-color:var(--teal)!important}
     .stack .steps div{color:var(--ink)!important}
@@ -390,7 +444,7 @@
   <section class="slide dark" data-beat="0" data-notes="Team V. Relay MKE — one shared record for ComForce, closed only when the resident says help arrived. (Advance.)">
     <div class="title">
       <div class="team"><b>V</b> Team V <span style="color:#50555e">·</span> Hacksgiving 2026</div>
-      <h1>Relay MKE</h1>
+      <h1>Relay <em>MKE</em></h1>
       <p>One shared record for every request ComForce receives — <b>closed only when the resident says help arrived.</b></p>
       <svg class="loop" viewBox="0 0 1680 250" id="loop">
         <text class="c2" x="840" y="36" text-anchor="middle">ONE REQUEST · ONE RECORD · START TO FINISH</text>
@@ -416,9 +470,9 @@
     <div class="k"><span class="n">About</span><span class="sep"></span>what we built · every screen here is the running app</div>
     <h2>One number. One board. <em>One proof.</em></h2>
     <div class="tri">
-      <figure class="f"><div class="phone"><img src="img/phone-dialer.png" alt="ComForce help line contact"></div><figcaption><b>One number</b><span>Jordan answers · EN / ES</span></figcaption></figure>
-      <figure class="f"><div class="shot"><div class="bar"><i></i><i></i><i></i><span>relay-mke · /board</span></div><img src="img/board.png" alt="Relay board"></div><figcaption><b>One board</b><span>eight divisions · the same card</span></figcaption></figure>
-      <figure class="f"><div class="shot"><div class="bar"><i></i><i></i><i></i><span>relay-mke · /grants</span></div><div class="crop" role="img" aria-label="Resident-verified outcomes by cluster"></div></div><figcaption><b>One proof</b><span>the resident says it arrived</span></figcaption></figure>
+      <figure class="f" data-g="a"><div class="phone"><img src="img/phone-dialer.png" alt="ComForce help line contact"></div><figcaption><b>One number</b><span>Jordan answers · EN / ES</span></figcaption></figure>
+      <figure class="f" data-g="a" data-seq="450"><div class="shot"><div class="bar"><i></i><i></i><i></i><span>relay-mke · /board</span></div><img src="img/board.png" alt="Relay board"></div><figcaption><b>One board</b><span>eight divisions · the same card</span></figcaption></figure>
+      <figure class="f" data-g="a" data-seq="900"><div class="shot"><div class="bar"><i></i><i></i><i></i><span>relay-mke · /grants</span></div><div class="crop" role="img" aria-label="Resident-verified outcomes by cluster"></div></div><figcaption><b>One proof</b><span>the resident says it arrived</span></figcaption></figure>
     </div>
   </section>
 
@@ -454,10 +508,10 @@
     <h2 class="swap"><span class="h0">Eight divisions. A dozen partners. No shared view.</span><span class="h1">One record in the middle. <em>One tap to dispatch.</em></span></h2>
     <div class="pv">
       <div class="viz" style="--vw:1100px;--vs:.545">
-        <div class="chip f" data-g="c" style="--i:0;left:30px;top:150px">“Who has beds tonight?”</div>
-        <div class="chip f" data-g="c" style="--i:1;right:0;top:92px">“Did anyone call the 35th St family?”</div>
-        <div class="chip f" data-g="c" style="--i:2;left:80px;top:500px">“I thought you had it.”</div>
-        <div class="chip f" data-g="c" style="--i:3;right:60px;top:470px">“Is the pantry even open?”</div>
+        <div class="chip" style="left:30px;top:150px">“Who has beds tonight?”</div>
+        <div class="chip" style="right:0;top:92px">“Did anyone call the 35th St family?”</div>
+        <div class="chip" style="left:80px;top:500px">“I thought you had it.”</div>
+        <div class="chip" style="right:60px;top:470px">“Is the pantry even open?”</div>
         <i class="f sp" data-ph="1"></i>
         <svg class="net" viewBox="0 0 1100 620" id="net">
           <g class="tangle" id="tangle"></g>
@@ -496,8 +550,8 @@
             <div class="lane" style="left:452px"><h5>In progress</h5><div class="ghost"></div><div class="ghost g2"></div><small>partner dispatched</small></div>
             <div class="lane" style="left:678px"><h5>Delivered</h5><div class="ghost"></div><small>volunteer</small></div>
             <div class="lane v" style="left:904px"><h5>Verified</h5><div class="ghost"></div><div class="ghost g2"></div><small>the resident</small></div>
-            <div class="card f" data-ph="1"><div class="id">R-SHE5 · 11:38 PM</div><b>Family of 4 needs food until Friday</b><div class="chips"><i>Food</i><i>Critical</i><i>Sherman Park</i></div><div class="st" id="cardst">logged by Jordan · 0:41 into the call</div></div>
-            <i class="f sp" data-ph="1"></i><i class="f sp" data-ph="1"></i><i class="f sp" data-ph="1"></i><i class="f sp" data-ph="1"></i>
+            <div class="card f" data-g="go" data-ph="1"><div class="id">R-SHE5 · 11:38 PM</div><b>Family of 4 needs food until Friday</b><div class="chips"><i>Food</i><i>Critical</i><i>Sherman Park</i></div><div class="st" id="cardst">logged by Jordan · 0:41 into the call</div></div>
+            <i class="f sp" data-g="go" data-seq="1000" data-ph="1"></i><i class="f sp" data-g="go" data-seq="2000" data-ph="1"></i><i class="f sp" data-g="go" data-seq="3000" data-ph="1"></i><i class="f sp" data-g="go" data-seq="4600" data-ph="1"></i>
           </div>
         </div>
       </div>
@@ -515,12 +569,12 @@
       <div class="viz" style="--vw:1200px;--vs:.5">
         <div class="units" id="units">
           <div class="stats">
-            <div><div class="stat f" data-ph="1"><b data-count>203</b><span>requests logged</span></div></div>
-            <div><div class="stat f" data-ph="1"><b data-count>186</b><span>delivered</span></div></div>
-            <div><div class="stat t f" data-g="v" data-ph="1"><b><span data-count>124</span><small>= 67%</small></b><span>confirmed by the resident</span></div></div>
+            <div><div class="stat f" data-g="n" data-ph="1"><b data-count>203</b><span>requests logged</span></div></div>
+            <div><div class="stat f" data-g="n" data-seq="1000" data-ph="1"><b data-count>186</b><span>delivered</span></div></div>
+            <div><div class="stat t f" data-g="n" data-seq="2100" data-ph="1"><b><span data-count>124</span><small>= 67%</small></b><span>confirmed by the resident</span></div></div>
           </div>
           <div class="dots" id="dots" data-step="0"></div>
-          <div class="leg"><span style="--c:#0e6b63">confirmed by the resident</span><span style="--c:#17181c">delivered</span><span style="--c:#dedacf">open</span><em class="f" data-g="v" data-ph="1">the City's report today — resident confirmation: <b>not measured</b></em></div>
+          <div class="leg"><span style="--c:#0e6b63">confirmed by the resident</span><span style="--c:#17181c">delivered</span><span style="--c:#dedacf">open</span><em class="f" data-g="n" data-seq="2100" data-ph="1">the City's report today — resident confirmation: <b>not measured</b></em></div>
         </div>
       </div>
       <div class="mod f" data-g="real" data-ph="2" style="--mt:360px"><b>Impact Studio + Grants</b><code>/impact · /grants</code><p>One dot = one request. One click = the grant draft, in the funder's own words.</p></div>
@@ -538,11 +592,11 @@
         <div class="chip" style="left:110px;top:150px">“Feels like it's mostly Sherman Park?”</div>
         <div class="chip" style="left:400px;top:330px">“Someone said Amani is bad this month.”</div>
         <div class="chip" style="left:760px;top:90px">“We'll know at the next meeting.”</div>
-        <i class="f sp" data-ph="1"></i>
+        <i class="f sp" data-g="m" data-ph="1"></i>
         <svg class="map" viewBox="0 0 1100 620" id="map">
           <g class="grid" id="mgrid"></g>
           <g id="clusters"></g>
-          <g transform="translate(760 40)"><g class="brief f" data-ph="1">
+          <g transform="translate(760 40)"><g class="brief f" data-g="m" data-seq="1500" data-ph="1">
             <rect x="0" y="0" width="330" height="200" rx="10"/>
             <text class="h" x="22" y="34">WEEKLY BRIEF · WK 46</text>
             <text class="t b" x="22" y="68">3 clusters need outreach</text>
@@ -570,14 +624,14 @@
           <div class="chip" style="left:150px;top:262px">“What do we do with a 5-day notice?”</div>
           <div class="chip" style="left:560px;top:350px">“Ask Tasha.”</div>
           <div class="chip" style="left:720px;top:438px">“Tasha left in March.”</div>
-          <i class="f sp"></i>
+          <i class="f sp" data-g="k"></i>
           <div class="people" id="people"></div>
           <div class="turn">18-month turnover — the know-how walks out with them</div>
-          <div class="book f" data-g="join" data-ph="1"><div><b>ComForce playbooks — written once, in Relay</b><span>Housing · Food · Safety escalation · Mediation · After-hours · What we never promise</span></div><div class="docs"><i>housing.md</i><i>safety.md</i><i>after-hours.md</i><i>+9</i></div></div>
-          <div class="arrow f" data-g="qa" data-ph="1"></div>
+          <div class="book f" data-g="k" data-seq="1200" data-ph="1"><div><b>ComForce playbooks — written once, in Relay</b><span>Housing · Food · Safety escalation · Mediation · After-hours · What we never promise</span></div><div class="docs"><i>housing.md</i><i>safety.md</i><i>after-hours.md</i><i>+9</i></div></div>
+          <div class="arrow f" data-g="k" data-seq="2600" data-ph="1"></div>
           <div class="chat">
-            <div class="q f" data-g="qa" data-ph="1">A family just got a 5-day eviction notice — what do I do first, and who do I <b>not</b> call?</div>
-            <div class="a f" data-g="qa" data-ph="1">First: photograph the notice and log it as Housing · Critical so the lead is paged. Call Legal Action of Wisconsin (414-278-7722) — not the landlord. Don't promise rent money; ComForce doesn't hold emergency funds.<small>from housing.md §2 "Eviction notices" · last edited by Vaun, Sep 2026</small></div>
+            <div class="q f" data-g="k" data-seq="2600" data-ph="1">A family just got a 5-day eviction notice — what do I do first, and who do I <b>not</b> call?</div>
+            <div class="a f" data-g="k" data-seq="3300" data-ph="1">First: photograph the notice and log it as Housing · Critical so the lead is paged. Call Legal Action of Wisconsin (414-278-7722) — not the landlord. Don't promise rent money; ComForce doesn't hold emergency funds.<small>from housing.md §2 "Eviction notices" · last edited by Vaun, Sep 2026</small></div>
           </div>
         </div>
       </div>
@@ -586,10 +640,39 @@
     </div>
   </section>
 
-  <!-- 9 STACK -->
+  <!-- 9 GUARDRAILS -->
+  <section class="slide grd" data-beat="98" data-notes="Responsible technology. Before any AI sees her message — (press) — her name, address and phone number are stripped out, locally, by a deterministic filter. The model only sees the need. Her details stay in ComForce's own database. (Press.) And a person makes every decision: nobody is ever scored or predicted, crisis words go straight to people, and every name in this demo is fictional.">
+    <div class="k"><span class="n">Responsible technology</span><span class="sep"></span>built in, not bolted on <span class="tag">synthetic example</span></div>
+    <h2>The AI never learns who she is. <em>A person makes every decision.</em></h2>
+    <i class="f sp"></i>
+    <div class="guard">
+      <div>
+        <div class="lab">What the resident says</div>
+        <div class="msg"><p>“Hi, this is <span class="pii" data-r="[name]" style="--i:0">Maria Lopez</span>. We're at <span class="pii" data-r="[address]" style="--i:1">2714 N 35th St</span>, out of food until Friday — I have 3 kids. Call me at <span class="pii" data-r="[phone]" style="--i:2">414-555-0188</span>.”</p></div>
+      </div>
+      <svg class="fork" viewBox="0 0 230 330"><defs><marker id="ga" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="context-stroke" stroke="none" style="stroke-dasharray:none;opacity:1"/></marker></defs>
+        <path class="t" d="M18 165C120 165 110 75 218 75" marker-end="url(#ga)"/>
+        <path class="d" d="M18 165C120 165 110 255 218 255" marker-end="url(#ga)"/>
+        <text x="100" y="62" text-anchor="middle" fill="#0e6b63">the need only</text>
+        <text x="100" y="286" text-anchor="middle" fill="#17181c">who she is</text>
+      </svg>
+      <div class="dest">
+        <div class="gbox ai"><div class="lg"><img src="img/logos/claude.svg" alt="Claude"></div><div><div class="lab">What the AI sees</div><div class="chips"><i>need: food</i><i>household: 4</i><i>until: Friday</i><i>urgency: critical</i></div></div></div>
+        <div class="gbox vault"><div class="lg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div><div class="lab">What stays in ComForce's own database</div><div class="chips"><i>name</i><i>address</i><i>phone</i><i>never sent to a model</i></div></div></div>
+      </div>
+    </div>
+    <div class="rules4">
+      <div class="f" data-g="r"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M17 11l2 2 4-4"/></svg></div><div><b>A person decides</b><span>Claim, dispatch and close are human taps.</span></div></div>
+      <div class="f" data-g="r" data-seq="200"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg></div><div><b>No one is scored</b><span>Counts by neighbourhood. Never a person.</span></div></div>
+      <div class="f" data-g="r" data-seq="400"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M14.83 9.17l4.24-4.24M4.93 19.07l4.24-4.24"/></svg></div><div><b>Crisis goes to people</b><span>Safety words flag a lead and give 988.</span></div></div>
+      <div class="f" data-g="r" data-seq="600"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div><div><b>Synthetic data only</b><span>Every name in this demo is fictional.</span></div></div>
+    </div>
+  </section>
+
+  <!-- 10 STACK -->
   <section class="slide" data-beat="105" data-manual data-notes="How it's built. Click through: the resident calls a Twilio number; ElevenLabs runs Jordan's voice; Claude turns the transcript into a structured request; it's written to Supabase — the one record. The Next.js board reads it live; dispatch goes out by Resend; the Pulse map reads the same rows; and the loop closes with a Twilio text back to the resident. Pay-per-use everywhere.">
     <div class="k"><span class="n">How it's built</span><span class="sep"></span>one record in the middle · pay-per-use around it</div>
-    <h2>Every part is a current, rentable service. <em>Nothing has a seat licence.</em></h2>
+    <h2>Every part is rentable. <em>Nothing has a seat licence.</em></h2>
     <div class="stack" id="stack">
       <svg class="wires" viewBox="0 0 1680 720">
         <defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker></defs>
@@ -633,7 +716,7 @@
     </div>
   </section>
 
-  <!-- 9 DEMO VIDEO -->
+  <!-- 11 DEMO VIDEO -->
   <section class="slide" data-beat="125" data-notes="Demo. Resident calls from a seat in the room; Jordan logs it; a coordinator claims and dispatches; the resident confirms. If the live call fails, press V to play the recording.">
     <div class="k"><span class="n">Demo</span><span class="sep"></span>two minutes, first ring to “yes, it arrived” <span class="tag live">live</span></div>
     <h2>A resident is about to call ComForce from a seat in this room.</h2>
@@ -648,10 +731,10 @@
     </div>
   </section>
 
-  <!-- 10 BENEFITS -->
+  <!-- 12 BENEFITS -->
   <section class="slide" data-notes="What changes for ComForce: three phones become one record; the helper saying done becomes the resident saying it arrived; stories become evidence. Residents never install anything, the team keeps their phones, funders get a number they can audit.">
     <div class="k"><span class="n">What changes</span><span class="sep"></span>for ComForce, residents and funders</div>
-    <h2>Three things that were impossible on Monday are routine on Tuesday.</h2>
+    <h2>Impossible on Monday. <em>Routine on Tuesday.</em></h2>
     <div class="ba">
       <div class="f" data-g="b"><h3>Coordination</h3><div class="was">Three phones, three versions of the truth</div><div class="now">One record every division works from</div></div>
       <div class="f" data-g="b" style="transition-delay:.15s"><h3>Outcome</h3><div class="was">“Done” — because the helper said so</div><div class="now">“Arrived” — because the resident said so</div></div>
@@ -664,7 +747,7 @@
     </div>
   </section>
 
-  <!-- 11 COST -->
+  <!-- 13 COST -->
   <section class="slide" data-notes="Everything you just watched cost about a dollar sixty-six at list prices — mostly the phone minutes. About three hundred dollars a year for all eight divisions. findhelp charges up to seventy-five thousand for a directory that never asks the resident.">
     <div class="k"><span class="n">Cost</span><span class="sep"></span>list prices · nothing negotiated</div>
     <h2>Everything you just watched cost <em>$1.66.</em></h2>
@@ -677,24 +760,33 @@
       </div>
       <div class="cmp f">
         <h4>Per year, all eight divisions</h4>
-        <div class="row"><div class="l">findhelp<small>enterprise</small></div><div class="t"><i style="--w:100"></i></div><div class="v">$75,000</div></div>
-        <div class="row"><div class="l">findhelp<small>entry tier</small></div><div class="t"><i style="--w:7.2"></i></div><div class="v">$5,400</div></div>
-        <div class="row us"><div class="l">Relay MKE<small>at 2026 volume</small></div><div class="t"><i style="--w:0.4"></i></div><div class="v">≈ $300</div></div>
+        <div class="sq">
+          <div class="big"><span>findhelp · enterprise</span><b>$75,000</b><small>per year</small><div class="mid"><span>entry tier</span><b>$5,400</b></div></div>
+          <div class="us"><b>≈ $300</b><span>Relay MKE · per year</span><i></i></div>
+          <em>areas drawn to scale · list prices</em>
+        </div>
         <div class="note">No seats, no licences. ComForce owns the data and can leave with a CSV.</div>
       </div>
     </div>
   </section>
 
-  <!-- 12 THANKS -->
-  <section class="slide dark" data-notes="Thank you. Team V. The code, the research on twenty programs and this deck are at the repo.">
+  <!-- 14 SCORECARD -->
+  <section class="slide dark" data-notes="Thank you. This is your scorecard and where you saw each line: impact, in the demo; practical, on their own phones; accessible, by call or text in three languages; responsible, PII stripped before AI. Cost: a dollar sixty-six a request. Ready Monday.">
     <div class="thanks">
-      <div>
+      <div class="sc">
         <div class="k"><span class="n" style="color:#6fc2b7">Team V</span><span class="sep"></span>Hacksgiving 2026 · ComForce MKE</div>
-        <h1>Thank you.</h1>
-        <p>One engine for all eight divisions. ComForce owns every record. <b style="color:#fff">Ready Monday.</b></p>
-        <div class="meta"><div><b>Code</b>github.com/aditya9064/hacksgiving-2026</div><div><b>Research</b>20 programs, 41-page playbook</div><div><b>Live</b>the number on the next table</div></div>
+        <h2>Your scorecard. <em>Where you saw it.</em></h2>
+        <div class="rows">
+          <div class="row" style="--i:0"><b>Community impact</b><span>Request → help → the resident's own “yes”. <i>You just watched it</i></span></div>
+          <div class="row" style="--i:1"><b>Practical implementation</b><span>Their own phones, one number, one deploy. <i>Working today</i></span></div>
+          <div class="row" style="--i:2"><b>Accessibility &amp; usability</b><span>Call or text, no app. <i>English · Español · Hmoob</i></span></div>
+          <div class="row" style="--i:3"><b>Responsible technology</b><span>PII stripped before AI. People decide. <i>No one scored</i></span></div>
+          <div class="row" style="--i:4"><b><small>BONUS</small>Cost</b><span><i>$1.66</i> a request · about <i>$300</i> a year</span></div>
+          <div class="row" style="--i:5"><b><small>BONUS</small>Integration</b><span>Open repo, documented, CSV export any time</span></div>
+          <div class="row" style="--i:6"><b><small>BONUS</small>Uniqueness</b><span>A case closes only when <i>the resident confirms</i></span></div>
+        </div>
       </div>
-      <div class="qrbox"><svg class="qr" viewBox="0 0 33 33" shape-rendering="crispEdges"><path d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM9 0h1v1h-1zM10 0h1v1h-1zM11 0h1v1h-1zM13 0h1v1h-1zM17 0h1v1h-1zM18 0h1v1h-1zM19 0h1v1h-1zM20 0h1v1h-1zM21 0h1v1h-1zM23 0h1v1h-1zM26 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM29 0h1v1h-1zM30 0h1v1h-1zM31 0h1v1h-1zM32 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM9 1h1v1h-1zM13 1h1v1h-1zM14 1h1v1h-1zM15 1h1v1h-1zM17 1h1v1h-1zM26 1h1v1h-1zM32 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM11 2h1v1h-1zM13 2h1v1h-1zM15 2h1v1h-1zM16 2h1v1h-1zM17 2h1v1h-1zM18 2h1v1h-1zM20 2h1v1h-1zM21 2h1v1h-1zM26 2h1v1h-1zM28 2h1v1h-1zM29 2h1v1h-1zM30 2h1v1h-1zM32 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM10 3h1v1h-1zM12 3h1v1h-1zM14 3h1v1h-1zM15 3h1v1h-1zM16 3h1v1h-1zM20 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM29 3h1v1h-1zM30 3h1v1h-1zM32 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM13 4h1v1h-1zM15 4h1v1h-1zM17 4h1v1h-1zM18 4h1v1h-1zM21 4h1v1h-1zM22 4h1v1h-1zM23 4h1v1h-1zM24 4h1v1h-1zM26 4h1v1h-1zM28 4h1v1h-1zM29 4h1v1h-1zM30 4h1v1h-1zM32 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM10 5h1v1h-1zM11 5h1v1h-1zM13 5h1v1h-1zM14 5h1v1h-1zM15 5h1v1h-1zM16 5h1v1h-1zM18 5h1v1h-1zM20 5h1v1h-1zM24 5h1v1h-1zM26 5h1v1h-1zM32 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h1v1h-1zM27 6h1v1h-1zM28 6h1v1h-1zM29 6h1v1h-1zM30 6h1v1h-1zM31 6h1v1h-1zM32 6h1v1h-1zM8 7h1v1h-1zM9 7h1v1h-1zM10 7h1v1h-1zM11 7h1v1h-1zM14 7h1v1h-1zM15 7h1v1h-1zM21 7h1v1h-1zM24 7h1v1h-1zM0 8h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM9 8h1v1h-1zM11 8h1v1h-1zM13 8h1v1h-1zM14 8h1v1h-1zM15 8h1v1h-1zM16 8h1v1h-1zM17 8h1v1h-1zM26 8h1v1h-1zM27 8h1v1h-1zM28 8h1v1h-1zM29 8h1v1h-1zM30 8h1v1h-1zM0 9h1v1h-1zM3 9h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM8 9h1v1h-1zM19 9h1v1h-1zM20 9h1v1h-1zM21 9h1v1h-1zM23 9h1v1h-1zM26 9h1v1h-1zM27 9h1v1h-1zM29 9h1v1h-1zM30 9h1v1h-1zM32 9h1v1h-1zM0 10h1v1h-1zM3 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM10 10h1v1h-1zM12 10h1v1h-1zM15 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM28 10h1v1h-1zM30 10h1v1h-1zM31 10h1v1h-1zM1 11h1v1h-1zM2 11h1v1h-1zM3 11h1v1h-1zM4 11h1v1h-1zM5 11h1v1h-1zM8 11h1v1h-1zM9 11h1v1h-1zM10 11h1v1h-1zM11 11h1v1h-1zM12 11h1v1h-1zM14 11h1v1h-1zM16 11h1v1h-1zM21 11h1v1h-1zM24 11h1v1h-1zM25 11h1v1h-1zM28 11h1v1h-1zM29 11h1v1h-1zM30 11h1v1h-1zM31 11h1v1h-1zM32 11h1v1h-1zM0 12h1v1h-1zM1 12h1v1h-1zM2 12h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM6 12h1v1h-1zM9 12h1v1h-1zM10 12h1v1h-1zM15 12h1v1h-1zM18 12h1v1h-1zM21 12h1v1h-1zM23 12h1v1h-1zM25 12h1v1h-1zM27 12h1v1h-1zM28 12h1v1h-1zM29 12h1v1h-1zM1 13h1v1h-1zM2 13h1v1h-1zM5 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM10 13h1v1h-1zM11 13h1v1h-1zM13 13h1v1h-1zM14 13h1v1h-1zM15 13h1v1h-1zM16 13h1v1h-1zM20 13h1v1h-1zM23 13h1v1h-1zM24 13h1v1h-1zM26 13h1v1h-1zM31 13h1v1h-1zM32 13h1v1h-1zM0 14h1v1h-1zM4 14h1v1h-1zM5 14h1v1h-1zM6 14h1v1h-1zM9 14h1v1h-1zM11 14h1v1h-1zM19 14h1v1h-1zM22 14h1v1h-1zM24 14h1v1h-1zM25 14h1v1h-1zM26 14h1v1h-1zM27 14h1v1h-1zM28 14h1v1h-1zM29 14h1v1h-1zM31 14h1v1h-1zM3 15h1v1h-1zM5 15h1v1h-1zM7 15h1v1h-1zM8 15h1v1h-1zM12 15h1v1h-1zM13 15h1v1h-1zM14 15h1v1h-1zM16 15h1v1h-1zM18 15h1v1h-1zM19 15h1v1h-1zM20 15h1v1h-1zM21 15h1v1h-1zM23 15h1v1h-1zM24 15h1v1h-1zM25 15h1v1h-1zM26 15h1v1h-1zM29 15h1v1h-1zM30 15h1v1h-1zM0 16h1v1h-1zM1 16h1v1h-1zM2 16h1v1h-1zM3 16h1v1h-1zM5 16h1v1h-1zM6 16h1v1h-1zM7 16h1v1h-1zM10 16h1v1h-1zM11 16h1v1h-1zM13 16h1v1h-1zM16 16h1v1h-1zM17 16h1v1h-1zM19 16h1v1h-1zM22 16h1v1h-1zM24 16h1v1h-1zM25 16h1v1h-1zM27 16h1v1h-1zM28 16h1v1h-1zM29 16h1v1h-1zM32 16h1v1h-1zM1 17h1v1h-1zM3 17h1v1h-1zM4 17h1v1h-1zM5 17h1v1h-1zM10 17h1v1h-1zM12 17h1v1h-1zM17 17h1v1h-1zM19 17h1v1h-1zM20 17h1v1h-1zM23 17h1v1h-1zM26 17h1v1h-1zM27 17h1v1h-1zM29 17h1v1h-1zM30 17h1v1h-1zM32 17h1v1h-1zM2 18h1v1h-1zM4 18h1v1h-1zM5 18h1v1h-1zM6 18h1v1h-1zM7 18h1v1h-1zM8 18h1v1h-1zM9 18h1v1h-1zM11 18h1v1h-1zM14 18h1v1h-1zM15 18h1v1h-1zM17 18h1v1h-1zM20 18h1v1h-1zM22 18h1v1h-1zM24 18h1v1h-1zM25 18h1v1h-1zM26 18h1v1h-1zM27 18h1v1h-1zM28 18h1v1h-1zM30 18h1v1h-1zM31 18h1v1h-1zM7 19h1v1h-1zM9 19h1v1h-1zM10 19h1v1h-1zM15 19h1v1h-1zM17 19h1v1h-1zM18 19h1v1h-1zM19 19h1v1h-1zM20 19h1v1h-1zM26 19h1v1h-1zM27 19h1v1h-1zM28 19h1v1h-1zM29 19h1v1h-1zM30 19h1v1h-1zM31 19h1v1h-1zM1 20h1v1h-1zM3 20h1v1h-1zM4 20h1v1h-1zM6 20h1v1h-1zM9 20h1v1h-1zM13 20h1v1h-1zM14 20h1v1h-1zM15 20h1v1h-1zM16 20h1v1h-1zM19 20h1v1h-1zM20 20h1v1h-1zM21 20h1v1h-1zM22 20h1v1h-1zM25 20h1v1h-1zM28 20h1v1h-1zM29 20h1v1h-1zM0 21h1v1h-1zM1 21h1v1h-1zM7 21h1v1h-1zM8 21h1v1h-1zM9 21h1v1h-1zM10 21h1v1h-1zM12 21h1v1h-1zM13 21h1v1h-1zM15 21h1v1h-1zM17 21h1v1h-1zM18 21h1v1h-1zM21 21h1v1h-1zM23 21h1v1h-1zM24 21h1v1h-1zM26 21h1v1h-1zM30 21h1v1h-1zM32 21h1v1h-1zM0 22h1v1h-1zM6 22h1v1h-1zM8 22h1v1h-1zM9 22h1v1h-1zM12 22h1v1h-1zM13 22h1v1h-1zM14 22h1v1h-1zM15 22h1v1h-1zM16 22h1v1h-1zM18 22h1v1h-1zM20 22h1v1h-1zM25 22h1v1h-1zM29 22h1v1h-1zM31 22h1v1h-1zM0 23h1v1h-1zM2 23h1v1h-1zM7 23h1v1h-1zM9 23h1v1h-1zM10 23h1v1h-1zM11 23h1v1h-1zM12 23h1v1h-1zM15 23h1v1h-1zM21 23h1v1h-1zM22 23h1v1h-1zM25 23h1v1h-1zM26 23h1v1h-1zM27 23h1v1h-1zM28 23h1v1h-1zM29 23h1v1h-1zM30 23h1v1h-1zM32 23h1v1h-1zM0 24h1v1h-1zM4 24h1v1h-1zM6 24h1v1h-1zM7 24h1v1h-1zM10 24h1v1h-1zM15 24h1v1h-1zM16 24h1v1h-1zM17 24h1v1h-1zM22 24h1v1h-1zM23 24h1v1h-1zM24 24h1v1h-1zM25 24h1v1h-1zM26 24h1v1h-1zM27 24h1v1h-1zM28 24h1v1h-1zM31 24h1v1h-1zM32 24h1v1h-1zM8 25h1v1h-1zM9 25h1v1h-1zM12 25h1v1h-1zM13 25h1v1h-1zM14 25h1v1h-1zM18 25h1v1h-1zM19 25h1v1h-1zM21 25h1v1h-1zM23 25h1v1h-1zM24 25h1v1h-1zM28 25h1v1h-1zM30 25h1v1h-1zM32 25h1v1h-1zM0 26h1v1h-1zM1 26h1v1h-1zM2 26h1v1h-1zM3 26h1v1h-1zM4 26h1v1h-1zM5 26h1v1h-1zM6 26h1v1h-1zM10 26h1v1h-1zM12 26h1v1h-1zM14 26h1v1h-1zM15 26h1v1h-1zM16 26h1v1h-1zM18 26h1v1h-1zM20 26h1v1h-1zM21 26h1v1h-1zM23 26h1v1h-1zM24 26h1v1h-1zM26 26h1v1h-1zM28 26h1v1h-1zM30 26h1v1h-1zM31 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM8 27h1v1h-1zM9 27h1v1h-1zM10 27h1v1h-1zM11 27h1v1h-1zM12 27h1v1h-1zM13 27h1v1h-1zM14 27h1v1h-1zM15 27h1v1h-1zM20 27h1v1h-1zM21 27h1v1h-1zM22 27h1v1h-1zM23 27h1v1h-1zM24 27h1v1h-1zM28 27h1v1h-1zM29 27h1v1h-1zM30 27h1v1h-1zM0 28h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM4 28h1v1h-1zM6 28h1v1h-1zM8 28h1v1h-1zM9 28h1v1h-1zM13 28h1v1h-1zM18 28h1v1h-1zM19 28h1v1h-1zM21 28h1v1h-1zM24 28h1v1h-1zM25 28h1v1h-1zM26 28h1v1h-1zM27 28h1v1h-1zM28 28h1v1h-1zM29 28h1v1h-1zM32 28h1v1h-1zM0 29h1v1h-1zM2 29h1v1h-1zM3 29h1v1h-1zM4 29h1v1h-1zM6 29h1v1h-1zM8 29h1v1h-1zM11 29h1v1h-1zM13 29h1v1h-1zM15 29h1v1h-1zM16 29h1v1h-1zM20 29h1v1h-1zM22 29h1v1h-1zM23 29h1v1h-1zM24 29h1v1h-1zM25 29h1v1h-1zM28 29h1v1h-1zM29 29h1v1h-1zM30 29h1v1h-1zM32 29h1v1h-1zM0 30h1v1h-1zM2 30h1v1h-1zM3 30h1v1h-1zM4 30h1v1h-1zM6 30h1v1h-1zM8 30h1v1h-1zM9 30h1v1h-1zM10 30h1v1h-1zM11 30h1v1h-1zM12 30h1v1h-1zM13 30h1v1h-1zM18 30h1v1h-1zM19 30h1v1h-1zM22 30h1v1h-1zM26 30h1v1h-1zM27 30h1v1h-1zM29 30h1v1h-1zM0 31h1v1h-1zM6 31h1v1h-1zM9 31h1v1h-1zM11 31h1v1h-1zM13 31h1v1h-1zM16 31h1v1h-1zM19 31h1v1h-1zM20 31h1v1h-1zM21 31h1v1h-1zM22 31h1v1h-1zM25 31h1v1h-1zM28 31h1v1h-1zM29 31h1v1h-1zM30 31h1v1h-1zM0 32h1v1h-1zM1 32h1v1h-1zM2 32h1v1h-1zM3 32h1v1h-1zM4 32h1v1h-1zM5 32h1v1h-1zM6 32h1v1h-1zM8 32h1v1h-1zM9 32h1v1h-1zM11 32h1v1h-1zM13 32h1v1h-1zM16 32h1v1h-1zM17 32h1v1h-1zM18 32h1v1h-1zM19 32h1v1h-1zM22 32h1v1h-1zM24 32h1v1h-1zM25 32h1v1h-1zM26 32h1v1h-1zM27 32h1v1h-1zM31 32h1v1h-1z"/></svg><span>repo · playbook · this deck</span></div>
+      <div class="qrbox"><svg class="qr" viewBox="0 0 33 33" shape-rendering="crispEdges"><path d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM9 0h1v1h-1zM10 0h1v1h-1zM11 0h1v1h-1zM13 0h1v1h-1zM17 0h1v1h-1zM18 0h1v1h-1zM19 0h1v1h-1zM20 0h1v1h-1zM21 0h1v1h-1zM23 0h1v1h-1zM26 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM29 0h1v1h-1zM30 0h1v1h-1zM31 0h1v1h-1zM32 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM9 1h1v1h-1zM13 1h1v1h-1zM14 1h1v1h-1zM15 1h1v1h-1zM17 1h1v1h-1zM26 1h1v1h-1zM32 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM11 2h1v1h-1zM13 2h1v1h-1zM15 2h1v1h-1zM16 2h1v1h-1zM17 2h1v1h-1zM18 2h1v1h-1zM20 2h1v1h-1zM21 2h1v1h-1zM26 2h1v1h-1zM28 2h1v1h-1zM29 2h1v1h-1zM30 2h1v1h-1zM32 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM10 3h1v1h-1zM12 3h1v1h-1zM14 3h1v1h-1zM15 3h1v1h-1zM16 3h1v1h-1zM20 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM29 3h1v1h-1zM30 3h1v1h-1zM32 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM13 4h1v1h-1zM15 4h1v1h-1zM17 4h1v1h-1zM18 4h1v1h-1zM21 4h1v1h-1zM22 4h1v1h-1zM23 4h1v1h-1zM24 4h1v1h-1zM26 4h1v1h-1zM28 4h1v1h-1zM29 4h1v1h-1zM30 4h1v1h-1zM32 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM10 5h1v1h-1zM11 5h1v1h-1zM13 5h1v1h-1zM14 5h1v1h-1zM15 5h1v1h-1zM16 5h1v1h-1zM18 5h1v1h-1zM20 5h1v1h-1zM24 5h1v1h-1zM26 5h1v1h-1zM32 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h1v1h-1zM27 6h1v1h-1zM28 6h1v1h-1zM29 6h1v1h-1zM30 6h1v1h-1zM31 6h1v1h-1zM32 6h1v1h-1zM8 7h1v1h-1zM9 7h1v1h-1zM10 7h1v1h-1zM11 7h1v1h-1zM14 7h1v1h-1zM15 7h1v1h-1zM21 7h1v1h-1zM24 7h1v1h-1zM0 8h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM9 8h1v1h-1zM11 8h1v1h-1zM13 8h1v1h-1zM14 8h1v1h-1zM15 8h1v1h-1zM16 8h1v1h-1zM17 8h1v1h-1zM26 8h1v1h-1zM27 8h1v1h-1zM28 8h1v1h-1zM29 8h1v1h-1zM30 8h1v1h-1zM0 9h1v1h-1zM3 9h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM8 9h1v1h-1zM19 9h1v1h-1zM20 9h1v1h-1zM21 9h1v1h-1zM23 9h1v1h-1zM26 9h1v1h-1zM27 9h1v1h-1zM29 9h1v1h-1zM30 9h1v1h-1zM32 9h1v1h-1zM0 10h1v1h-1zM3 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM10 10h1v1h-1zM12 10h1v1h-1zM15 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM28 10h1v1h-1zM30 10h1v1h-1zM31 10h1v1h-1zM1 11h1v1h-1zM2 11h1v1h-1zM3 11h1v1h-1zM4 11h1v1h-1zM5 11h1v1h-1zM8 11h1v1h-1zM9 11h1v1h-1zM10 11h1v1h-1zM11 11h1v1h-1zM12 11h1v1h-1zM14 11h1v1h-1zM16 11h1v1h-1zM21 11h1v1h-1zM24 11h1v1h-1zM25 11h1v1h-1zM28 11h1v1h-1zM29 11h1v1h-1zM30 11h1v1h-1zM31 11h1v1h-1zM32 11h1v1h-1zM0 12h1v1h-1zM1 12h1v1h-1zM2 12h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM6 12h1v1h-1zM9 12h1v1h-1zM10 12h1v1h-1zM15 12h1v1h-1zM18 12h1v1h-1zM21 12h1v1h-1zM23 12h1v1h-1zM25 12h1v1h-1zM27 12h1v1h-1zM28 12h1v1h-1zM29 12h1v1h-1zM1 13h1v1h-1zM2 13h1v1h-1zM5 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM10 13h1v1h-1zM11 13h1v1h-1zM13 13h1v1h-1zM14 13h1v1h-1zM15 13h1v1h-1zM16 13h1v1h-1zM20 13h1v1h-1zM23 13h1v1h-1zM24 13h1v1h-1zM26 13h1v1h-1zM31 13h1v1h-1zM32 13h1v1h-1zM0 14h1v1h-1zM4 14h1v1h-1zM5 14h1v1h-1zM6 14h1v1h-1zM9 14h1v1h-1zM11 14h1v1h-1zM19 14h1v1h-1zM22 14h1v1h-1zM24 14h1v1h-1zM25 14h1v1h-1zM26 14h1v1h-1zM27 14h1v1h-1zM28 14h1v1h-1zM29 14h1v1h-1zM31 14h1v1h-1zM3 15h1v1h-1zM5 15h1v1h-1zM7 15h1v1h-1zM8 15h1v1h-1zM12 15h1v1h-1zM13 15h1v1h-1zM14 15h1v1h-1zM16 15h1v1h-1zM18 15h1v1h-1zM19 15h1v1h-1zM20 15h1v1h-1zM21 15h1v1h-1zM23 15h1v1h-1zM24 15h1v1h-1zM25 15h1v1h-1zM26 15h1v1h-1zM29 15h1v1h-1zM30 15h1v1h-1zM0 16h1v1h-1zM1 16h1v1h-1zM2 16h1v1h-1zM3 16h1v1h-1zM5 16h1v1h-1zM6 16h1v1h-1zM7 16h1v1h-1zM10 16h1v1h-1zM11 16h1v1h-1zM13 16h1v1h-1zM16 16h1v1h-1zM17 16h1v1h-1zM19 16h1v1h-1zM22 16h1v1h-1zM24 16h1v1h-1zM25 16h1v1h-1zM27 16h1v1h-1zM28 16h1v1h-1zM29 16h1v1h-1zM32 16h1v1h-1zM1 17h1v1h-1zM3 17h1v1h-1zM4 17h1v1h-1zM5 17h1v1h-1zM10 17h1v1h-1zM12 17h1v1h-1zM17 17h1v1h-1zM19 17h1v1h-1zM20 17h1v1h-1zM23 17h1v1h-1zM26 17h1v1h-1zM27 17h1v1h-1zM29 17h1v1h-1zM30 17h1v1h-1zM32 17h1v1h-1zM2 18h1v1h-1zM4 18h1v1h-1zM5 18h1v1h-1zM6 18h1v1h-1zM7 18h1v1h-1zM8 18h1v1h-1zM9 18h1v1h-1zM11 18h1v1h-1zM14 18h1v1h-1zM15 18h1v1h-1zM17 18h1v1h-1zM20 18h1v1h-1zM22 18h1v1h-1zM24 18h1v1h-1zM25 18h1v1h-1zM26 18h1v1h-1zM27 18h1v1h-1zM28 18h1v1h-1zM30 18h1v1h-1zM31 18h1v1h-1zM7 19h1v1h-1zM9 19h1v1h-1zM10 19h1v1h-1zM15 19h1v1h-1zM17 19h1v1h-1zM18 19h1v1h-1zM19 19h1v1h-1zM20 19h1v1h-1zM26 19h1v1h-1zM27 19h1v1h-1zM28 19h1v1h-1zM29 19h1v1h-1zM30 19h1v1h-1zM31 19h1v1h-1zM1 20h1v1h-1zM3 20h1v1h-1zM4 20h1v1h-1zM6 20h1v1h-1zM9 20h1v1h-1zM13 20h1v1h-1zM14 20h1v1h-1zM15 20h1v1h-1zM16 20h1v1h-1zM19 20h1v1h-1zM20 20h1v1h-1zM21 20h1v1h-1zM22 20h1v1h-1zM25 20h1v1h-1zM28 20h1v1h-1zM29 20h1v1h-1zM0 21h1v1h-1zM1 21h1v1h-1zM7 21h1v1h-1zM8 21h1v1h-1zM9 21h1v1h-1zM10 21h1v1h-1zM12 21h1v1h-1zM13 21h1v1h-1zM15 21h1v1h-1zM17 21h1v1h-1zM18 21h1v1h-1zM21 21h1v1h-1zM23 21h1v1h-1zM24 21h1v1h-1zM26 21h1v1h-1zM30 21h1v1h-1zM32 21h1v1h-1zM0 22h1v1h-1zM6 22h1v1h-1zM8 22h1v1h-1zM9 22h1v1h-1zM12 22h1v1h-1zM13 22h1v1h-1zM14 22h1v1h-1zM15 22h1v1h-1zM16 22h1v1h-1zM18 22h1v1h-1zM20 22h1v1h-1zM25 22h1v1h-1zM29 22h1v1h-1zM31 22h1v1h-1zM0 23h1v1h-1zM2 23h1v1h-1zM7 23h1v1h-1zM9 23h1v1h-1zM10 23h1v1h-1zM11 23h1v1h-1zM12 23h1v1h-1zM15 23h1v1h-1zM21 23h1v1h-1zM22 23h1v1h-1zM25 23h1v1h-1zM26 23h1v1h-1zM27 23h1v1h-1zM28 23h1v1h-1zM29 23h1v1h-1zM30 23h1v1h-1zM32 23h1v1h-1zM0 24h1v1h-1zM4 24h1v1h-1zM6 24h1v1h-1zM7 24h1v1h-1zM10 24h1v1h-1zM15 24h1v1h-1zM16 24h1v1h-1zM17 24h1v1h-1zM22 24h1v1h-1zM23 24h1v1h-1zM24 24h1v1h-1zM25 24h1v1h-1zM26 24h1v1h-1zM27 24h1v1h-1zM28 24h1v1h-1zM31 24h1v1h-1zM32 24h1v1h-1zM8 25h1v1h-1zM9 25h1v1h-1zM12 25h1v1h-1zM13 25h1v1h-1zM14 25h1v1h-1zM18 25h1v1h-1zM19 25h1v1h-1zM21 25h1v1h-1zM23 25h1v1h-1zM24 25h1v1h-1zM28 25h1v1h-1zM30 25h1v1h-1zM32 25h1v1h-1zM0 26h1v1h-1zM1 26h1v1h-1zM2 26h1v1h-1zM3 26h1v1h-1zM4 26h1v1h-1zM5 26h1v1h-1zM6 26h1v1h-1zM10 26h1v1h-1zM12 26h1v1h-1zM14 26h1v1h-1zM15 26h1v1h-1zM16 26h1v1h-1zM18 26h1v1h-1zM20 26h1v1h-1zM21 26h1v1h-1zM23 26h1v1h-1zM24 26h1v1h-1zM26 26h1v1h-1zM28 26h1v1h-1zM30 26h1v1h-1zM31 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM8 27h1v1h-1zM9 27h1v1h-1zM10 27h1v1h-1zM11 27h1v1h-1zM12 27h1v1h-1zM13 27h1v1h-1zM14 27h1v1h-1zM15 27h1v1h-1zM20 27h1v1h-1zM21 27h1v1h-1zM22 27h1v1h-1zM23 27h1v1h-1zM24 27h1v1h-1zM28 27h1v1h-1zM29 27h1v1h-1zM30 27h1v1h-1zM0 28h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM4 28h1v1h-1zM6 28h1v1h-1zM8 28h1v1h-1zM9 28h1v1h-1zM13 28h1v1h-1zM18 28h1v1h-1zM19 28h1v1h-1zM21 28h1v1h-1zM24 28h1v1h-1zM25 28h1v1h-1zM26 28h1v1h-1zM27 28h1v1h-1zM28 28h1v1h-1zM29 28h1v1h-1zM32 28h1v1h-1zM0 29h1v1h-1zM2 29h1v1h-1zM3 29h1v1h-1zM4 29h1v1h-1zM6 29h1v1h-1zM8 29h1v1h-1zM11 29h1v1h-1zM13 29h1v1h-1zM15 29h1v1h-1zM16 29h1v1h-1zM20 29h1v1h-1zM22 29h1v1h-1zM23 29h1v1h-1zM24 29h1v1h-1zM25 29h1v1h-1zM28 29h1v1h-1zM29 29h1v1h-1zM30 29h1v1h-1zM32 29h1v1h-1zM0 30h1v1h-1zM2 30h1v1h-1zM3 30h1v1h-1zM4 30h1v1h-1zM6 30h1v1h-1zM8 30h1v1h-1zM9 30h1v1h-1zM10 30h1v1h-1zM11 30h1v1h-1zM12 30h1v1h-1zM13 30h1v1h-1zM18 30h1v1h-1zM19 30h1v1h-1zM22 30h1v1h-1zM26 30h1v1h-1zM27 30h1v1h-1zM29 30h1v1h-1zM0 31h1v1h-1zM6 31h1v1h-1zM9 31h1v1h-1zM11 31h1v1h-1zM13 31h1v1h-1zM16 31h1v1h-1zM19 31h1v1h-1zM20 31h1v1h-1zM21 31h1v1h-1zM22 31h1v1h-1zM25 31h1v1h-1zM28 31h1v1h-1zM29 31h1v1h-1zM30 31h1v1h-1zM0 32h1v1h-1zM1 32h1v1h-1zM2 32h1v1h-1zM3 32h1v1h-1zM4 32h1v1h-1zM5 32h1v1h-1zM6 32h1v1h-1zM8 32h1v1h-1zM9 32h1v1h-1zM11 32h1v1h-1zM13 32h1v1h-1zM16 32h1v1h-1zM17 32h1v1h-1zM18 32h1v1h-1zM19 32h1v1h-1zM22 32h1v1h-1zM24 32h1v1h-1zM25 32h1v1h-1zM26 32h1v1h-1zM27 32h1v1h-1zM31 32h1v1h-1z"/></svg><span>repo · playbook · this deck</span><h3>Thank you.</h3><p>Ready Monday.</p></div>
     </div>
   </section>
 
@@ -762,12 +854,15 @@
     const ppl = document.getElementById('people'); const ic = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
     const names = ['Vaun','Marcus','Keisha','Tasha','Andre','Dion','Rosa','Jamal','Lena','Omar','new','new','new'];
     const knows = ['after-hours','evictions','who to call','mediation','shelters','pantries','re-entry','youth','988','funders'];
-    ppl.innerHTML = names.map((n, k) => `<div class="pp${k>=10?' new f':''}${[1,3,4,6,8].includes(k)?' leaves':''}"${k>=10?' data-g="join" data-ph="1"':''}>${k<10?`<em>${knows[k]}</em>`:''}${ic}<span>${n==='new'?'joins 2027':n}</span></div>`).join('');
+    ppl.innerHTML = names.map((n, k) => `<div class="pp${k>=10?' new f':''}${[1,3,4,6,8].includes(k)?' leaves':''}"${k>=10?' data-g="k" data-seq="1200" data-ph="1"':''}>${k<10?`<em>${knows[k]}</em>`:''}${ic}<span>${n==='new'?'joins 2027':n}</span></div>`).join('');
   })();
   const knowState = on => document.querySelectorAll('#people .leaves').forEach(p => p.classList.toggle('gone', on));
 
   // unit chart: one dot per request, filled column by column — 124 confirmed, 186 delivered, 203 logged
   document.getElementById('dots').innerHTML = Array.from({length: 203}, (_, k) => `<i class="${k < 124 ? 'v d' : k < 186 ? 'd' : ''}" style="--c:${Math.floor(k/7)}"></i>`).join('');
+
+  // stack: the eight connections play in three presses — intake (1–4), what reads the record (5–7), the verify loop (8)
+  document.querySelectorAll('#stack .f').forEach(f => { const g = +f.dataset.g; f.dataset.seq = (g <= 4 ? g - 1 : g <= 7 ? g - 5 : 0) * 550; f.dataset.g = g <= 4 ? 'in' : g <= 7 ? 'out' : 'loop'; });
 
   /* ---------- engine ---------- */
   const frags = s => [...s.querySelectorAll('.f')];
@@ -805,7 +900,7 @@
     const s = slides[n];
     s.classList.add('noanim'); // reset (or fully reveal) a slide without replaying its transitions
     frags(s).forEach(f => { f.classList.remove('on'); f.querySelectorAll('[data-done]').forEach(v => delete v.dataset.done); delete f.dataset.done; });
-    delete s.dataset.played;
+    delete s.dataset.played; delete s.dataset.running;
     if (!s.querySelector('#demovid') && !demovid.paused) demovid.pause();
     i = n; count.textContent = String(n+1).padStart(2,'0') + ' / ' + slides.length; notes.textContent = s.dataset.notes || '';
     prog.style.width = ((n)/(slides.length-1)*100) + '%';
@@ -817,8 +912,12 @@
   function next(){
     const s = slides[i], hidden = frags(s).filter(x => !x.classList.contains('on'));
     if (hidden.length) {
-      // one step per click; fragments sharing data-g reveal together
-      clearTimers(); const g = hidden[0].dataset.g; const grp = g ? hidden.filter(f => f.dataset.g === g) : [hidden[0]]; grp.forEach(f => on(f)); hooks(s);
+      // One step per press. Fragments sharing data-g reveal together, staggered by data-seq (ms);
+      // pressing again mid-sequence finishes it at once.
+      clearTimers(); const g = hidden[0].dataset.g; const grp = g ? hidden.filter(f => f.dataset.g === g) : [hidden[0]];
+      const fresh = s.dataset.running !== g; s.dataset.running = g || '';
+      grp.forEach(f => { const d = fresh ? +f.dataset.seq || 0 : 0; if (d) timers.push(setTimeout(() => { on(f); hooks(s); }, d)); else on(f); });
+      hooks(s);
       return;
     }
     if (i < slides.length-1) show(i+1);
