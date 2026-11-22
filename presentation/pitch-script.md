@@ -54,6 +54,8 @@ Now watch a resident call. *(hand off — see demo-runbook.md)*
 
 **Slide 11 — Closing** *(leave it up)*
 
+**→** Two hands meet and the view moves through them into this slide; it takes about three and a half seconds, so stay quiet and let it play (a second press skips it).
+
 Care is not measured by how many we reach. It is measured by how many we don't lose. Thank you.
 
 ---

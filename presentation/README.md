@@ -26,7 +26,7 @@ Slides 4–5 share one rhythm, shown by the pill top-right: **Today → With Rel
 | 8 | Demo | — | Hand-off to live demo. **V** plays `demo-backup.mp4` if it exists |
 | 9 | Benefits | 2 | Was/now cards, audience band |
 | 10 | Cost — $1.68 | 2 | Price counts up with the real cost split; then 223 squares fill in, one per year of Relay that a year of findhelp enterprise ($75,000) would pay for |
-| 11 | Closing | — | Left half: "Thank you." in the title slide's two typefaces. Right half: "Care is not measured by how many we reach. It is measured by how many we don't lose.", and beneath it the challenge answered in three lines (one record, coordinated action, measurable impact) |
+| 11 | Closing | — | Arrives through a hand-off: two hands draw in from either side (one coral, one white), clasp, turn teal, and the view moves through the grip into the slide (about 3.5 s; a press skips it, back cancels it). Left half: "Thank you." in the title slide's two typefaces. Right half: "Care is not measured by how many we reach. It is measured by how many we don't lose.", and beneath it the challenge answered in three lines (one record, coordinated action, measurable impact) |
 
 19 presses reach the demo. Some presses play a short sequence; pressing again mid-sequence skips to its end.
 

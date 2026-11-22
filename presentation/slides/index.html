@@ -43,6 +43,22 @@
   #clock.warn{color:var(--amber)} #clock.over{color:var(--coral)}
   /* the closing slide stays up after the talk: no deck label, no timer */
   section.slide.active:has(.thanks) ~ #foot .l,section.slide.active:has(.thanks) ~ #clock{visibility:hidden}
+  /* hand-off into the closing slide: two hands come together, the grip turns teal, and the view moves through it */
+  #handoff{position:absolute;inset:0;z-index:20;background:var(--dark);opacity:0;visibility:hidden;pointer-events:none}
+  #handoff.on{visibility:visible;opacity:1;transition:opacity .4s ease}
+  #handoff svg{display:block;width:100%;height:100%;transform-origin:50% 50%}
+  #handoff path{fill:none;stroke:var(--paper);stroke-width:.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:var(--from,1)}
+  #handoff .hl path{stroke:#f08a6c}
+  #handoff .hl,#handoff .hr{transition:transform 1.25s cubic-bezier(.25,.7,.2,1)}
+  #handoff .hl{transform:translateX(-7px)} #handoff .hr{transform:translateX(7px)}
+  #handoff.draw .hl,#handoff.draw .hr{transform:none}
+  #handoff.draw path{stroke-dashoffset:0;transition:stroke-dashoffset .95s cubic-bezier(.5,0,.2,1) var(--d,0s),stroke .5s ease}
+  #handoff.clasp path{stroke:#6fc2b7}
+  #handoff .ring{fill:none;stroke:#6fc2b7;stroke-width:3;opacity:0;transform-box:fill-box;transform-origin:center}
+  #handoff.clasp .ring{animation:claspring .9s ease-out both}
+  @keyframes claspring{from{transform:scale(.5);opacity:.9}to{transform:scale(2.6);opacity:0}}
+  #handoff.zoom{background-color:transparent;transition:background-color .55s ease .4s}
+  #handoff.zoom svg{transform:scale(26);opacity:0;transition:transform 1s cubic-bezier(.75,0,.85,.3),opacity .5s ease .5s}
   #prog{position:absolute;left:0;top:0;height:3px;background:var(--teal);z-index:5;transition:width .5s cubic-bezier(.2,.7,.2,1)}
   #notes{position:absolute;left:0;right:0;bottom:0;background:#0f1013;color:#fff;padding:30px 120px;font-size:26px;line-height:1.45;transform:translateY(100%);transition:transform .3s;z-index:6;max-height:50%;overflow:auto}
   #notes.on{transform:none}
@@ -447,7 +463,7 @@
     #stage{position:static;transform:none!important;width:1920px;height:auto;overflow:visible}
     section.slide{position:relative;opacity:1;visibility:visible;transform:none;height:1080px;width:1920px;page-break-after:always;break-inside:avoid;overflow:hidden}
     section.slide:last-of-type{page-break-after:auto}
-    #help,#notes,#clock,#foot,#prog{display:none}
+    #help,#notes,#clock,#foot,#prog,#handoff{display:none}
     .f,.on{opacity:1!important;transform:none!important}
     section.slide>*{animation:none!important}
     .title .city image,.title .city .pt,.title .team,.title h1,.title p,.thanks .ty h3,.thanks .say h4,.thanks .end p{animation:none!important}
@@ -815,6 +831,25 @@
     </div>
   </section>
 
+  <!-- Plays once, between the last content slide and the closing slide: two hands meet, then the view moves through them. Icon paths: Lucide "handshake" (ISC). -->
+  <div id="handoff" aria-hidden="true">
+    <svg viewBox="0 0 1920 1080">
+      <g transform="translate(660 240) scale(24)">
+        <g class="hl">
+          <path pathLength="1" d="M-40 3H3"/><path pathLength="1" d="M-40 14H2"/>
+          <path pathLength="1" style="--d:.3s" d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path pathLength="1" style="--d:.3s" d="M3 4h8"/>
+        </g>
+        <g class="hr">
+          <path pathLength="1" d="M64 3H21"/><path pathLength="1" d="M64 14H22"/>
+          <path pathLength="1" style="--d:.3s" d="m21 3 1 11h-2"/>
+          <path pathLength="1" style="--d:.3s;--from:-1" d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/>
+          <path pathLength="1" style="--d:.75s;--from:-1" d="m11 17 2 2a1 1 0 1 0 3-3"/>
+        </g>
+      </g>
+      <circle class="ring" cx="960" cy="540" r="150"/>
+    </svg>
+  </div>
+
   <div id="foot"><div class="l"><b>Relay MKE</b> · Team V</div><div id="count"></div></div>
   <div id="clock">2:00</div>
   <div id="notes"></div>
@@ -965,6 +1000,8 @@
     void s.offsetWidth; s.classList.remove('noanim');
   }
   function next(){
+    // A press during the hand-off skips straight to the closing slide.
+    if (handing) { endHandoff(); if (i !== slides.length-1) show(slides.length-1); return; }
     const s = slides[i], hidden = frags(s).filter(x => !x.classList.contains('on'));
     if (hidden.length) {
       // One step per press. Fragments sharing data-g reveal together, staggered by data-seq (ms);
@@ -975,9 +1012,22 @@
       hooks(s);
       return;
     }
+    if (i === slides.length-2) return playHandoff();
     if (i < slides.length-1) show(i+1);
   }
-  function prev(){ if (i > 0) show(i-1, true); }
+  function prev(){ if (handing) return endHandoff(); if (i > 0) show(i-1, true); }
+
+  // The hand-off into the closing slide. It runs on its own timers, because show() clears the deck's.
+  const handoff = document.getElementById('handoff'); let handTimers = [], handing = false;
+  function endHandoff(){ handTimers.forEach(clearTimeout); handTimers = []; handing = false; handoff.className = ''; }
+  function playHandoff(){
+    handing = true; handoff.className = 'on';
+    const at = (ms, fn) => handTimers.push(setTimeout(fn, ms));
+    at(80, () => handoff.classList.add('draw'));
+    at(1750, () => handoff.classList.add('clasp'));
+    at(2450, () => { show(slides.length-1); handoff.classList.add('zoom'); });
+    at(3500, endHandoff);
+  }
 
   let left = 120, timer = null;
   const fmt = v => Math.floor(Math.abs(v)/60) + ':' + String(Math.abs(v)%60).padStart(2,'0');
