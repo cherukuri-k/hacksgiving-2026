@@ -1,4 +1,4 @@
-import type { ActivityEvent, HelpRequest, Partner, Playbook, Status, Need, Urgency } from "../types";
+import type { ActivityEvent, HelpRequest, Partner, Playbook, Status, Need, Urgency, Task, TaskSuggestions } from "../types";
 
 // STORM REPLAY + EVERYDAY MIX: FEMA DR-4923 (severe storms, tornadoes and flooding, Apr 13–23, 2026).
 // Every resident, story, name and dollar amount below is fictional. What is real: the neighborhoods
@@ -157,6 +157,73 @@ export function makeShortCode(seed?: number): string {
   return s;
 }
 
+/**
+ * Relay Missions demo fixtures, keyed by seed index so /api/reset always restores the same
+ * starting point. All of it is synthetic, like the rest of the seed.
+ *
+ *  - index 7 ("family of 5 displaced by fire") has three approved tasks in mixed states, so the
+ *    Board reads "1/3 tasks done · 1 in review" and the review buttons have real content.
+ *  - index 0 (a brand-new flooded-basement request) has drafts only: "2 suggested tasks".
+ */
+function demoTasks(i: number, created: Date): { tasks?: Task[]; taskSuggestions?: TaskSuggestions; events?: { min: number; actor: string; text: string }[] } {
+  const at = (min: number) => new Date(created.getTime() + min * 60_000).toISOString();
+
+  if (i === 7) {
+    const tasks: Task[] = [
+      {
+        id: "tk-demo-shelter", title: "Arrange emergency shelter", description: "Find somewhere safe for the family to sleep tonight.",
+        category: "housing", state: "done",
+        assignee: { kind: "partner", id: "p-disaster", name: "ComForce Disaster Relief" },
+        handoffs: [{ partnerId: "p-disaster", partnerName: "ComForce Disaster Relief", status: "accepted", at: at(50) }],
+        notes: [{ at: at(95), by: "Rosa M.", text: "Family checked in, two rooms for three nights." }],
+        lastUpdate: { doneItems: ["Two rooms booked for three nights"], remainingItems: [], at: at(95), by: "Rosa M." },
+        review: { outcome: "done", by: "Marcus T.", at: at(110) },
+        createdAt: at(45), updatedAt: at(110),
+      },
+      {
+        id: "tk-demo-food", title: "Coordinate food supplies", description: "Get a few days of food to the family while they are displaced.",
+        category: "food", state: "in_review",
+        assignee: { kind: "person", id: "Rosa M.", name: "Rosa M." },
+        notes: [{ at: at(130), by: "Rosa M.", text: "Dropped off two bags, fridge is still out so nothing cold." }],
+        lastUpdate: { doneItems: ["Dropped off two bags of dry goods"], remainingItems: ["Nothing refrigerated yet - no working fridge"], at: at(130), by: "Rosa M." },
+        createdAt: at(45), updatedAt: at(130),
+      },
+      {
+        id: "tk-demo-items", title: "Replace essential household items", description: "Clothing and basics for five people after the fire.",
+        category: "other", state: "needs_assignment", notes: [], createdAt: at(45), updatedAt: at(45),
+      },
+    ];
+    return {
+      tasks,
+      taskSuggestions: { status: "approved", items: [], generatedAt: at(2), aiGenerated: true },
+      events: [
+        { min: 2, actor: "ai", text: "AI prepared 3 suggested tasks for review: Arrange emergency shelter, Coordinate food supplies, Replace essential household items" },
+        { min: 45, actor: "Marcus T.", text: "Marcus T. approved 3 tasks: Arrange emergency shelter, Coordinate food supplies, Replace essential household items" },
+        { min: 50, actor: "Marcus T.", text: 'Marcus T. referred "Arrange emergency shelter" to ComForce Disaster Relief. Awaiting their answer.' },
+        { min: 130, actor: "Rosa M.", text: 'Rosa M. on "Coordinate food supplies" — Done: Dropped off two bags of dry goods · Still left: Nothing refrigerated yet - no working fridge' },
+        { min: 110, actor: "Marcus T.", text: 'Marcus T. reviewed "Arrange emergency shelter" and accepted it as done' },
+      ],
+    };
+  }
+
+  if (i === 0) {
+    return {
+      taskSuggestions: {
+        status: "draft",
+        generatedAt: at(1),
+        aiGenerated: true,
+        items: [
+          { id: "sg-demo-1", title: "Arrange emergency housing support", description: "The basement flooded and the furnace is out; find somewhere warm for the household." },
+          { id: "sg-demo-2", title: "Arrange health support for the child", description: "A child with asthma is in a damp home; connect the family to a clinic." },
+        ].map((x, n) => ({ ...x, category: (n === 0 ? "housing" : "health") as Need })),
+      },
+      events: [{ min: 1, actor: "ai", text: "AI prepared 2 suggested tasks for review: Arrange emergency housing support, Arrange health support for the child" }],
+    };
+  }
+
+  return {};
+}
+
 export function buildSeed(now = new Date()): { requests: HelpRequest[]; activity: ActivityEvent[] } {
   const requests: HelpRequest[] = [];
   const activity: ActivityEvent[] = [];
@@ -197,6 +264,12 @@ export function buildSeed(now = new Date()): { requests: HelpRequest[]; activity
       push(replyMin, "system", "verified", `Resident confirmed: ${s.feedback}`);
       verifiedAt = new Date(created.getTime() + replyMin * 60_000).toISOString();
     }
+    // Relay Missions demo state. Two tickets carry tasks so the demo starts instantly after
+    // /api/reset: one with approved tasks in mixed states, one brand-new ticket with drafts only.
+    // Everything else keeps no tasks at all, proving legacy tickets are untouched.
+    const demo = demoTasks(i, created);
+    if (demo.events) for (const e of demo.events) push(e.min, e.actor, "task", e.text);
+
     requests.push({
       id,
       shortCode: makeShortCode(i + 7),
@@ -218,6 +291,8 @@ export function buildSeed(now = new Date()): { requests: HelpRequest[]; activity
       deliveredAt,
       verifiedAt,
       residentFeedback: s.feedback,
+      tasks: demo.tasks,
+      taskSuggestions: demo.taskSuggestions,
     });
   });
   activity.sort((a, b) => a.at.localeCompare(b.at));

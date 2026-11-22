@@ -5,7 +5,7 @@ export interface Store {
   getRequest(id: string): Promise<HelpRequest | undefined>;
   findByShortCode(code: string): Promise<HelpRequest | undefined>;
   createRequest(req: HelpRequest, events: Omit<ActivityEvent, "id" | "requestId">[]): Promise<HelpRequest>;
-  updateRequest(id: string, patch: Partial<HelpRequest>, event?: { actor: string; type: ActivityType; text: string }): Promise<HelpRequest | undefined>;
+  updateRequest(id: string, patch: Partial<HelpRequest>, event?: { actor: string; type: ActivityType; text: string; taskId?: string }): Promise<HelpRequest | undefined>;
   listActivity(requestId: string): Promise<ActivityEvent[]>;
   listPartners(): Promise<Partner[]>;
   listPlaybooks(): Promise<Playbook[]>;

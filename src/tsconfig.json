@@ -10,6 +10,9 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
+    // lib/planner/* imports siblings with an explicit .ts extension so `node --test` can run the
+    // planner's own tests directly. Safe with noEmit: the bundler resolves these, tsc never writes.
+    "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,

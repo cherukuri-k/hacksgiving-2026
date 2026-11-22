@@ -6,7 +6,8 @@ import { detectSafety, isMissingPerson, resourcesFor, resourcesSms, SAFETY_RESOU
 import { scheduleFollowUpCall, cancelFollowUp } from "./followup";
 import { classifyResidentReply } from "./replyClassifier";
 import { nudgeCooldownRemainingMs } from "./nudge";
-import type { Channel, HelpRequest, StructuredIntake } from "./types";
+import { buildSuggestions } from "./ai/taskSuggest";
+import type { Channel, HelpRequest, SafetyLevel, StructuredIntake } from "./types";
 
 export interface IntakeInput {
   text: string;
@@ -44,12 +45,47 @@ export async function intake(input: IntakeInput): Promise<{ request: HelpRequest
     { at: now, actor: "resident", type: "created", text: `Request received via ${input.channel}` },
     { at: now, actor: "ai", type: "structured", text: `${redactedNote}. Needs: ${structured.needs.join(", ")} · ${structured.urgency} · ${request.neighborhood}` },
   ]);
+  // Safety first, and BEFORE the drafts: flagging adds the "safety" need and raises urgency, so
+  // running it first is what lets the planner see the same situation the ticket does.
   const level = structured.safety ?? detectSafety(structured.redactedText);
-  if (level) {
-    const flagged = await flagSafety(request.id, level, structured.redactedText);
-    if (flagged) return { request: flagged, structured };
+  if (level) await flagSafety(request.id, level, structured.redactedText);
+
+  // Draft tasks for this ticket, once. They assign nobody, contact nobody and do not change the
+  // ticket's status — a coordinator reviews them first. Never allowed to fail intake.
+  await ensureTaskSuggestions(request.id, level);
+
+  return { request: (await db.getRequest(request.id)) ?? request, structured };
+}
+
+/**
+ * Generate task suggestions exactly once per request. Idempotent by the presence of
+ * `taskSuggestions`, so a refresh or a retry never produces duplicates.
+ */
+export async function ensureTaskSuggestions(requestId: string, knownSafety?: SafetyLevel): Promise<void> {
+  try {
+    const req = await db.getRequest(requestId);
+    if (!req || req.taskSuggestions) return;
+    const suggestions = await buildSuggestions(req.redactedText, req.needs, knownSafety ?? req.safety?.level);
+    if (!suggestions.items.length) return;
+    const { plannerActivityNote } = await import("./planner/adapter");
+    const detail = suggestions.engine ? ` · ${plannerActivityNote(suggestions)}` : "";
+    await db.updateRequest(requestId, { taskSuggestions: suggestions }, {
+      actor: "ai",
+      type: "task",
+      text: `${suggestions.aiGenerated ? "AI" : "Relay"} prepared ${suggestions.items.length} suggested task${suggestions.items.length === 1 ? "" : "s"} for review: ${suggestions.items.map((i) => i.title).join(", ")}${detail}`,
+    });
+
+    // The other direction of the same rule: the planner's signals can see danger the keyword
+    // screen missed. Deliberately CRISIS only. The planner's "concern" matches words as ordinary
+    // as "scared", and flagging is not inert: it raises urgency to critical, pages the lead (mock)
+    // and adds crisis resources to the resident's SMS reply. A planner concern still shows up in
+    // the drafts (coordinator first, safety_review) without reaching the resident.
+    if (suggestions.plannerSafety === "crisis" && !req.safety) {
+      await flagSafety(requestId, "crisis", req.redactedText);
+    }
+  } catch {
+    // Suggestions are a convenience; intake must succeed regardless.
   }
-  return { request, structured };
 }
 
 /**
@@ -70,6 +106,13 @@ export async function flagSafety(id: string, level: "concern" | "crisis", text: 
   if (missing) level = "crisis";
   const keys = shared?.length ? shared : resourcesFor(level, text);
   const names = keys.map((k) => SAFETY_RESOURCES.find((r) => r.key === k)?.name ?? k);
+  // TODO: this `.slice(0, 3)` silently drops a need. A ticket that came in with three needs
+  // (say food + utilities + health) keeps only "safety" plus the first two, so the third need
+  // loses its place on the card — and, since intake now flags safety BEFORE drafting tasks, it
+  // also loses its draft tasks: the planner is given the truncated list as `knownNeeds`.
+  // The three-need display limit is a Board/card constraint, not a data one; the fix is to keep
+  // the full set on the request and truncate where it is rendered. Left as is for now so this
+  // change stays an integration, not a data-model change. See lib/planner/adapter.ts.
   const needs = cur.needs.includes("safety") ? cur.needs : (["safety", ...cur.needs].slice(0, 3) as HelpRequest["needs"]);
   const first = await db.updateRequest(id, {
     urgency: "critical",

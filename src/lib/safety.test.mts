@@ -2,7 +2,7 @@
 // and everyday uses of the word "missing" must not raise a crisis.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { detectSafety, isMissingPerson, mayBeMinor, resourcesFor, resourcesSms } from "./safety.ts";
+import { detectSafety, isMedicalEmergency, isMissingPerson, mayBeMinor, resourcesFor, resourcesSms } from "./safety.ts";
 
 test("a missing child is a crisis and points to 911, then the missing-child hotline", () => {
   const t = "My 9 year old son did not come home from school today and I cannot find him.";
@@ -58,4 +58,39 @@ test("the text sent back for a missing person leads with 911 and no waiting peri
 
 test("the text for other crises is unchanged", () => {
   assert.equal(resourcesSms(["988 Suicide & Crisis Lifeline", "IMPACT 2-1-1"]), "If you're in danger right now, call 911. 988: call or text 988 · IMPACT 2-1-1: dial 211.");
+});
+
+// --- medical emergencies ---------------------------------------------------
+// A medical emergency needs an ambulance. DV wording in the same sentence (a partner, a spouse)
+// must never replace 911 with a domestic-violence referral.
+
+test("'unconscious and not breathing' always leads with 911", () => {
+  const t = "My husband is unconscious and not breathing.";
+  assert.equal(isMedicalEmergency(t), true);
+  const keys = resourcesFor("crisis", t);
+  assert.equal(keys[0], "911", `got ${JSON.stringify(keys)}`);
+  assert.ok(keys.includes("211"));
+  // A crisis line is not an ambulance, and nothing here points to self-harm.
+  assert.ok(!keys.includes("988"), JSON.stringify(keys));
+});
+
+test("a domestic-violence case that is also a medical emergency gets both 911 and Sojourner", () => {
+  const t = "My boyfriend hit me and now I can't breathe and my chest pain is getting worse.";
+  assert.equal(isMedicalEmergency(t), true);
+  const keys = resourcesFor("crisis", t);
+  assert.equal(keys[0], "911", `911 must lead, got ${JSON.stringify(keys)}`);
+  assert.ok(keys.includes("sojourner"), "lost the domestic-violence referral");
+  assert.ok(keys.includes("211"));
+});
+
+test("an overdose is a medical emergency AND a self-harm crisis", () => {
+  const keys = resourcesFor("crisis", "I think my daughter took an overdose of her pills");
+  assert.equal(keys[0], "911");
+  assert.ok(keys.includes("988"), "an overdose still needs the crisis line");
+});
+
+test("ordinary wording is not read as a medical emergency", () => {
+  for (const t of ["We passed out flyers for the block party", "I need a ride to a doctor's appointment", "My son has a cold"]) {
+    assert.equal(isMedicalEmergency(t), false, t);
+  }
 });
