@@ -52,7 +52,7 @@ Now watch a resident call. *(hand off — see demo-runbook.md)*
 
 **→** Everything you watched cost one dollar sixty-eight. **→** The whole year cost three hundred and thirty-six dollars. The commercial option costs more than two hundred times that.
 
-**Slide 11 — Scorecard** *(leave it up)*
+**Slide 11 — Closing** *(leave it up)*
 
 Care is not measured by how many we reach. It is measured by how many we don't lose. Thank you.
 
@@ -62,7 +62,7 @@ Care is not measured by how many we reach. It is measured by how many we don't l
 
 Cut in this order; each is one slide and the deck still makes sense without it:
 
-1. Slide 9, Benefits — the scorecard says the same thing.
+1. Slide 9, Benefits — the demo has just shown all three.
 2. Slide 2, About — the title and the overview cover it.
 
 To hide a slide, add `data-skip` to its `<section>` tag in `slides/index.html`. To bring back the three hidden problem slides, delete `data-skip` from them.

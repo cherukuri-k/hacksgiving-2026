@@ -1,6 +1,6 @@
 # Relay MKE — 2-minute live demo runbook
 
-Starts the moment slide 8 (the demo slide) is on screen; slides 9–11 (benefits, cost, scorecard) are shown after the demo. Two people: **Presenter** (laptop, projected) and **Resident** (teammate, real phone). Target 1:50; hard cap 2:00.
+Starts the moment slide 8 (the demo slide) is on screen; slides 9–11 (benefits, cost, closing) are shown after the demo. Two people: **Presenter** (laptop, projected) and **Resident** (teammate, real phone). Target 1:50; hard cap 2:00.
 
 ## Screen layout (projected)
 
