@@ -26,7 +26,7 @@ Slides 4–5 share one rhythm, shown by the pill top-right: **Today → With Rel
 | 8 | Demo | — | Hand-off to live demo. **V** plays `demo-backup.mp4` if it exists |
 | 9 | Benefits | 2 | Was/now cards, audience band |
 | 10 | Cost — $1.68 | 2 | Price counts up with the real cost split; then 223 squares fill in, one per year of Relay that a year of findhelp enterprise ($75,000) would pay for |
-| 11 | Thank you + scorecard | — | "Thank you. Ready Monday." and the QR to the repo on the left; the four criteria, each with where it was shown, and the three bonuses in one strip on the right |
+| 11 | Closing caption + scorecard | — | "No request lost. No outcome assumed." with the challenge answered in one sentence, thank-you and the QR to the repo on the left; the four criteria, each with where it was shown, and the three bonuses in one strip on the right |
 
 19 presses reach the demo. Some presses play a short sequence; pressing again mid-sequence skips to its end.
 
