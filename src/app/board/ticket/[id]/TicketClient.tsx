@@ -175,7 +175,9 @@ export default function TicketClient({ id }: { id: string }) {
               <div className="mb-4 rounded-lg border border-[#bfe0f3] bg-brand-soft/40 p-3">
                 <p className="flex items-center gap-1.5 text-[13.5px] font-semibold text-ink"><Sparkles size={14} className="text-brand" /> Suggested tasks</p>
                 <p className="mt-0.5 text-[12.5px] text-ink-2">
-                  {isCoordinator ? "AI prepared these from the request. Review them before assigning." : "Waiting for a coordinator to approve."}
+                  {!isCoordinator ? "Waiting for a coordinator to approve."
+                    : request.taskSuggestions?.refinedAt ? "Relay's planner drafted these and AI tailored the wording to this request. Safety steps are the planner's own. Review them before assigning."
+                    : "Relay's planner drafted these from the request. Review them before assigning."}
                 </p>
 
                 <div className="mt-2.5 space-y-2">

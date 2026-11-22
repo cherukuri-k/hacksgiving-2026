@@ -10,6 +10,8 @@ export interface SnapshotData {
   activity: ActivityEvent[];
   generatedAt: string;
   storeKind: "memory" | "supabase";
+  /** True when a hosted model tailors the planner's draft tasks (hybrid drafting). */
+  tailorsTasks?: boolean;
 }
 
 /** Polls /api/snapshot. Simple, works on every host, and 2s is instant enough for a live demo. */

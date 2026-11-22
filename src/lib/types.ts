@@ -285,6 +285,13 @@ export interface TaskSuggestions {
    * the keyword screen missed: either side raising a flag wins.
    */
   plannerSafety?: SafetyLevel;
+
+  // ---- Hybrid mode: a hosted model tailored the planner's wording to this request. ----
+
+  /** When the model's rewrite was applied. Absent while the planner's own wording stands. */
+  refinedAt?: string;
+  /** Which model did it, e.g. "claude-haiku-4-5". */
+  refinedBy?: string;
 }
 
 export interface HelpRequest {

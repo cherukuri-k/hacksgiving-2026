@@ -7,6 +7,7 @@
 //     task to `in_review`, never past it.
 import { db } from "./db";
 import { buildSuggestions } from "./ai/taskSuggest";
+import { refineDraftTasks } from "./taskDrafts";
 import { COORDINATOR_ORG } from "./coordination";
 import { isAssignedTo } from "./missions";
 import { stateForProposal, type TaskProposal } from "./ai/taskUpdate";
@@ -89,10 +90,11 @@ export async function generateSuggestions(requestId: string, actor: Actor) {
 
   // Same rule as intake, and crisis-only for the same reason: flagging raises urgency and pages
   // the lead, so the planner's broad "concern" signal must not trigger it on its own.
-  if (suggestions.plannerSafety === "crisis" && !req.safety) {
-    return (await flagSafety(requestId, "crisis", req.redactedText)) ?? saved;
-  }
-  return saved;
+  const flagged = suggestions.plannerSafety === "crisis" && !req.safety ? await flagSafety(requestId, "crisis", req.redactedText) : undefined;
+
+  // A coordinator asked for these and is waiting on the button, so tailor them before answering.
+  if (await refineDraftTasks(requestId, suggestions.generatedAt)) return (await db.getRequest(requestId)) ?? saved;
+  return flagged ?? saved;
 }
 
 export async function approveSuggestions(

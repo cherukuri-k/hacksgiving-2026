@@ -53,6 +53,19 @@ export function makeSupabaseStore(url: string, serviceKey: string): Store {
       }
       return next;
     },
+    async annotateRequest(id, patch, event) {
+      const cur = await store.getRequest(id);
+      if (!cur) return undefined;
+      const next = { ...cur, ...patch, updatedAt: cur.updatedAt };
+      const { error } = await sb.from("requests").update({ status: next.status, data: next }).eq("id", id);
+      if (error) throw new Error(error.message);
+      if (event) {
+        const at = new Date().toISOString();
+        const evId = `${id}-${Date.now()}`;
+        await sb.from("activity").insert({ id: evId, request_id: id, at, data: { ...event, id: evId, requestId: id, at } });
+      }
+      return next;
+    },
     async listActivity(requestId) {
       return rows<ActivityEvent>(await sb.from("activity").select("data").eq("request_id", requestId).order("at"));
     },

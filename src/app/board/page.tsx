@@ -83,7 +83,7 @@ export default function BoardPage() {
       <div className="mt-4 overflow-x-auto pb-2">
         {data && (view === "board" ? <Board requests={filtered} fresh={fresh} onOpen={setOpenId} now={now} /> : <RequestTable requests={filtered} onOpen={setOpenId} now={now} />)}
       </div>
-      <RequestDrawer request={open} partners={data?.partners ?? []} onClose={() => setOpenId(null)} me={me} />
+      <RequestDrawer request={open} partners={data?.partners ?? []} onClose={() => setOpenId(null)} me={me} tailorsTasks={data?.tailorsTasks ?? false} onChanged={reload} />
     </AppShell>
   );
 }

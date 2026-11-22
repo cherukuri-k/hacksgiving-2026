@@ -6,7 +6,8 @@ import { detectSafety, isMissingPerson, resourcesFor, resourcesSms, SAFETY_RESOU
 import { scheduleFollowUpCall, cancelFollowUp } from "./followup";
 import { classifyResidentReply } from "./replyClassifier";
 import { nudgeCooldownRemainingMs } from "./nudge";
-import { buildSuggestions } from "./ai/taskSuggest";
+import { buildSuggestions, plannerSetting } from "./ai/taskSuggest";
+import { refineDraftTasks } from "./taskDrafts";
 import type { Channel, HelpRequest, SafetyLevel, StructuredIntake } from "./types";
 
 export interface IntakeInput {
@@ -83,6 +84,12 @@ export async function ensureTaskSuggestions(requestId: string, knownSafety?: Saf
     if (suggestions.plannerSafety === "crisis" && !req.safety) {
       await flagSafety(requestId, "crisis", req.redactedText);
     }
+
+    // Hybrid drafting: the planner's draft is saved and usable now; a hosted model tailors the
+    // wording afterwards. Not awaited, so intake and Jordan's live call never wait on a model.
+    // The short delay lets the caller finish its own writes (Jordan's safety note) first, so the
+    // model sees the ticket as the coordinator will.
+    if (plannerSetting() === "hybrid") setTimeout(() => { void refineDraftTasks(requestId, suggestions.generatedAt); }, 1200);
   } catch {
     // Suggestions are a convenience; intake must succeed regardless.
   }

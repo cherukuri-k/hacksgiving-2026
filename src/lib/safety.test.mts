@@ -94,3 +94,22 @@ test("ordinary wording is not read as a medical emergency", () => {
     assert.equal(isMedicalEmergency(t), false, t);
   }
 });
+
+test("a long-term condition or a housing complaint is not an ambulance call", () => {
+  for (const t of [
+    "My son has a seizure disorder and we ran out of his medication",
+    "I can't breathe well in this apartment because of the mold, the landlord won't fix it",
+    "She can't breathe right when the furnace is on",
+    "The small toys are a choking hazard for the baby",
+  ]) {
+    assert.equal(isMedicalEmergency(t), false, t);
+    assert.equal(detectSafety(t), undefined, t);
+  }
+});
+
+test("the same words in an emergency still are", () => {
+  for (const t of ["My son is having a seizure right now", "He can't breathe", "She cannot breathe and her lips are blue", "The baby is choking"]) {
+    assert.equal(isMedicalEmergency(t), true, t);
+    assert.equal(resourcesFor("crisis", t)[0], "911", t);
+  }
+});

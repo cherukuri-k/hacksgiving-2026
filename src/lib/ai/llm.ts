@@ -24,6 +24,14 @@ export function llmProvider(): "anthropic" | "openai" | null {
   return null;
 }
 
+/** The model `complete()` will call, for audit trails. Null when no provider is configured. */
+export function llmModel(): string | null {
+  const provider = llmProvider();
+  if (provider === "anthropic") return process.env.ANTHROPIC_MODEL ?? "claude-haiku-4-5";
+  if (provider === "openai") return process.env.OPENAI_MODEL ?? "gpt-4o-mini";
+  return null;
+}
+
 export async function complete(opts: CompleteOpts): Promise<string | null> {
   const provider = llmProvider();
   if (!provider) return null;

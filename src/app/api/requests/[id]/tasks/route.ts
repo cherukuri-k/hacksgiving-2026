@@ -9,6 +9,7 @@ import {
 import { proposeTaskUpdate, PROPOSED_STATES } from "@/lib/ai/taskUpdate";
 import { detectSafety, resourcesFor, SAFETY_RESOURCES } from "@/lib/safety";
 import { flagSafety } from "@/lib/actions";
+import { refineDraftTasks } from "@/lib/taskDrafts";
 import { NEEDS } from "@/lib/types";
 
 const text = (max: number) => z.string().trim().min(1).max(max);
@@ -20,6 +21,8 @@ const Body = z.discriminatedUnion("action", [
   z.object({ action: z.literal("dismiss_suggestions"), ...actorShape }),
   // Draft tasks for a ticket that has none. Explicit, coordinator-only, one model call.
   z.object({ action: z.literal("generate_suggestions"), ...actorShape }),
+  // Ask the model to tailor the waiting draft. Sent by the drawer when a ticket is opened; one model call per draft at most.
+  z.object({ action: z.literal("tailor_suggestions"), ...actorShape }),
   z.object({ action: z.literal("add_task"), ...actorShape, title: text(120), description: z.string().trim().max(400), category: z.enum(NEEDS) }),
   z.object({ action: z.literal("edit_task"), ...actorShape, taskId: z.string(), title: text(120), description: z.string().trim().max(400) }),
   z.object({ action: z.literal("remove_task"), ...actorShape, taskId: z.string() }),
@@ -57,6 +60,11 @@ export async function POST(request: Request, ctx: { params: Promise<{ id: string
       case "approve_suggestions": await approveSuggestions(id, actor, a.items); break;
       case "dismiss_suggestions": await dismissSuggestions(id, actor); break;
       case "generate_suggestions": await generateSuggestions(id, actor); break;
+      case "tailor_suggestions": {
+        const draft = (await db.getRequest(id))?.taskSuggestions;
+        if (draft?.status === "draft" && !draft.refinedAt) await refineDraftTasks(id, draft.generatedAt);
+        break;
+      }
       case "add_task": await addTask(id, actor, { title: a.title, description: a.description, category: a.category }); break;
       case "edit_task": await editTask(id, actor, a.taskId, { title: a.title, description: a.description }); break;
       case "remove_task": await removeTask(id, actor, a.taskId); break;

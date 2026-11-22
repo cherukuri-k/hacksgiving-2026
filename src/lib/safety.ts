@@ -57,7 +57,7 @@ const SELF = /\b(suicid\w*|kill myself|end (it|my life)|don'?t want to (be here|
 
 // Someone needs an ambulance now. Kept separate from CRISIS because the resource is different:
 // a medical emergency is a 911 call, not a crisis line.
-const MEDICAL_EMERGENCY = /\b(not breathing|stopped breathing|can'?t breathe|cannot breathe|unconscious|unresponsive|won'?t wake up|not waking up|passed out(?! (?:flyers?|leaflets?|papers?|forms?|copies))|overdos\w*|chest pain|heart attack|cardiac arrest|having a stroke|seizure|convuls\w*|won'?t stop bleeding|bleeding (?:badly|heavily)|choking|anaphyla\w*)\b/i;
+const MEDICAL_EMERGENCY = /\b(not breathing|stopped breathing|(?:can'?t|cannot) breathe(?! (?:well|right|properly|easily|in (?:this|that|the|my|our|here)|because|when|at night))|unconscious|unresponsive|won'?t wake up|not waking up|passed out(?! (?:flyers?|leaflets?|papers?|forms?|copies))|overdos\w*|chest pain|heart attack|cardiac arrest|having a stroke|(?:having|had|has had|in) (?:a|another) seizure|seizing|convuls\w*|won'?t stop bleeding|bleeding (?:badly|heavily)|choking(?! hazard)|anaphyla\w*)\b/i;
 
 /**
  * A medical emergency: an ambulance is the first call, whatever else the text also describes.

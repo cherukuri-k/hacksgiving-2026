@@ -29,6 +29,23 @@ Runs inside the Relay Next.js server: no API key, no GPU, no internet, about 1 t
 *Keyword gaps were found by looking at the gold set, so its numbers are optimistic. The generated set's labels are noisy (often incomplete), which lowers its precision.
 Safety across all 500 generated scenarios: all 13 safety cases get a coordinator first (10 of 13 at `safety_review`); 17 of 487 ordinary cases (3%) are flagged `safety_review`.
 
+## Hybrid mode: a hosted model on top
+The planner's tasks are templates, so "Refer to rent assistance, mediation, or shelter options" reads the same on every ticket.
+With `RELAY_PLANNER=hybrid` (the default when a model key is set) the planner still drafts first, in milliseconds, and a hosted
+model then tailors the wording to the request and to ComForce's own playbooks, about 4 seconds later.
+
+- **When:** in the background after intake, and the first time a ticket with an untailored draft is opened on the board. One model call per draft.
+- **What the model sees:** the redacted request, the needs, the planner's draft, and the two most relevant playbooks. No contact details.
+- **What it cannot do** (`lib/taskRefineRules.ts`, checked in code after the model answers, unit-tested):
+  rewrite or repeat a safety or consent step; add a task for a need that is not on the request; include a name, address or a
+  phone number that is not in the request or a playbook; claim an outcome in a title; leave a need without a task; end without
+  exactly one follow-up. Anything that breaks a rule is dropped and logged; if nothing survives, the planner's draft stands.
+- **Missing person:** never sent to the model. The steps are a fixed protocol in `adapter.ts` (911 first, no 24-hour wait).
+- **If the model is slow or down:** nothing waits on it. The planner's draft is already on the ticket.
+
+Every open ticket carries drafts: tickets that pre-date tasks are drafted by the planner when the board loads (`lib/taskDrafts.ts`),
+so nobody presses "Generate tasks". Nothing is assigned until a coordinator approves, which they do in the board's side panel.
+
 ## Limits
 - Not a language model: it cannot read unusual phrasing as well as Claude. Keep a human coordinator approval step (already in Relay).
 - Templates are generic roles, never real partners. Assigning a partner still means "awaiting partner".
@@ -37,6 +54,7 @@ Safety across all 500 generated scenarios: all 13 safety cases get a coordinator
 ## Files
 - `lib/planner/` code (`index.ts` entry), `model/need-model.json`, `model/case-bank.json`
 - `lib/planner/planner.test.mts` (13 tests), `demo.mts`, `eval.mts`
+- `lib/taskDrafts.ts` (drafts for open tickets, background tailoring), `lib/ai/taskRefine.ts` (the prompt), `lib/taskRefineRules.ts` + test (the rules)
 - `training/train_needs.py` to retrain from new data
 
 Run: `node --test lib/planner/planner.test.mts` and `node lib/planner/demo.mts "your request text"` (Node 22.18+).

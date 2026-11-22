@@ -8,7 +8,7 @@
 // call, and never changes the ticket's status or urgency. A coordinator approves first.
 import { join } from "node:path";
 import { redactPII } from "../ai/redact";
-import { detectSafety } from "../safety";
+import { detectSafety, isMissingPerson, mayBeMinor } from "../safety";
 import { SUGGESTION_MAX, SUGGESTION_PER_NEED, suggestionId } from "../taskRules";
 import type { Need, SafetyLevel, SuggestionPriority, TaskSuggestionItem, TaskSuggestions } from "../types";
 import type { DraftTask, NeedId, Plan } from "./index.ts";
@@ -162,6 +162,27 @@ export interface PlannerSuggestionResult extends TaskSuggestions {
 }
 
 /**
+ * The steps for a missing child or adult. The planner has no template for this: it read the
+ * caller as a third party and asked for consent "from the person who needs help" — the person
+ * who is missing — followed by "ask what kind of help is needed". A missing person has a fixed
+ * order instead: the police report comes before anything ComForce organizes, and nothing is
+ * shared publicly without the family and the police agreeing. Every step is a coordinator's.
+ */
+export function missingPersonTasks(minor: boolean): DraftTask[] {
+  const step = (order: number, title: string, description: string, category: DraftTask["category"] = "safety"): DraftTask => ({
+    id: `relay-missing-${order}`, order, title, description, category,
+    helperType: "coordinator_only", suggestedRole: "Missing Persons Network coordinator", heldUntilCoordinatorClears: true,
+  });
+  return [
+    step(1, "Ask whether the caller has reported this by calling 911", "Milwaukee Police take a missing person report at once; there is no 24-hour wait. If it has not been reported, ask the caller to ring 911 now and to stay reachable."),
+    step(2, "Hand the report to the Missing Persons Network lead", "Pass on what the caller gave: age, where and when the person was last seen, and what they were wearing. Relay holds no name for the missing person."),
+    ...(minor ? [step(3, "Offer the missing-child hotline once police have the report", "National Center for Missing & Exploited Children, 1-800-843-5678, any hour. It works alongside the police report, not instead of it.")] : []),
+    step(4, "Ask the family how ComForce should help", "Someone to wait with them, help speaking with police, or community awareness. Share nothing publicly unless the family asks for it and the police agree."),
+    step(5, "Follow up with the family until the person is found", "Check in with the caller, record what help was given, and note what is still needed.", "follow_up"),
+  ];
+}
+
+/**
  * Draft tasks for a request with the local planner. No API key, no network, no GPU.
  *
  * `needs` are the needs already recorded at intake: tasks only ever cover those (the Missions
@@ -215,7 +236,16 @@ export async function planSuggestions(rawText: string, needs: Need[], knownSafet
     }
   }
 
-  const fallbacks = unmappedNeeds(needs).map((n) => ({
+  // A missing person follows its own protocol, not a need template. Keep the coordinator's
+  // safety step the block above put first and replace everything after it.
+  const missing = isMissingPerson(text);
+  if (missing && tasks[0] && isSafetyFirst(tasks[0])) {
+    const first: DraftTask = { ...tasks[0], description: "A person is reported missing. Read the request, make sure the caller is safe and can be reached, and clear the ticket before the steps below start." };
+    tasks = [first, ...missingPersonTasks(mayBeMinor(text))];
+  }
+
+  // The protocol already covers a missing person's ticket; a generic "Arrange youth support" has no place in it.
+  const fallbacks = (missing ? [] : unmappedNeeds(needs)).map((n) => ({
     id: suggestionId(),
     title: SUGGESTION_PER_NEED[n].title,
     description: SUGGESTION_PER_NEED[n].description,

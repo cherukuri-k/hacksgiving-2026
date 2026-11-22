@@ -5,6 +5,13 @@
 // stored on the request — they are always derived here.
 import type { Task, TaskState } from "./types";
 
+/**
+ * Safety and consent steps, recognised by the planner's own wording. They always come first, a
+ * model may never rewrite them (lib/taskRefineRules.ts), and the board marks them as fixed.
+ */
+const LOCKED_STEP = /crisis protocol|safety check|safety before|consent/i;
+export const isLockedStep = (item: { title: string }) => LOCKED_STEP.test(item.title);
+
 export interface TaskRollup {
   total: number;
   done: number;

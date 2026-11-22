@@ -34,18 +34,27 @@ const Schema = z.object({
   })).max(20),
 });
 
-/** Which engine drafts task suggestions. `local` needs no API key and makes no network call. */
-export type PlannerSetting = "local" | "claude";
+/**
+ * Which engine drafts task suggestions.
+ * - `local`: the on-disk planner only. No API key, no network call.
+ * - `hybrid`: the local planner drafts, then a hosted model tailors the wording (lib/ai/taskRefine.ts).
+ * - `claude`: the original hosted-model-only path.
+ */
+export type PlannerSetting = "local" | "hybrid" | "claude";
 
+/** Explicit `RELAY_PLANNER` wins. Unset: hybrid when a model key is configured, otherwise local. */
 export function plannerSetting(): PlannerSetting {
-  return process.env.RELAY_PLANNER === "claude" ? "claude" : "local";
+  const v = process.env.RELAY_PLANNER;
+  if (v === "claude" || v === "local" || v === "hybrid") return v;
+  return llmConfigured() ? "hybrid" : "local";
 }
 
 /**
  * Build the suggestion set for a request.
  *
- * `RELAY_PLANNER=local` (the default) drafts with the on-disk planner in lib/planner: no API key,
- * no network. `RELAY_PLANNER=claude` keeps the original hosted-model path below, unchanged.
+ * `local` and `hybrid` draft with the on-disk planner in lib/planner: no API key, no network.
+ * In hybrid mode the caller then runs refineDraftTasks() (lib/taskDrafts.ts) to tailor the
+ * wording. `RELAY_PLANNER=claude` keeps the original hosted-model path below, unchanged.
  *
  * Either way: only redacted text reaches the engine, the count is capped, and any category
  * outside the request's own needs is dropped.
@@ -53,7 +62,7 @@ export function plannerSetting(): PlannerSetting {
 export async function buildSuggestions(rawText: string, needs: Need[], knownSafety?: SafetyLevel): Promise<TaskSuggestions> {
   const generatedAt = new Date().toISOString();
 
-  if (plannerSetting() === "local") {
+  if (plannerSetting() !== "claude") {
     try {
       const { planSuggestions } = await import("../planner/adapter");
       const local = await planSuggestions(rawText, needs, knownSafety);

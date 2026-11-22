@@ -10,7 +10,7 @@ import { COORDINATOR_ORG } from "@/lib/coordination";
 import { lastNudge, nudgeCooldownRemainingMs } from "@/lib/nudge";
 import { Avatar, NeedChip, UrgencyDot } from "../ui/Chip";
 import { PartnerBadge, PartnerSources } from "../ui/PartnerProvenance";
-import { TaskPreview } from "./TaskPreview";
+import { DrawerTasks } from "./DrawerTasks";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
@@ -24,7 +24,7 @@ function score(p: Partner, r: SafeRequest) {
   return overlap + lang;
 }
 
-export function RequestDrawer({ request, partners, onClose, me }: { request: SafeRequest | null; partners: Partner[]; onClose: () => void; me: { name: string; org: string; partnerId?: string } }) {
+export function RequestDrawer({ request, partners, onClose, me, tailorsTasks = false, onChanged }: { request: SafeRequest | null; partners: Partner[]; onClose: () => void; me: { name: string; org: string; partnerId?: string }; tailorsTasks?: boolean; onChanged: () => void }) {
   const [activity, setActivity] = useState<ActivityEvent[]>([]);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
@@ -110,8 +110,8 @@ export function RequestDrawer({ request, partners, onClose, me }: { request: Saf
                 <Field k="Consent to share" v={request.consentToShare ? "Yes, with partners" : "ComForce only"} />
               </section>
 
-              {/* Relay Missions: preview only. All task controls live on the full ticket page. */}
-              <TaskPreview request={request} />
+              {/* Draft tasks are already on the ticket; a coordinator approves them here. */}
+              <DrawerTasks key={`${request.id}:${request.taskSuggestions?.generatedAt ?? ""}`} request={request} me={me} tailors={tailorsTasks} onChanged={onChanged} />
 
               {request.dispatch && <DispatchSection request={request} partner={partners.find((p) => p.id === request.dispatch!.partnerId)} />}
               {request.followUp && <FollowUpSection request={request} />}

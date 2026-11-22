@@ -408,6 +408,7 @@
   .yrs{display:grid;grid-template-columns:repeat(25,26px);gap:6.25px;margin-top:16px}
   .yrs i{width:26px;height:26px;border-radius:5px;background:#f1c9be;opacity:0;transform:scale(.3);transition:opacity .25s,transform .35s cubic-bezier(.34,1.3,.4,1);transition-delay:calc(var(--k)*5.5ms + .35s)}
   .yrs i.e{background:#d47f69}
+  .yrs i.r{background:var(--teal)}
   .f.on .yrs i{opacity:1;transform:none}
   .key{display:flex;justify-content:space-between;margin-top:14px;font-family:var(--mono);font-size:15px;color:var(--mut)}
   .key span::before{content:'';display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:8px;vertical-align:-1px;background:var(--c)}
@@ -700,7 +701,7 @@
       <div class="f" data-g="r"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M17 11l2 2 4-4"/></svg></div><div><b>A person decides</b><span>Claim, dispatch and close are human taps.</span></div></div>
       <div class="f" data-g="r" data-seq="200"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg></div><div><b>No one is scored</b><span>Counts by neighbourhood. Never a person.</span></div></div>
       <div class="f" data-g="r" data-seq="400"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M14.83 9.17l4.24-4.24M4.93 19.07l4.24-4.24"/></svg></div><div><b>Crisis goes to people</b><span>Safety words flag a lead and give 988.</span></div></div>
-      <div class="f" data-g="r" data-seq="600"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div><div><b>Synthetic data only</b><span>Every name in this demo is fictional.</span></div></div>
+      <div class="f" data-g="r" data-seq="600"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div><div><b>Synthetic demo data</b><span>Every name in this demo is fictional.</span></div></div>
     </div>
   </section>
 
@@ -790,8 +791,8 @@
           <div class="us"><span>Relay MKE · all of 2026</span><b>$336<i></i></b></div>
           <div class="them"><span>findhelp · enterprise plan</span><b>$75,000</b></div>
         </div>
-        <div class="yrs" id="yrs" role="img" aria-label="223 squares, each one year of Relay"></div>
-        <div class="key"><span style="--c:#0e6b63">one square = one year of Relay</span><span style="--c:#d47f69">first 16 = findhelp's entry plan, $5,400</span></div>
+        <div class="yrs" id="yrs" role="img" aria-label="223 squares, each worth one year of Relay. Relay fills the first one, findhelp's entry plan fills 16, its enterprise plan fills all 223."></div>
+        <div class="key"><span style="--c:#0e6b63">Relay · 1 square</span><span style="--c:#d47f69">findhelp entry, $5,400 · 16</span><span style="--c:#f1c9be">findhelp enterprise · 223</span></div>
         <div class="punch"><b><span data-count>223</span>×</b><p>One year of findhelp enterprise would run Relay MKE for <em>223&nbsp;years.</em></p></div>
         <div class="note">No seats, no licences. ComForce owns the data and can leave with a CSV.</div>
       </div>
@@ -879,8 +880,8 @@
   // unit chart: one dot per request, filled column by column — 124 confirmed, 186 delivered, 203 logged
   document.getElementById('dots').innerHTML = Array.from({length: 203}, (_, k) => `<i class="${k < 124 ? 'v d' : k < 186 ? 'd' : ''}" style="--c:${Math.floor(k/7)}"></i>`).join('');
 
-  // cost: one square per year of Relay that a year of findhelp enterprise would pay for ($75,000 / $336 = 223); the first 16 are its $5,400 entry plan
-  document.getElementById('yrs').innerHTML = Array.from({length: 223}, (_, k) => `<i class="${k < 16 ? 'e' : ''}" style="--k:${k}"></i>`).join('');
+  // cost: each square is $336, one year of Relay. Relay fills the first, findhelp's $5,400 entry plan reaches the 16th, its $75,000 enterprise plan fills all 223
+  document.getElementById('yrs').innerHTML = Array.from({length: 223}, (_, k) => `<i class="${k === 0 ? 'r' : k < 16 ? 'e' : ''}" style="--k:${k}"></i>`).join('');
 
   // stack: the eight connections play in three presses — intake (1–4), what reads the record (5–7), the verify loop (8)
   document.querySelectorAll('#stack .f').forEach(f => { const g = +f.dataset.g; f.dataset.seq ??= (g <= 4 ? g - 1 : g <= 7 ? g - 5 : 0) * 550; f.dataset.g = g <= 4 ? 'in' : g <= 7 ? 'out' : 'loop'; });

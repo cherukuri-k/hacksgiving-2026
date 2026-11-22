@@ -115,6 +115,25 @@ test("a missing child: Relay's safety screen fires where the planner's does not,
   for (const i of s.items) assert.ok(isNeed(i.category));
 });
 
+test("a missing child gets the missing-person protocol, not consent from the child and a youth referral", async () => {
+  const s = await planSuggestions("My daughter is 11 and she never came home from school. Nobody has seen her since this afternoon.", ["safety", "youth"]);
+  const titles = s.items.map((i) => i.title);
+  assert.match(titles[0], /coordinator checks safety/i);
+  assert.match(titles[1], /reported this by calling 911/i, "the police report must come before anything else");
+  assert.match(titles[2], /Missing Persons Network/);
+  assert.ok(titles.some((t) => /missing-child hotline/i.test(t)), "a minor should get the missing-child hotline");
+  assert.match(titles.at(-1)!, /follow up with the family/i);
+  assert.ok(!titles.some((t) => /consent|youth support|what kind of help/i.test(t)), `generic steps survived: ${JSON.stringify(titles)}`);
+  for (const i of s.items) assert.ok(isNeed(i.category));
+});
+
+test("a missing adult gets the same protocol without the missing-child hotline", async () => {
+  const s = await planSuggestions("My father is 71 and has dementia. He went for a walk this morning and never came home.", ["safety", "health"]);
+  const titles = s.items.map((i) => i.title);
+  assert.match(titles[1], /reported this by calling 911/i);
+  assert.ok(!titles.some((t) => /missing-child/i.test(t)), JSON.stringify(titles));
+});
+
 test("a crisis Relay saw is not answered by a hazard the planner saw", async () => {
   // The planner reads this as a broken furnace (time_sensitive); Relay reads a missing child.
   // Comparing "planner noticed something" against "Relay saw a crisis" would downgrade it.

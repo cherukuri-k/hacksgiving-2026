@@ -113,7 +113,9 @@ export class RelayPlanner {
       if (n.need === "language_access") continue; // already added first
       if (n.need === "safety" || n.need === "mental_health") continue; // covered by the crisis or safety-check task
       for (const t of NEED_TEMPLATES[n.need].tasks) {
-        add({ title: t.title, description: `${t.why} (detected from ${n.evidence})`, category: n.need, helperType: t.helperType,
+        // Cite the resident's own words when a phrase triggered the task. A model score or a
+        // need recorded at intake is not something a coordinator can read back.
+        add({ title: t.title, description: n.evidence.startsWith('"') ? `${t.why} (detected from ${n.evidence})` : t.why, category: n.need, helperType: t.helperType,
           suggestedRole: t.role, heldUntilCoordinatorClears: sig.crisis || undefined });
       }
     }

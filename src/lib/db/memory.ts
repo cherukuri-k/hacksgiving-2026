@@ -54,6 +54,15 @@ export const memoryStore: Store = {
     if (event) s.activity.push({ ...event, id: newId("ev"), requestId: id, at: next.updatedAt });
     return next;
   },
+  async annotateRequest(id, patch, event) {
+    const s = state();
+    const cur = s.requests.get(id);
+    if (!cur) return undefined;
+    const next = { ...cur, ...patch, updatedAt: cur.updatedAt };
+    s.requests.set(id, next);
+    if (event) s.activity.push({ ...event, id: newId("ev"), requestId: id, at: new Date().toISOString() });
+    return next;
+  },
   async listActivity(requestId) {
     return state().activity.filter((a) => a.requestId === requestId).sort((a, b) => a.at.localeCompare(b.at));
   },
