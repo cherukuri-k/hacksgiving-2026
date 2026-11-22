@@ -85,6 +85,9 @@ html, body {
 .leaflet-container { background: var(--surface-2); font-family: inherit; border-radius: 10px; }
 .leaflet-container .leaflet-tile-pane { filter: grayscale(1) brightness(1.06) contrast(.9) opacity(.7); }
 .leaflet-control-attribution { display: none; }
+/* Count printed inside a Pulse map circle: a bare number, no tooltip bubble. */
+.leaflet-tooltip.pulse-count { background: none; border: 0; box-shadow: none; padding: 0; color: #fff; font-size: 11.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.leaflet-tooltip.pulse-count::before { display: none; }
 
 
 @media print {
