@@ -63,6 +63,26 @@
   #notes{position:absolute;left:0;right:0;bottom:0;background:#0f1013;color:#fff;padding:30px 120px;font-size:26px;line-height:1.45;transform:translateY(100%);transition:transform .3s;z-index:6;max-height:50%;overflow:auto}
   #notes.on{transform:none}
   #help{position:absolute;left:120px;top:36px;font-family:var(--mono);font-size:12px;color:var(--faint);z-index:5;transition:opacity 1s}#help.hide{opacity:0}
+  /* presenter view (?presenter): the deck on the left, what to say and the clock on the right */
+  #pv{display:none}
+  body.presenter{background:#0c0d10}
+  body.presenter #stage{left:24px;top:24px;transform-origin:0 0}
+  body.presenter #notes,body.presenter #help{display:none}
+  body.presenter #pv{display:flex;flex-direction:column;position:fixed;top:0;right:0;bottom:0;width:38%;padding:26px 34px 22px;color:#e9e6de;overflow:auto}
+  #pv .top{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
+  #pvclock{font-family:var(--mono);font-size:68px;line-height:1;font-weight:600;letter-spacing:-.03em}
+  #pvclock.warn{color:#e6b566} #pvclock.over{color:#f08a6c}
+  #pvplan{font-family:var(--mono);font-size:14px;line-height:1.55;color:#8a8e97;text-align:right}
+  #pvplan b{color:#e9e6de;font-weight:600} #pvplan .bad{color:#f08a6c}
+  #pvslide{margin-top:22px;font-family:var(--mono);font-size:15px;color:#6fc2b7;letter-spacing:.05em;text-transform:uppercase}
+  #pvsay{margin-top:14px;flex:1}
+  #pvsay p{font-size:31px;line-height:1.3;letter-spacing:-.01em;color:#6c7079;margin-bottom:16px}
+  #pvsay p.now{color:#fff}
+  #pvsay p.done{color:#4a4e57}
+  #pvsay p i{font-style:normal;color:#6fc2b7;margin-right:10px}
+  #pvsay em{font-family:var(--mono);font-style:normal;font-size:.5em;letter-spacing:0;color:#8a8e97}
+  #pvnext{font-family:var(--mono);font-size:14px;color:#8a8e97;border-top:1px solid #2c3037;padding-top:14px}
+  #pvkeys{font-family:var(--mono);font-size:12px;line-height:1.5;color:#50555e;margin-top:10px}
 
   /* type */
   .k{font-family:var(--mono);font-size:14px;color:var(--mut);margin-bottom:26px;letter-spacing:.02em;display:flex;gap:14px;align-items:center}
@@ -868,6 +888,14 @@
   <div id="clock">2:00</div>
   <div id="notes"></div>
 </div>
+<!-- Presenter view: open the deck with ?presenter, or press P in the deck to open it in a second window that stays in step. -->
+<div id="pv">
+  <div class="top"><div id="pvclock">2:00</div><div id="pvplan"></div></div>
+  <div id="pvslide"></div>
+  <div id="pvsay"></div>
+  <div id="pvnext"></div>
+  <div id="pvkeys">→ next · ← back · T start / pause the clock · R reset it · the clock pauses by itself on the demo slide</div>
+</div>
 
 <script>
 (() => {
@@ -876,8 +904,30 @@
   slides.forEach(s => { s.dataset.step = 0; s.dataset.phase = 0; });
   const count = document.getElementById('count'), notes = document.getElementById('notes'), clock = document.getElementById('clock'), prog = document.getElementById('prog');
   let i = 0, timers = [];
-  const fit = () => { const s = Math.min(innerWidth/1920, innerHeight/1080); stage.style.transform = `translate(-50%,-50%) scale(${s})`; };
+  const presenting = location.search.includes('presenter');
+  if (presenting) document.body.classList.add('presenter');
+  const fit = () => {
+    if (presenting) { stage.style.transform = `scale(${Math.min((innerWidth*.62 - 48)/1920, (innerHeight - 48)/1080)})`; return; }
+    const s = Math.min(innerWidth/1920, innerHeight/1080); stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+  };
   addEventListener('resize', fit); fit();
+
+  /* ---------- what to say ---------- */
+  // The spoken script: [name, words] for each slide, found by something only that slide contains. "→" is one press;
+  // [square brackets] are directions and are not counted as words. This is the text the presenter view and the N overlay show.
+  const SCRIPT = {
+    '.title':   ['Title', `We are Team V. This is Relay MKE: one shared record for every request ComForce receives, closed only when the resident says help arrived.`],
+    '.tri':     ['About', `→ One number to call or text, in English or Spanish, no app. One board for every division. One proof for funders.`],
+    '.flow':    ['Five problems', `You gave us five problems. → We built a screen for each. → All five run on one shared record. That was the one thing missing.`],
+    '#map':     ['Problem 4 · the map', `Leaders decided from anecdote. → Now the map shows where help arrived, and where it's still missing. → [the real screen: say nothing, move on]`],
+    '#know':    ['Problem 5 · training', `Know-how left with each volunteer. → Now it's written once, and the guide answers from it. → [the real screen: move on]`],
+    '.rules4':  ['Guardrails', `Before any AI sees a message, → names, addresses and phone numbers are removed. → A person makes every decision. We never score or predict anyone, and all the data here is synthetic.`],
+    '#stack':   ['How it is built', `→ A call becomes a record ComForce owns. → Every screen reads it. → And the resident closes the loop.`],
+    '#demovid': ['Demo', `Watch one request: who asked, who delivered, and the resident's own answer. [play the demo; the clock is paused]`],
+    '#yrs':     ['Cost', `→ Everything you watched cost one dollar sixty-eight. → The whole year, three hundred and thirty-six dollars. The commercial option costs two hundred times more.`],
+    '.thanks':  ['Closing', `[say this over the hands] Care is not measured by how many we reach. It is measured by how many we don't lose. Thank you.`],
+  };
+  for (const sel in SCRIPT) { const s = document.querySelector(sel)?.closest('section'); if (s) [s.dataset.name, s.dataset.notes] = SCRIPT[sel]; }
 
   /* ---------- generated visuals ---------- */
   // title: one dot per request logged in 2026 as [x*10, y*10, confirmed by the resident], oldest first. See "The title map" in presentation/README.md.
@@ -1017,13 +1067,19 @@
     frags(s).forEach(f => { f.classList.remove('on'); f.querySelectorAll('[data-done]').forEach(v => delete v.dataset.done); delete f.dataset.done; });
     delete s.dataset.played; delete s.dataset.running;
     if (!s.querySelector('#demovid') && !demovid.paused) demovid.pause();
+    const was = i;
     i = n; count.textContent = String(n+1).padStart(2,'0') + ' / ' + slides.length; notes.textContent = s.dataset.notes || '';
     prog.style.width = ((n)/(slides.length-1)*100) + '%';
     history.replaceState(null, '', '#' + (n+1));
     hooks(s);
     if (all) revealAll(s);
+    s.dataset.press = all ? pressTotal(s) : 0;
     if (s.querySelector('#city')) playCity(); // after revealAll, which clears the timers the replay runs on
     void s.offsetWidth; s.classList.remove('noanim');
+    // The clock measures talking time: it stops by itself while the demo plays and picks up again on the way out.
+    const onDemo = !!s.querySelector('#demovid');
+    if (onDemo && timer) { toggle(); demoHeld = true; } else if (!onDemo && demoHeld) { demoHeld = false; if (!timer && n > was) toggle(); }
+    pv();
   }
   function next(){
     // A press during the hand-off skips straight to the closing slide.
@@ -1034,8 +1090,9 @@
       // pressing again mid-sequence finishes it at once.
       clearTimers(); const g = hidden[0].dataset.g; const grp = g ? hidden.filter(f => f.dataset.g === g) : [hidden[0]];
       const fresh = s.dataset.running !== g; s.dataset.running = g || '';
+      if (!(g !== undefined && !fresh)) s.dataset.press = (+s.dataset.press || 0) + 1; // a press that only finishes a running sequence is not a new step
       grp.forEach(f => { const d = fresh ? +f.dataset.seq || 0 : 0; if (d) timers.push(setTimeout(() => { on(f); hooks(s); }, d)); else on(f); });
-      hooks(s);
+      hooks(s); pv();
       return;
     }
     if (i === slides.length-2) return playHandoff();
@@ -1055,22 +1112,65 @@
     at(3500, endHandoff);
   }
 
-  let left = 120, timer = null;
+  let left = 120, timer = null, demoHeld = false;
   const fmt = v => Math.floor(Math.abs(v)/60) + ':' + String(Math.abs(v)%60).padStart(2,'0');
-  const paint = () => { clock.textContent = (left<0?'-':'') + fmt(left); clock.className = left < 0 ? 'over' : left <= 20 ? 'warn' : ''; };
+  const paint = () => { clock.textContent = (left<0?'-':'') + fmt(left); clock.className = left < 0 ? 'over' : left <= 20 ? 'warn' : ''; pvClock.textContent = clock.textContent; pvClock.className = clock.className; };
   const toggle = () => { if (timer) { clearInterval(timer); timer = null; } else timer = setInterval(() => { left--; paint(); }, 1000); };
 
-  addEventListener('keydown', e => {
-    if (['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(e.key)) { e.preventDefault(); if (i===0 && !timer && left===120) toggle(); next(); }
-    else if (['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)) { e.preventDefault(); prev(); }
-    else if (e.key==='Home') show(0); else if (e.key==='End') show(slides.length-1, true);
-    else if (e.key.toLowerCase()==='t') toggle(); else if (e.key.toLowerCase()==='r') { left = 120; paint(); }
-    else if (e.key.toLowerCase()==='n') notes.classList.toggle('on');
-    else if (e.key.toLowerCase()==='v') { if (document.getElementById('vid').classList.contains('ready')) demovid.paused ? demovid.play() : demovid.pause(); }
-    else if (e.key.toLowerCase()==='f') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+  /* ---------- presenter view ---------- */
+  // Presses on a slide: fragments that share data-g reveal on one press.
+  const pressKeys = s => { const keys = []; frags(s).forEach((f, k) => { const key = f.dataset.g ? 'g:' + f.dataset.g : 'f:' + k; if (!keys.includes(key)) keys.push(key); }); return keys; };
+  const pressTotal = s => pressKeys(s).length;
+  // The plan: how long each slide takes at a slow, clear pace, plus the time its builds need to play.
+  const WPM = 115;
+  const wordsIn = t => t.replace(/\[[^\]]*\]/g, ' ').replace(/→/g, ' ').trim().split(/\s+/).filter(Boolean).length;
+  const buildSecs = s => pressKeys(s).reduce((sum, key) => sum + Math.max(0, ...frags(s).filter((f, k) => (f.dataset.g ? 'g:' + f.dataset.g : 'f:' + k) === key).map(f => +f.dataset.seq || 0)), 0)/1000;
+  const planEnd = []; slides.reduce((t, s, k) => planEnd[k] = t + wordsIn(s.dataset.notes || '')/WPM*60 + buildSecs(s) + .4, 0);
+  const pvClock = document.getElementById('pvclock'), esc = t => t.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const titleOf = s => s.dataset.name || (s.querySelector('h1,h2,h3')?.innerText || '').replace(/\s+/g, ' ').trim();
+  function pv(){
+    if (!presenting) return;
+    const s = slides[i], press = +s.dataset.press || 0, segs = (s.dataset.notes || '').split('→').map(t => t.trim());
+    document.getElementById('pvslide').textContent = `${String(i+1).padStart(2,'0')} / ${slides.length} · ${titleOf(s)}`;
+    document.getElementById('pvsay').innerHTML = segs.map((t, k) => !t && !k ? `<p class="${press ? 'done' : 'now'}"><em>press → first</em></p>` : `<p class="${k < press ? 'done' : k === press ? 'now' : ''}">${k ? '<i>→</i>' : ''}${esc(t).replace(/\[([^\]]*)\]/g, '<em>$1</em>')}</p>`).join('');
+    const total = Math.round(planEnd.at(-1)), over = total > 120;
+    document.getElementById('pvplan').innerHTML = `leave this slide with <b>${fmt(Math.round(120 - planEnd[i]))}</b> left<br><span class="${over ? 'bad' : ''}">script: ${fmt(total)} at ${WPM} wpm${over ? ', ' + fmt(total - 120) + ' over' : ''}</span>`;
+    document.getElementById('pvnext').textContent = press < pressTotal(s) ? `${pressTotal(s) - press} more press${pressTotal(s) - press === 1 ? '' : 'es'} on this slide` : i < slides.length-1 ? `next slide: ${titleOf(slides[i+1])}` : 'last slide: leave it up';
+  }
+
+  // Two windows stay in step: every key press here is passed to the other window, which runs the same action.
+  let peer = window.opener || null;
+  const tell = m => { try { if (peer && !peer.closed) peer.postMessage({ relayDeck: m }, '*'); } catch { /* the other window is gone */ } };
+  function act(name, remote){
+    if (name === 'next') { if (i===0 && !timer && left===120) toggle(); next(); }
+    else if (name === 'prev') prev();
+    else if (name === 'home') show(0);
+    else if (name === 'end') show(slides.length-1, true);
+    else if (name === 'timer') toggle();
+    else if (name === 'reset') { left = 120; paint(); }
+    if (!remote) tell({ act: name });
+  }
+  addEventListener('message', e => {
+    const m = e.data && e.data.relayDeck; if (!m) return;
+    if (m.act) act(m.act, true);
+    else if (m.hello) { peer = e.source; tell({ sync: { i, press: +slides[i].dataset.press || 0, left, running: !!timer } }); }
+    else if (m.sync) { show(m.sync.i); for (let n = 0; n < 40 && (+slides[i].dataset.press || 0) < m.sync.press && i === m.sync.i; n++) next(); left = m.sync.left; paint(); if (m.sync.running !== !!timer) toggle(); }
   });
-  stage.addEventListener('click', e => { if (e.clientX > innerWidth/2) next(); else prev(); });
-  let tx = 0; addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive:true}); addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 40) dx < 0 ? next() : prev(); });
+  if (presenting && peer) tell({ hello: 1 });
+
+  addEventListener('keydown', e => {
+    const k = e.key.toLowerCase();
+    if (['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(e.key)) { e.preventDefault(); act('next'); }
+    else if (['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)) { e.preventDefault(); act('prev'); }
+    else if (e.key==='Home') act('home'); else if (e.key==='End') act('end');
+    else if (k==='t') act('timer'); else if (k==='r') act('reset');
+    else if (k==='n') notes.classList.toggle('on');
+    else if (k==='p' && !presenting) peer = window.open(location.href.split('#')[0].split('?')[0] + '?presenter' + location.hash, 'relay-presenter', 'popup,width=1500,height=900');
+    else if (k==='v') { if (document.getElementById('vid').classList.contains('ready')) demovid.paused ? demovid.play() : demovid.pause(); }
+    else if (k==='f') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+  });
+  stage.addEventListener('click', e => act(e.clientX > stage.getBoundingClientRect().left + stage.getBoundingClientRect().width/2 ? 'next' : 'prev'));
+  let tx = 0; addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive:true}); addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 40) act(dx < 0 ? 'next' : 'prev'); });
 
   setTimeout(() => document.getElementById('help').classList.add('hide'), 5000);
   addEventListener('hashchange', () => { const n = (parseInt(location.hash.slice(1)) || 1) - 1; if (n !== i) show(n, true); });

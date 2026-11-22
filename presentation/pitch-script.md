@@ -1,44 +1,59 @@
-# Pitch script — 2:00, spoken slowly
+# Pitch script — 2:00 of talking, spoken slowly
 
-200 spoken words. At a slow, clear pace (around 115 words a minute) that is about 1:44 of talking in total: roughly 1:20 before the demo and 0:24 after it, which leaves about 16 seconds for pauses and animations. Not yet timed aloud — rehearse once with the clock (**T**). **→** = one press. Nothing moves until you press; some presses play a short sequence, so pause and let it finish. If the demo runs long, press **End** to jump straight to the scorecard.
+203 spoken words. At a slow, clear pace (around 115 words a minute) that is 1:46 of talking, plus about 15 seconds for the builds and slide changes to play: **about 2:01, which is one second over your two minutes with no margin at all.** Not yet timed aloud. To get real margin, cut slides 7 and 5 (see the end).
 
-The deck no longer has separate slides for problems 1, 2 and 3. The demo shows all three live — it ends on the Grants page.
+**→** = one press. Nothing moves until you press; some presses play a short sequence, and pressing again finishes it at once.
+
+**Rehearse in the presenter view.** Open `slides/index.html?presenter`: the deck on the left, this script on the right with the line to say now in white, the clock, and how much time you should have left when you leave each slide. On the day, open the deck full screen on the projector and press **P**: the presenter view opens in a second window on your laptop and the two stay in step. The words below live in one place in the deck (`const SCRIPT` in `slides/index.html`); change them there and here together.
+
+---
+
+## What the judges asked for, and where you say it
+
+| They asked | You say | Slide |
+| --- | --- | --- |
+| "Track whether people receive the help they need, while also noting who that help was delivered by" | "closed only when the resident says help arrived" · "who asked, who delivered, and the resident's own answer" | 1, 8 |
+| Accessibility: "can frontline workers and community members use it easily?" | "One number to call or text, in English or Spanish, no app." | 2 |
+| Responsible technology; never identify or predict individuals; synthetic data only | "names, addresses and phone numbers are removed… A person makes every decision. We never score or predict anyone, and all the data here is synthetic." | 6 |
+| "Retain access to their own data" | "A call becomes a record ComForce owns." | 7 |
+| Cost, "a heavy consideration" | "$1.68… $336… two hundred times more." | 9 |
+| "Explain how your solution works to non-technical audiences" | No product names, no stack talk. Every line is something a volunteer would say. | all |
 
 ---
 
 ## Before the demo
 
-**Slide 1 — Team V · Relay MKE**
+**Slide 1 — Title**
 
-We are Team V. This is Relay MKE. One shared record for every request ComForce receives. It closes only when the resident says help arrived.
+We are Team V. This is Relay MKE: one shared record for every request ComForce receives, closed only when the resident says help arrived.
 
 **Slide 2 — About** *(→ ×1)*
 
-**→** One number, answered by Jordan, our AI. One board for every division. One proof a funder can check.
+**→** One number to call or text, in English or Spanish, no app. One board for every division. One proof for funders.
 
 **Slide 3 — Five problems** *(→ ×2)*
 
-ComForce gave us five problems. **→** We built a screen for each one. **→** And all five run on one shared record. That was the one thing missing.
+You gave us five problems. **→** We built a screen for each. **→** All five run on one shared record. That was the one thing missing.
 
-**Slide 4 — Problem 4 · Awareness** *(→ map · → real screen)*
+**Slide 4 — Problem 4 · the map** *(→ map · → real screen)*
 
-Leaders used to decide from anecdote. **→** Now it is on the map: where help arrived, and where requests are still open. **→**
+Leaders decided from anecdote. **→** Now the map shows where help arrived, and where it's still missing. **→** *(the real screen: say nothing, move on)*
 
-**Slide 5 — Problem 5 · Training** *(→ playbook · → real screen)*
+**Slide 5 — Problem 5 · training** *(→ playbook · → real screen)*
 
-Know-how used to leave with each volunteer. **→** Now it is written once, and the guide answers from it. **→**
+Know-how left with each volunteer. **→** Now it's written once, and the guide answers from it. **→** *(the real screen: move on)*
 
 **Slide 6 — Guardrails** *(→ redaction · → four rules)*
 
-Before any AI sees a message, **→** names, addresses and phone numbers are removed. **→** And a person makes every decision.
+Before any AI sees a message, **→** names, addresses and phone numbers are removed. **→** A person makes every decision. We never score or predict anyone, and all the data here is synthetic.
 
-**Slide 7 — Tech stack** *(→ ×3)*
+**Slide 7 — How it is built** *(→ ×3)*
 
-**→** A call becomes a record, in one database ComForce owns. **→** Every screen reads that record. **→** And the resident closes the loop.
+**→** A call becomes a record ComForce owns. **→** Every screen reads it. **→** And the resident closes the loop.
 
 **Slide 8 — Demo**
 
-Now watch a resident call. *(hand off — see demo-runbook.md)*
+Watch one request: who asked, who delivered, and the resident's own answer. *(play the demo; the clock pauses by itself on this slide and starts again when you move on)*
 
 ---
 
@@ -46,11 +61,11 @@ Now watch a resident call. *(hand off — see demo-runbook.md)*
 
 **Slide 9 — Cost** *(→ ×2)*
 
-**→** Everything you watched cost one dollar sixty-eight. **→** The whole year cost three hundred and thirty-six dollars. The commercial option costs more than two hundred times that.
+**→** Everything you watched cost one dollar sixty-eight. **→** The whole year, three hundred and thirty-six dollars. The commercial option costs two hundred times more.
 
 **Slide 10 — Closing** *(leave it up)*
 
-**→** Two hands meet and the view moves through them into this slide; it takes about three and a half seconds, so stay quiet and let it play (a second press skips it).
+**→** Two hands meet and the view moves through them into this slide, about three and a half seconds. Say the line over them; do not wait in silence. A second press skips the hands.
 
 Care is not measured by how many we reach. It is measured by how many we don't lose. Thank you.
 
@@ -60,6 +75,8 @@ Care is not measured by how many we reach. It is measured by how many we don't l
 
 Cut in this order; each is one slide and the deck still makes sense without it:
 
-1. Slide 2, About — the title and the overview cover it.
+1. Slide 7, How it is built — the least useful slide for a non-technical panel, and three presses. Saves about 14 seconds.
+2. Slide 5, Problem 5 · training — not one of the four criteria. Saves about 12 seconds.
+3. Slide 2, About — move its first sentence ("One number to call or text, in English or Spanish, no app.") to the end of slide 1 before you cut it, because nothing else says it.
 
 To hide a slide, add `data-skip` to its `<section>` tag in `slides/index.html`. To bring back the three hidden problem slides or the Benefits slide (it sat between the demo and Cost), delete `data-skip` from them.

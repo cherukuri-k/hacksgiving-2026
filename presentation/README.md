@@ -42,8 +42,10 @@ Type: Inter Tight (display) and Instrument Serif Italic (emphasis), both SIL Ope
 | → Space Enter · click right half | Next step. **Nothing moves on its own** — every build (problem → solution, card moving lane, each stack connection) is one press. When a slide is fully revealed the next press changes slide. First press on slide 1 starts the 2:00 clock |
 | ← · click left half | Previous slide (fully revealed) |
 | Home / End | First / last slide |
-| T · R | Start-stop / reset the clock |
-| N | Speaker notes overlay |
+| T · R | Start-stop / reset the clock. The clock counts talking time: it pauses by itself on the demo slide and starts again when you move on |
+| N | Speaker notes overlay (the script for this slide) |
+| P | Open the presenter view in a second window. The two windows stay in step: a press in either one moves both |
+| `?presenter` in the URL | The presenter view on its own, for rehearsing: deck on the left; on the right the script with the line to say now highlighted, the clock, and the time you should have left when you leave each slide |
 | V | Play `../demo-backup.mp4` on slide 8 |
 | F | Fullscreen |
 | `#7` in the URL | Deep-link to a slide with everything revealed |
