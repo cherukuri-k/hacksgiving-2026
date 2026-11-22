@@ -83,6 +83,17 @@
   #pvsay em{font-family:var(--mono);font-style:normal;font-size:.5em;letter-spacing:0;color:#8a8e97}
   #pvnext{font-family:var(--mono);font-size:14px;color:#8a8e97;border-top:1px solid #2c3037;padding-top:14px}
   #pvkeys{font-family:var(--mono);font-size:12px;line-height:1.5;color:#50555e;margin-top:10px}
+  /* speaker notes under the slide: the whole script for this slide, then what comes next */
+  #pvnotes{display:none}
+  body.presenter #pvnotes{display:block;position:fixed;left:24px;bottom:16px;overflow:auto;color:#8a8e97}
+  #pvnotes small{display:block;font-family:var(--mono);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#6fc2b7}
+  #pvfull{font-size:24px;line-height:1.4;letter-spacing:-.005em;margin-top:8px}
+  #pvfull .now{color:#fff} #pvfull .done{color:#5d626c}
+  #pvfull i,#pvthen i{font-style:normal;color:#6fc2b7}
+  #pvfull em,#pvthen em{font-family:var(--mono);font-style:normal;font-size:.62em;color:#8a8e97}
+  #pvthen em{font-size:.8em}
+  #pvthen{font-size:16px;line-height:1.45;margin-top:12px;padding-top:10px;border-top:1px solid #2c3037;color:#6c7079}
+  #pvthen b{font-family:var(--mono);font-size:12px;font-weight:400;letter-spacing:.06em;text-transform:uppercase;color:#8a8e97;margin-right:8px}
 
   /* type */
   .k{font-family:var(--mono);font-size:14px;color:var(--mut);margin-bottom:26px;letter-spacing:.02em;display:flex;gap:14px;align-items:center}
@@ -1155,6 +1166,7 @@
   <div id="notes"></div>
 </div>
 <!-- Presenter view: open the deck with ?presenter, or press P in the deck to open it in a second window that stays in step. -->
+<div id="pvnotes"><small>Speaker notes</small><p id="pvfull"></p><p id="pvthen"></p></div>
 <div id="pv">
   <div class="top"><div id="pvclock">2:00</div><div id="pvplan"></div></div>
   <div id="pvslide"></div>
@@ -1173,7 +1185,12 @@
   const presenting = location.search.includes('presenter');
   if (presenting) document.body.classList.add('presenter');
   const fit = () => {
-    if (presenting) { stage.style.transform = `scale(${Math.min((innerWidth*.62 - 48)/1920, (innerHeight - 48)/1080)})`; return; }
+    if (presenting) {
+      // Leave room under the slide for the speaker notes.
+      const s = Math.min((innerWidth*.62 - 48)/1920, (innerHeight - 48 - 200)/1080), box = document.getElementById('pvnotes');
+      stage.style.transform = `scale(${s})`; box.style.top = `${24 + 1080*s + 16}px`; box.style.width = `${1920*s}px`;
+      return;
+    }
     const s = Math.min(innerWidth/1920, innerHeight/1080); stage.style.transform = `translate(-50%,-50%) scale(${s})`;
   };
   addEventListener('resize', fit); fit();
@@ -1402,6 +1419,10 @@
     const s = slides[i], press = +s.dataset.press || 0, segs = (s.dataset.notes || '').split('→').map(t => t.trim());
     document.getElementById('pvslide').textContent = `${String(i+1).padStart(2,'0')} / ${slides.length} · ${titleOf(s)}`;
     document.getElementById('pvsay').innerHTML = segs.map((t, k) => !t && !k ? `<p class="${press ? 'done' : 'now'}"><em>press → first</em></p>` : `<p class="${k < press ? 'done' : k === press ? 'now' : ''}">${k ? '<i>→</i>' : ''}${esc(t).replace(/\[([^\]]*)\]/g, '<em>$1</em>')}</p>`).join('');
+    const mark = t => esc(t).replace(/\[([^\]]*)\]/g, '<em>$1</em>');
+    document.getElementById('pvfull').innerHTML = segs.map((t, k) => !t ? '' : `<span class="${k < press ? 'done' : k === press ? 'now' : ''}">${k ? '<i>→</i> ' : ''}${mark(t)}</span>`).join(' ');
+    const nx = slides[i+1];
+    document.getElementById('pvthen').innerHTML = nx ? `<b>Then · ${esc(titleOf(nx))}</b>${mark(nx.dataset.notes || '').replace(/→/g, '<i>→</i>')}` : '<b>End</b>Leave this slide up for questions.';
     const total = Math.round(planEnd.at(-1)), over = total > 120;
     document.getElementById('pvplan').innerHTML = `leave this slide with <b>${fmt(Math.round(120 - planEnd[i]))}</b> left<br><span class="${over ? 'bad' : ''}">script: ${fmt(total)} at ${WPM} wpm${over ? ', ' + fmt(total - 120) + ' over' : ''}</span>`;
     document.getElementById('pvnext').textContent = press < pressTotal(s) ? `${pressTotal(s) - press} more press${pressTotal(s) - press === 1 ? '' : 'es'} on this slide` : i < slides.length-1 ? `next slide: ${titleOf(slides[i+1])}` : 'last slide: leave it up';

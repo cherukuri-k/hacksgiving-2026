@@ -47,7 +47,7 @@ Type: Inter Tight (display) and Instrument Serif Italic (emphasis), both SIL Ope
 | T · R | Start-stop / reset the clock. The clock counts talking time: it pauses by itself on the demo slide and starts again when you move on |
 | N | Speaker notes overlay (the script for this slide) |
 | P | Open the presenter view in a second window. The two windows stay in step: a press in either one moves both |
-| `?presenter` in the URL | The presenter view on its own, for rehearsing: deck on the left; on the right the script with the line to say now highlighted, the clock, and the time you should have left when you leave each slide |
+| `?presenter` in the URL | The presenter view on its own, for rehearsing: deck on the left with the **speaker notes** under it (the whole script for that slide, the part to say now in white, then the next slide's script); on the right the same line in large type, the clock, and the time you should have left when you leave each slide |
 | V | Play `../demo-backup.mp4` on slide 10 |
 | F | Fullscreen |
 | `#7` in the URL | Deep-link to a slide with everything revealed |
