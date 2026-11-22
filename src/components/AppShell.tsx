@@ -125,9 +125,9 @@ export function AppShell({ children, title, subtitle, actions, badge, me }: { ch
   );
 }
 
-export function Btn({ children, onClick, href, variant = "ghost", className = "", disabled, title }: { children: React.ReactNode; onClick?: () => void; href?: string; variant?: "ghost" | "solid" | "danger"; className?: string; disabled?: boolean; title?: string }) {
+export function Btn({ children, onClick, href, variant = "ghost", className = "", disabled, title, ariaLabel }: { children: React.ReactNode; onClick?: () => void; href?: string; variant?: "ghost" | "solid" | "danger"; className?: string; disabled?: boolean; title?: string; ariaLabel?: string }) {
   const v = variant === "solid" ? "bg-brand text-white border-brand hover:bg-brand-2" : variant === "danger" ? "bg-red text-white border-red hover:opacity-90" : "border-line bg-surface text-ink hover:bg-surface-2";
   const cls = `inline-flex items-center justify-center gap-2 rounded-lg border px-3.5 h-[38px] text-[13px] font-medium transition-colors disabled:opacity-40 ${v} ${className}`;
-  if (href) return <Link href={href} className={cls} title={title}>{children}</Link>;
-  return <button onClick={onClick} disabled={disabled} title={title} className={cls}>{children}</button>;
+  if (href) return <Link href={href} className={cls} title={title} aria-label={ariaLabel}>{children}</Link>;
+  return <button onClick={onClick} disabled={disabled} title={title} aria-label={ariaLabel} className={cls}>{children}</button>;
 }

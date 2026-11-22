@@ -1,6 +1,6 @@
 # Pitch script — 2:00, spoken slowly
 
-197 spoken words. At a slow, clear pace (around 115 words a minute) that is about 1:43 of talking in total: roughly 1:27 before the demo and 0:16 after it, which leaves about 17 seconds for pauses. Not yet timed aloud — rehearse once with the clock (**T**). **→** = one press. Nothing moves until you press; some presses play a short sequence, so pause and let it finish. If the demo runs long, press **End** to jump straight to the scorecard.
+210 spoken words. At a slow, clear pace (around 115 words a minute) that is about 1:50 of talking in total: roughly 1:27 before the demo and 0:22 after it, which leaves about 10 seconds for pauses. Not yet timed aloud — rehearse once with the clock (**T**). **→** = one press. Nothing moves until you press; some presses play a short sequence, so pause and let it finish. If the demo runs long, press **End** to jump straight to the scorecard.
 
 The deck no longer has separate slides for problems 1, 2 and 3. The demo shows all three live — it ends on the Grants page — and the overview slide says so.
 
@@ -50,7 +50,7 @@ Now watch a resident call. *(hand off — see demo-runbook.md)*
 
 **Slide 10 — Cost** *(→ ×2)*
 
-**→** Everything you watched cost one dollar sixty-six. **→** About three hundred dollars a year.
+**→** Everything you watched cost one dollar sixty-eight. **→** The whole year cost three hundred and thirty-six dollars. The commercial option costs more than two hundred times that.
 
 **Slide 11 — Scorecard** *(leave it up)*
 

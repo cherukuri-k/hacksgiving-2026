@@ -25,7 +25,7 @@ Slides 4–5 share one rhythm, shown by the pill top-right: **Today → With Rel
 | 7 | Tech stack | 3 | Three numbered zones, one per press: the call becomes a record → every screen reads it → the resident closes the loop |
 | 8 | Demo | — | Hand-off to live demo. **V** plays `demo-backup.mp4` if it exists |
 | 9 | Benefits | 2 | Was/now cards, audience band |
-| 10 | Cost — $1.66 | 2 | Price counts up; findhelp vs Relay as areas drawn to scale |
+| 10 | Cost — $1.68 | 2 | Price counts up with the real cost split; then 223 squares fill in, one per year of Relay that a year of findhelp enterprise ($75,000) would pay for |
 | 11 | Scorecard + thank you | — | The four criteria and three bonuses, each with where it was shown; QR to the repo |
 
 19 presses reach the demo. Some presses play a short sequence; pressing again mid-sequence skips to its end.
@@ -61,4 +61,4 @@ node pdf.mjs   # Playwright: opens slides/index.html?print, prints 12 pages at 1
 
 With the app running on `:3077`, capture `/board` and `/grants` at 1600×1000 and `/phone?number=4145550188` at 390×844 (2× scale) into `slides/img/` — `board.png`, `grants.png`, `phone-home.png`, `phone-messages.png`, `phone-dialer.png`; plus `/partners`, `/pulse`, `/guide`, `/impact` as `partners.png`, `pulse.png`, `guide.png`, `impact.png`.
 
-Numbers used anywhere in the pitch come from `/grants` on the seeded 2026 data (203 requests · 186 delivered · 124 resident-confirmed = 67 % · 145/203 in clusters = 71 % · 21/26 clusters · median 2 h 05 m · $1.66 per request). If the seed changes, update the script, the map on slide 4, the cost on slide 10 and the hidden data slide.
+Numbers on the visible slides come from the app on a **freshly reset board**, 2026, synthetic data: 200 requests · $336 platform cost for the year · $1.68 per request · $2.73 per resident-verified outcome (Grants → application tab → Platform cost), and the cluster counts on the map (Grants → cluster table). Each live demo request adds one. The hidden data slide still shows 203 / 186 / 124, captured when three demo requests were on the board. If the seed changes, update the script, the map on slide 4, the cost on slide 10, the scorecard and the hidden data slide.

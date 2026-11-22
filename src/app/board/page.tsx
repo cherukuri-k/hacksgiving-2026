@@ -5,10 +5,8 @@ import { AppShell, Btn, useClock } from "@/components/AppShell";
 import { Board } from "@/components/board/Board";
 import { RequestTable } from "@/components/board/RequestTable";
 import { RequestDrawer } from "@/components/board/RequestDrawer";
-import { StatBand } from "@/components/board/StatBand";
 import { useSnapshot } from "@/lib/client/useSnapshot";
 import { useMe } from "@/lib/client/me";
-import { computeStats } from "@/lib/stats";
 import { compareAttention } from "@/lib/attention";
 import { NEED_LABEL, NEIGHBORHOODS, type Need } from "@/lib/types";
 
@@ -33,7 +31,6 @@ export default function BoardPage() {
     if (sp.get("view") === "table") setView("table");
   }, []);
 
-  const stats = useMemo(() => (data ? computeStats(data.requests, data.partners) : null), [data]);
   const all = data?.requests ?? [];
   const needCounts = useMemo(() => all.reduce<Record<string, number>>((a, r) => { r.needs.forEach((n) => (a[n] = (a[n] ?? 0) + 1)); return a; }, {}), [all]);
   const topNeeds = Object.entries(needCounts).sort((a, b) => b[1] - a[1]).slice(0, 4) as [Need, number][];
@@ -53,8 +50,6 @@ export default function BoardPage() {
     .sort((a, b) => compareAttention(a, b, now));
   const open = all.find((r) => r.id === openId) ?? null;
   const unclaimed = all.filter((r) => r.status === "new").length;
-  const reopened = all.filter((r) => r.residentFeedback === "no" && r.status !== "verified").length;
-  const critical = all.filter((r) => (r.urgency === "critical" || r.urgency === "high") && r.status !== "verified").length;
   const overdue = all.filter((r) => r.attention.level === "needs_attention").length;
   const followup = all.filter((r) => r.attention.level === "follow_up").length;
 
@@ -69,12 +64,10 @@ export default function BoardPage() {
           <button onClick={() => setView("board")} className={`seg-item ${view === "board" ? "active-blue" : ""}`}><LayoutGrid size={13} /> Board</button>
           <button onClick={() => setView("table")} className={`seg-item ${view === "table" ? "active-blue" : ""}`}><Table2 size={13} /> Table</button>
         </span>
-        <Btn onClick={async () => { await fetch("/api/reset", { method: "POST" }); reload(); }} title="Reset demo data"><RefreshCcw size={14} /> Reset demo</Btn>
+        <Btn onClick={async () => { await fetch("/api/reset", { method: "POST" }); reload(); }} title="Reset demo data" ariaLabel="Reset demo data" className="w-[38px] !px-0"><RefreshCcw size={15} /></Btn>
       </>}
     >
-      {stats && <StatBand open={stats.open} unclaimed={unclaimed} median={stats.medianMinutes} verifiedPct={stats.verifiedPct} reopened={reopened} critical={critical} overdue={overdue} followup={followup} />}
-
-      <div className="mt-4 seg">
+      <div className="seg">
         <button onClick={() => setNeed("all")} className={`seg-item ${need === "all" ? "active-blue" : ""}`}>All Needs <span className="count">{all.length}</span></button>
         {topNeeds.map(([n, c]) => <button key={n} onClick={() => setNeed(n)} className={`seg-item ${need === n ? "active-blue" : ""}`}>{NEED_LABEL[n]} <span className="count">{c}</span></button>)}
       </div>
