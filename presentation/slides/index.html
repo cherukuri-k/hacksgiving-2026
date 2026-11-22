@@ -123,8 +123,8 @@
   .title p{font-size:31px;color:#c7cad1;line-height:1.34;margin-top:44px;max-width:720px}
   .title p b{color:#fff;font-weight:600}
   /* Milwaukee replays its year the way Relay works: a request comes in, a partner takes it, the help comes back, the resident's answer turns it teal */
-  .title .city{display:grid;grid-template-columns:1fr 532px;align-items:end;gap:30px}
-  .title .city svg{width:532px;height:950px;overflow:visible}
+  .title .city{display:flex;justify-content:flex-end}
+  .title .city svg{width:532px;height:950px;overflow:visible;position:relative;top:-46px}
   .title .city .rq{fill:#f08a6c;opacity:0;transform:scale(0);transform-box:fill-box;transform-origin:center;transition:opacity .3s,transform .45s cubic-bezier(.3,1.5,.5,1),fill .5s}
   .title .city .rq.in{opacity:1;transform:none}
   .title .city .rq.ok{fill:#6fc2b7}
@@ -145,12 +145,6 @@
   .title .city image{opacity:0}
   .title .city.go image{animation:wipe 1.5s cubic-bezier(.3,.6,.2,1) .1s both}
   @keyframes wipe{from{opacity:0;clip-path:inset(0 0 100% 0)}25%{opacity:1}to{opacity:1;clip-path:inset(0 0 0 0)}}
-  .title .lgd{padding-bottom:96px;font-size:21px;line-height:1.3;color:#c7cad1}
-  .title .lgd div{display:flex;gap:12px;align-items:baseline;margin-top:12px}
-  .title .lgd div::before{content:'';flex:none;width:12px;height:12px;border-radius:50%;background:var(--c)}
-  .title .lgd div.p::before{width:10px;height:10px;margin:0 1px;border-radius:0;background:none;border:2px solid #d6d9df;transform:rotate(45deg)}
-  .title .lgd small{display:block;font-family:var(--mono);font-size:13px;line-height:1.5;color:#6c7079;letter-spacing:.04em;text-transform:uppercase;margin-top:22px}
-  section.active .title .lgd{animation:rise .7s cubic-bezier(.2,.7,.2,1) 1.1s both}
 
   /* 2 about */
   .tri{display:grid;grid-template-columns:290px 830px 440px;gap:60px;margin-top:36px;align-items:end}
@@ -458,7 +452,7 @@
     #help,#notes,#clock,#foot,#prog{display:none}
     .f,.on{opacity:1!important;transform:none!important}
     section.slide>*{animation:none!important}
-    .title .lgd,.title .city image,.title .city .pt,.title .team,.title h1,.title p,.thanks .ty h3,.thanks .say h4,.thanks .end p{animation:none!important}
+    .title .city image,.title .city .pt,.title .team,.title h1,.title p,.thanks .ty h3,.thanks .say h4,.thanks .end p{animation:none!important}
     .title .city image,.title .city .pt{opacity:1!important}
     .stack .node,.stack .w,.stack .wl,.stack .dot,.stack .steps div,.net .spoke,.net .hub,.map .cl,.map .brief,.know .arrow,.know .pp.new{opacity:1!important;transform:none!important}
     .net .tangle{opacity:.08!important}
@@ -484,12 +478,6 @@
         <p>One shared record for every request ComForce receives — <b>closed only when the resident says help arrived.</b></p>
       </div>
       <div class="city" id="city">
-        <div class="lgd">
-          <div style="--c:#f08a6c">A request comes in</div>
-          <div class="p">A partner takes it</div>
-          <div style="--c:#6fc2b7">The resident says help arrived</div>
-          <small>Milwaukee · <span id="mo">Jan</span> 2026<br>one dot per request<br>synthetic demo data</small>
-        </div>
         <svg viewBox="0 0 346 618" role="img" aria-label="Map of Milwaukee's neighbourhoods replaying the requests logged in 2026. Each request appears as a coral dot, a line runs to the partner that took it and back, and the dot turns teal when the resident confirmed that the help arrived.">
           <image href="img/milwaukee-dark.svg" x="0" y="0" width="346" height="618"/>
           <g id="fx"></g>
@@ -853,8 +841,7 @@
   // The map replays the most recent requests the way Relay works: a request comes in, a partner takes it, the help comes back, and the resident's answer turns it teal.
   const FROM_MONTH = 9; // October: show the last two months, so the flow stays readable. 0 shows all of 2026.
   const SHOW = DOTS.map((_, k) => k).filter(k => parseInt(MONTH[k], 36) >= FROM_MONTH);
-  const city = document.getElementById('city'), SVGNS = 'http://www.w3.org/2000/svg', monthEl = document.getElementById('mo');
-  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const city = document.getElementById('city'), SVGNS = 'http://www.w3.org/2000/svg';
   city.querySelector('#reqdots').innerHTML = SHOW.map(k => `<circle class="rq" cx="${DOTS[k][0]/10}" cy="${DOTS[k][1]/10}" r="3.4"/>`).join('');
   city.querySelector('#partners').innerHTML = PARTNERS.map(([x, y]) => `<rect class="pt" x="${x - 3.4}" y="${y - 3.4}" width="6.8" height="6.8"/>`).join('');
   const rqEls = [...city.querySelectorAll('.rq')], ptEls = [...city.querySelectorAll('.pt')], fx = city.querySelector('#fx');
@@ -865,7 +852,6 @@
   function arrive(run, j, leg, ripple){
     const k = SHOW[j], [dx, dy, yes] = DOTS[k], x = dx/10, y = dy/10, p = PARTNERS[parseInt(TOOK[k], 36)];
     rqEls[j].classList.add('in'); if (ripple) fxEl('circle', { class: 'ping', cx: x, cy: y, r: 3.4 });
-    monthEl.textContent = MONTHS[parseInt(MONTH[k], 36)];
     if (!p) return; // nobody has taken this one yet: it stays coral and waits
     later(run, leg*450, () => fxEl('path', { class: 'ln', d: `M${x} ${y}L${p[0]} ${p[1]}`, pathLength: 1, style: `--dur:${leg*2}s` }));
     later(run, leg*450 + leg*900, () => { const el = ptEls[parseInt(TOOK[k], 36)]; el.classList.remove('hit'); void el.getBoundingClientRect(); el.classList.add('hit'); });
@@ -888,8 +874,7 @@
     const run = ++cityRun; fx.innerHTML = '';
     rqEls.forEach(el => el.classList.remove('in', 'ok')); ptEls.forEach(el => el.classList.remove('hit'));
     city.classList.remove('go'); void city.getBoundingClientRect(); city.classList.add('go');
-    if (location.search.includes('print')) { rqEls.forEach((el, j) => el.classList.add('in', ...(DOTS[SHOW[j]][2] ? ['ok'] : []))); monthEl.textContent = MONTHS[parseInt(MONTH.at(-1), 36)]; return; }
-    monthEl.textContent = MONTHS[parseInt(MONTH[SHOW[0]], 36)];
+    if (location.search.includes('print')) { rqEls.forEach((el, j) => el.classList.add('in', ...(DOTS[SHOW[j]][2] ? ['ok'] : []))); return; }
     later(run, 1700, () => replay(run, 0));
   }
 
