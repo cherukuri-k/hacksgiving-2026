@@ -528,18 +528,19 @@
   .stack .costs b{color:var(--ink);font-weight:600} .stack .costs i{font-style:normal;color:var(--line2);margin:0 12px}
 
   /* 9 video */
-  .vid{position:relative;margin-top:30px;width:1680px;height:700px;border-radius:12px;overflow:hidden;background:var(--dark)}
-  .vid video{display:block;width:100%;height:100%;object-fit:contain}
+  .vid{position:relative;margin-top:30px;width:1680px;height:700px;border-radius:12px;overflow:hidden;background:var(--dark);display:flex;flex-direction:column}
+  .vid video{display:block;width:100%;flex:1 1 auto;min-height:0;object-fit:contain;outline:none}
   .vid .ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;color:var(--paper)}
   .vid .ph .play{width:92px;height:92px;border-radius:50%;border:1.5px solid #50555e;display:grid;place-items:center}
   .vid .ph .play svg{width:30px;height:30px;fill:#fff;margin-left:5px}
   .vid .ph b{font-size:24px} .vid .ph span{font-size:15px;color:#8a8e97;max-width:760px;line-height:1.5}
   .vid .ph code{font-family:var(--mono);color:#c7cad1}
-  .vid .chap{position:absolute;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #2c3037}
+  .vid .chap{flex:0 0 auto;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #2c3037}
   .vid .chap div{padding:16px 22px;font-size:14px;color:#8a8e97;border-right:1px solid #2c3037}
   .vid .chap div:last-child{border-right:none}
   .vid .chap div b{display:block;font-family:var(--mono);font-size:12px;color:#6fc2b7;margin-bottom:4px;font-weight:500}
   .vid.ready .ph{display:none}
+  .vid:fullscreen{width:100vw;height:100vh;margin:0;border-radius:0}
 
   /* 10 benefits */
   .ba{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:36px}
@@ -1074,13 +1075,12 @@
     <div class="k"><span class="n">Demo</span><span class="sep"></span>two minutes, first ring to “yes, it arrived” <span class="tag live">live</span></div>
     <h2>A resident is about to call ComForce from a seat in this room.</h2>
     <div class="vid" id="vid">
-      <video id="demovid" src="../demo-backup.mp4" preload="metadata" playsinline></video>
+      <video id="demovid" src="../demo-backup.mp4" preload="metadata" playsinline controls controlsList="nodownload"></video>
       <div class="ph">
         <div class="play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></div>
         <b>Demo video</b>
         <span>Backup if the live call fails. Drop <code>presentation/demo-backup.mp4</code> next to this folder and press <code>V</code>.</span>
       </div>
-      <div class="chap"><div><b>0:00</b>Resident calls · Jordan answers · card appears on the board</div><div><b>0:35</b>Coordinator claims · partner dispatched · volunteer texted</div><div><b>1:20</b>Delivered · “did it arrive?” text to the resident</div><div><b>1:45</b>Resident replies yes · card turns Verified</div></div>
     </div>
   </section>
 
@@ -1322,6 +1322,24 @@
   const demovid = document.getElementById('demovid');
   demovid.addEventListener('loadeddata', () => document.getElementById('vid').classList.add('ready'));
   demovid.addEventListener('error', () => document.getElementById('vid').classList.remove('ready'));
+  // The demo slide costs two presses: the first plays the recording full screen, the second
+  // leaves full screen and moves on — no hunting for the player in front of the room.
+  const vidBox = document.getElementById('vid');
+  let vidFs = false;
+  const inVidFs = () => document.fullscreenElement === vidBox;
+  function demoPlayFull(){
+    vidFs = true;
+    demovid.currentTime = 0;
+    const go = () => demovid.play().catch(() => {}); // full screen refused: play in place rather than nothing
+    const p = vidBox.requestFullscreen && vidBox.requestFullscreen();
+    if (p && p.then) p.then(go, go); else go();
+  }
+  function demoStop(){
+    vidFs = false; demovid.pause();
+    if (inVidFs()) document.exitFullscreen().catch(() => {});
+  }
+  // Esc, or the player's own button, leaves full screen without going through next().
+  document.addEventListener('fullscreenchange', () => { if (!inVidFs()) vidFs = false; });
   const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
 
   const ease = t => 1 - Math.pow(1 - t, 3);
@@ -1352,7 +1370,8 @@
     s.classList.add('noanim'); // reset (or fully reveal) a slide without replaying its transitions
     frags(s).forEach(f => { f.classList.remove('on'); f.querySelectorAll('[data-done]').forEach(v => delete v.dataset.done); delete f.dataset.done; });
     delete s.dataset.played; delete s.dataset.running;
-    if (!s.querySelector('#demovid') && !demovid.paused) demovid.pause();
+    if (!s.querySelector('#demovid')) { if (!demovid.paused) demovid.pause(); if (vidFs) demoStop(); }
+    else delete s.dataset.demoPlayed; // a fresh visit gets its full-screen press back
     const was = i;
     i = n; count.textContent = String(n+1).padStart(2,'0') + ' / ' + slides.length; notes.textContent = s.dataset.notes || '';
     prog.style.width = ((n)/(slides.length-1)*100) + '%';
@@ -1370,6 +1389,12 @@
   function next(){
     // A press during the hand-off skips straight to the closing slide.
     if (handing) { endHandoff(); if (i !== slides.length-1) show(slides.length-1); return; }
+    // The demo slide: press once to play full screen, again to come back out and move on.
+    const demo = slides[i].querySelector('#demovid') && !presenting ? slides[i] : null;
+    if (demo) {
+      if (vidFs) demoStop();
+      else if (!demo.dataset.demoPlayed && demovid.readyState) { demo.dataset.demoPlayed = '1'; demoPlayFull(); return; }
+    }
     const s = slides[i], hidden = frags(s).filter(x => !x.classList.contains('on'));
     if (hidden.length) {
       // One step per press. Fragments sharing data-g reveal together, staggered by data-seq (ms);
@@ -1384,7 +1409,12 @@
     if (i === slides.length-2) return playHandoff();
     if (i < slides.length-1) show(i+1);
   }
-  function prev(){ if (handing) return endHandoff(); if (i > 0) show(i-1, true); }
+  function prev(){
+    if (handing) return endHandoff();
+    // Backing out of the video stays on the slide, ready to play it again.
+    if (vidFs) { demoStop(); delete slides[i].dataset.demoPlayed; return; }
+    if (i > 0) show(i-1, true);
+  }
 
   // The hand-off into the closing slide. It runs on its own timers, because show() clears the deck's.
   const handoff = document.getElementById('handoff'); let handTimers = [], handing = false;
@@ -1459,6 +1489,8 @@
     else if (k==='v') { if (document.getElementById('vid').classList.contains('ready')) demovid.paused ? demovid.play() : demovid.pause(); }
     else if (k==='f') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
   });
+  // The player's own buttons are clicks too: keep them from also advancing the slide.
+  document.getElementById('vid').addEventListener('click', e => e.stopPropagation());
   stage.addEventListener('click', e => act(e.clientX > stage.getBoundingClientRect().left + stage.getBoundingClientRect().width/2 ? 'next' : 'prev'));
   let tx = 0; addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive:true}); addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 40) act(dx < 0 ? 'next' : 'prev'); });
 
