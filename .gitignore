@@ -22,3 +22,6 @@ build/
 *.db
 data/raw/
 docs/assets/playbook.html
+
+# Source package for the local planner (its contents are copied into src/lib/planner/ and tools/planner-training/)
+relay-local-planner/

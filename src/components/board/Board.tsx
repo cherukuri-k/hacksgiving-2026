@@ -1,7 +1,8 @@
 "use client";
 import { AnimatePresence, motion } from "motion/react";
-import { MessageSquareText, Mic, Globe, Users, User, MapPin, Home, UserCheck, Check, RotateCcw, AlertTriangle, Clock3, Clock, Info, Siren, Languages } from "lucide-react";
+import { MessageSquareText, Mic, Globe, Users, User, MapPin, Home, UserCheck, Check, RotateCcw, AlertTriangle, Clock3, Clock, Info, Siren, Languages, ListChecks } from "lucide-react";
 import type { SafeRequest } from "@/lib/client/useSnapshot";
+import { boardTaskLine } from "@/lib/missions";
 import { STATUSES, STATUS_LABEL, LANGUAGE_LABEL } from "@/lib/types";
 import { timeAgo } from "@/lib/stats";
 import { NeedChip, UrgencyChip } from "../ui/Chip";
@@ -35,6 +36,7 @@ export function RequestCard({ r, fresh, onClick, now }: { r: SafeRequest; fresh:
     : d.status === "picked_up" ? "Picked up · heading to resident"
     : d.status === "declined" ? "Partner declined · pick another" : d.status === "no_answer" ? "Partner didn't answer" : null
     : null;
+  const taskLine = boardTaskLine(r);
   const next = dispatchLine ?? (r.status === "new" ? "Awaiting a partner to claim" : r.status === "claimed" ? `Claimed by ${r.ownerName ?? "partner"} · work starting` : r.status === "in_progress" ? "In progress · update resident when delivered" : r.status === "delivered" ? (r.followUp?.status === "calling" ? "No text reply · Jordan is calling the resident…" : r.followUp?.status === "answered" ? "Resident on the line with Jordan…" : r.followUp?.status === "no_answer" ? "Call-back unanswered · try the resident later" : "Verification text sent · awaiting resident reply") : r.residentFeedback === "partial" ? "Resident: partly helped" : (r.followUp?.call ? "Closed the loop · confirmed by phone" : "Closed the loop · resident confirmed"));
   return (
     <motion.button layout layoutId={r.id} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ type: "spring", stiffness: 400, damping: 34 }} onClick={onClick}
@@ -72,6 +74,13 @@ export function RequestCard({ r, fresh, onClick, now }: { r: SafeRequest; fresh:
         <div className={`mt-2 rounded-md border px-2.5 py-1.5 text-[11.5px] font-medium ${r.status === "verified" && r.residentFeedback !== "partial" ? "border-[#bfe7cf] bg-green-soft text-green" : "border-[#bfe0f3] bg-brand-soft text-brand"}`}>
           {r.status === "verified" && r.residentFeedback !== "partial" ? <span className="inline-flex items-center gap-1.5"><Check size={12} /> {next}</span> : (d?.status === "calling" && r.status !== "delivered" && r.status !== "verified") || r.followUp?.status === "calling" || r.followUp?.status === "answered" ? <span className="inline-flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-brand blink" /> {next}</span> : next}
         </div>
+        {/* Relay Missions: one quiet line. Legacy tickets with no tasks render exactly as before. */}
+        {taskLine && (
+          <div className="mt-2 flex items-center gap-1.5 text-[11.5px] font-medium text-ink-2">
+            <ListChecks size={12} className="shrink-0 text-muted" />
+            <span className="num">{taskLine}</span>
+          </div>
+        )}
         <div className="mt-2.5 flex items-center justify-between text-[11px] text-muted">
           <span>Opened {timeAgo(r.createdAt, now)}</span>
           {r.ownerName && <span className="font-medium text-ink-2">{r.ownerName}</span>}

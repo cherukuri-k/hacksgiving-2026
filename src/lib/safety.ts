@@ -45,13 +45,28 @@ export function mayBeMinor(text: string): boolean {
 
 /** Keyword screen used when the LLM is unavailable and as a floor under it: never downgrade an obvious crisis. */
 export function detectSafety(text: string): SafetyLevel | undefined {
-  if (CRISIS.test(text) || isMissingPerson(text)) return "crisis";
+  // A medical emergency is a crisis in its own right, so the ticket is flagged and 911 is shared
+  // even with no model and no planner running.
+  if (CRISIS.test(text) || isMissingPerson(text) || isMedicalEmergency(text)) return "crisis";
   if (CONCERN.test(text)) return "concern";
   return undefined;
 }
 
 const DV = /\b(hit|beat|abus|partner|husband|wife|boyfriend|girlfriend|ex\b|strangl|choke|won'?t let me leave|unsafe at home|afraid (he|she|they)|stalk)/i;
 const SELF = /\b(suicid\w*|kill myself|end (it|my life)|don'?t want to (be here|live)|hurt(ing)? myself|overdos\w*|mental|depress\w*|anxi\w*|hopeless)\b/i;
+
+// Someone needs an ambulance now. Kept separate from CRISIS because the resource is different:
+// a medical emergency is a 911 call, not a crisis line.
+const MEDICAL_EMERGENCY = /\b(not breathing|stopped breathing|can'?t breathe|cannot breathe|unconscious|unresponsive|won'?t wake up|not waking up|passed out(?! (?:flyers?|leaflets?|papers?|forms?|copies))|overdos\w*|chest pain|heart attack|cardiac arrest|having a stroke|seizure|convuls\w*|won'?t stop bleeding|bleeding (?:badly|heavily)|choking|anaphyla\w*)\b/i;
+
+/**
+ * A medical emergency: an ambulance is the first call, whatever else the text also describes.
+ * Deliberately independent of DV wording — "my husband is unconscious" is both, and the
+ * domestic-violence reading must never replace the ambulance.
+ */
+export function isMedicalEmergency(text: string): boolean {
+  return MEDICAL_EMERGENCY.test(text);
+}
 
 /** Which resources Jordan should mention for a given level and text. */
 export function resourcesFor(level: SafetyLevel, text: string): SafetyResourceKey[] {
@@ -63,8 +78,15 @@ export function resourcesFor(level: SafetyLevel, text: string): SafetyResourceKe
     return keys;
   }
   const out: SafetyResourceKey[] = [];
+  // 911 leads for a medical emergency. Without this, "my husband is unconscious and not
+  // breathing" matched DV on the word "husband" and came back as Sojourner + 211, with no
+  // ambulance anywhere in it.
+  const medical = isMedicalEmergency(text);
+  if (medical) out.push("911");
   const dv = DV.test(text);
-  if (SELF.test(text) || (level === "crisis" && !dv)) out.push("988", "county");
+  // A crisis line is for a crisis of the mind; it does not replace an ambulance. Still offered
+  // when the text ALSO points to self-harm, such as an overdose.
+  if (SELF.test(text) || (level === "crisis" && !dv && !medical)) out.push("988", "county");
   if (dv) out.push("sojourner");
   out.push("211");
   return Array.from(new Set(out));

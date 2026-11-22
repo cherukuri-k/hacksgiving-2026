@@ -10,6 +10,9 @@ import { COORDINATOR_ORG } from "@/lib/coordination";
 import { lastNudge, nudgeCooldownRemainingMs } from "@/lib/nudge";
 import { Avatar, NeedChip, UrgencyDot } from "../ui/Chip";
 import { PartnerBadge, PartnerSources } from "../ui/PartnerProvenance";
+import { TaskPreview } from "./TaskPreview";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 const ACTOR_ICON = (actor: string, type?: string) =>
   type === "email_out" ? <Mail size={11} /> : type === "dispatch" ? <PhoneOutgoing size={11} /> : actor === "ai" ? <Cpu size={12} /> : actor === "system" ? <Bot size={12} /> : actor === "resident" ? <MessageSquareReply size={12} /> : <User size={12} />;
@@ -68,6 +71,9 @@ export function RequestDrawer({ request, partners, onClose, me }: { request: Saf
                   <span>{request.shortCode}</span>·<span className="uppercase">{STATUS_LABEL[request.status]}</span>·<UrgencyDot urgency={request.urgency} withLabel />
                 </div>
                 <h2 className="text-[19px] font-bold leading-snug mt-1.5">{request.summary}</h2>
+                <Link href={`/board/ticket/${request.id}`} className="mt-1.5 inline-flex items-center gap-1 text-[12.5px] font-semibold text-brand hover:underline">
+                  View Full Ticket <ChevronRight size={13} />
+                </Link>
                 <div className="mt-2 flex flex-wrap gap-1">{request.needs.map((n) => <NeedChip key={n} need={n} />)}{request.language && request.language !== "en" && <span className="chip inline-flex items-center gap-1 bg-[#ede9fe] text-[#6d28d9]"><Languages size={10} /> {LANGUAGE_LABEL[request.language] ?? request.language}</span>}</div>
               </div>
               <button onClick={onClose} className="p-1.5 text-muted hover:text-ink"><X size={18} /></button>
@@ -103,6 +109,9 @@ export function RequestDrawer({ request, partners, onClose, me }: { request: Saf
                 <Field k="Owner" v={request.ownerName ? `${request.ownerName} · ${request.ownerOrg}` : "Unclaimed"} />
                 <Field k="Consent to share" v={request.consentToShare ? "Yes, with partners" : "ComForce only"} />
               </section>
+
+              {/* Relay Missions: preview only. All task controls live on the full ticket page. */}
+              <TaskPreview request={request} />
 
               {request.dispatch && <DispatchSection request={request} partner={partners.find((p) => p.id === request.dispatch!.partnerId)} />}
               {request.followUp && <FollowUpSection request={request} />}

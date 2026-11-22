@@ -137,7 +137,12 @@ export type ActivityType =
   | "dispatch"
   | "email_out"
   | "safety"
-  | "followup_call";
+  | "followup_call"
+  /**
+   * Every task event. Deliberately ONE type: emitting "delivered"/"verified" for a single task
+   * would inflate the request-level totals lib/stats.ts and the Impact page count.
+   */
+  | "task";
 
 export interface ActivityEvent {
   id: string;
@@ -146,6 +151,140 @@ export interface ActivityEvent {
   actor: string; // display name, "resident", "system" or "ai"
   type: ActivityType;
   text: string;
+  /** Set when the event belongs to one task on the ticket (type "task"). */
+  taskId?: string;
+}
+
+// ---------------------------------------------------------------------------
+// Relay Missions — the ticket IS the mission.
+// Tasks live on the request, so there is no second request store and the existing snapshot
+// keeps the Board, the drawer and the ticket page in sync through the normal 2s poll.
+// ---------------------------------------------------------------------------
+
+export const TASK_STATES = [
+  "needs_assignment",
+  "awaiting_partner",
+  "in_progress",
+  "in_review",
+  "done",
+  "needs_followup",
+] as const;
+export type TaskState = (typeof TASK_STATES)[number];
+
+/** Plain-words labels. "Waiting on <Partner>" is built in the UI from the assignee. */
+export const TASK_STATE_LABEL: Record<TaskState, string> = {
+  needs_assignment: "Needs assignment",
+  awaiting_partner: "Awaiting partner",
+  in_progress: "In progress",
+  in_review: "Ready for review",
+  done: "Done",
+  needs_followup: "Needs follow-up",
+};
+
+export interface TaskAssignee {
+  kind: "person" | "partner";
+  /** Partner id, or the person's display name used as a stable demo identity. */
+  id: string;
+  name: string;
+}
+
+export interface TaskNote {
+  at: string;
+  by: string;
+  text: string;
+}
+
+/** The volunteer's last confirmed update. Written only after the human taps "Looks right". */
+export interface TaskUpdate {
+  doneItems: string[];
+  /** Still outstanding WITHIN this task's scope. */
+  remainingItems: string[];
+  /**
+   * Needs the volunteer mentioned that this task never covered. Held separately so an unrelated
+   * need never makes a finished task look half-done; a coordinator turns these into their own
+   * tasks, or dismisses them.
+   */
+  outOfScopeItems?: string[];
+  blocker?: string;
+  at: string;
+  by: string;
+}
+
+/** A coordinator's verdict on an update. The only route to `done`. */
+export interface TaskReview {
+  outcome: "done" | "partly" | "not_done";
+  reason?: string;
+  by: string;
+  at: string;
+}
+
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  /** Service category, reusing the existing Need vocabulary. */
+  category: Need;
+  state: TaskState;
+  assignee?: TaskAssignee;
+  notes: TaskNote[];
+  lastUpdate?: TaskUpdate;
+  review?: TaskReview;
+  /** Partner referral attempts, newest last. A decline is never deleted. */
+  handoffs?: { partnerId: string; partnerName: string; status: "pending" | "accepted" | "declined"; at: string; reason?: string }[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** One draft the AI prepared at intake. Assigns nobody and changes no ticket status. */
+export interface TaskSuggestionItem {
+  id: string;
+  title: string;
+  description: string;
+  category: Need;
+}
+
+/** How urgently a coordinator should look at the drafts. Mirrors the local planner's own priority. */
+export const SUGGESTION_PRIORITIES = ["normal", "time_sensitive", "safety_review"] as const;
+export type SuggestionPriority = (typeof SUGGESTION_PRIORITIES)[number];
+
+export interface TaskSuggestions {
+  status: "draft" | "approved";
+  items: TaskSuggestionItem[];
+  /** Set when generated, so suggestions are produced exactly once per request. */
+  generatedAt: string;
+  /** True when a model wrote them; false when the deterministic fallback did. */
+  aiGenerated: boolean;
+
+  // ---- Local planner extras. All optional: tickets drafted by the Claude path or the
+  // deterministic fallback simply leave them unset and behave exactly as before. ----
+
+  /** Which engine drafted these, e.g. "relay-local-planner/1". Absent for the Claude path. */
+  engine?: string;
+  /** Planner's read on urgency. Advisory only: it never changes the ticket's status or urgency. */
+  priority?: SuggestionPriority;
+  /**
+   * Needs the planner noticed that are NOT on the request. Shown to coordinators as a hint so they
+   * can add the need themselves. Never turned into tasks — that is the Missions rule.
+   */
+  possibleExtraNeeds?: { label: string; confidence: number }[];
+  /** What a coordinator should still ask the resident. */
+  followUpQuestions?: string[];
+  /**
+   * Why the planner read the situation the way it did (hazards, deadlines, third-party caller).
+   * Crisis detail is deliberately withheld from task cards, so this is the audit trail.
+   */
+  signalNotes?: string[];
+  /** Closest approved past cases, for context only. */
+  similarCases?: { id: string; theme: string; similarity: number }[];
+  /** The planner's self-check. `passed: false` means a coordinator should read the drafts closely. */
+  check?: { passed: boolean; issues: string[] };
+  /** Set when a task must wait for a coordinator to clear the ticket (crisis or hazard). */
+  heldForCoordinator?: boolean;
+  /**
+   * What the planner's OWN signals read, independent of lib/safety.ts. Lets intake flag a ticket
+   * the keyword screen missed: either side raising a flag wins.
+   */
+  plannerSafety?: SafetyLevel;
 }
 
 export interface HelpRequest {
@@ -180,6 +319,10 @@ export interface HelpRequest {
   safety?: SafetyFlag;
   /** After delivery: if the resident doesn't answer the "did it arrive?" text, Jordan calls them back in their language. */
   followUp?: FollowUp;
+  /** Approved tasks for this ticket. Absent on legacy tickets, which behave exactly as before. */
+  tasks?: Task[];
+  /** AI drafts awaiting a coordinator. Present once generated, whatever the outcome. */
+  taskSuggestions?: TaskSuggestions;
 }
 
 export type SafetyLevel = "concern" | "crisis";

@@ -1,0 +1,40 @@
+
+[hand-written Milwaukee gold set (never trained on)] n=30 micro-F1=0.450  exact-match=0.10  at-least-one-need-right=0.73
+  food               P=1.00 R=0.69 n=13
+  housing            P=0.86 R=0.60 n=10
+  utilities          P=1.00 R=0.40 n=5
+  medical            P=0.00 R=0.00 n=1
+  home_repair        P=1.00 R=0.50 n=4
+  disaster_cleanup   P=0.33 R=0.33 n=3
+  disaster_recovery  P=0.00 R=0.00 n=3
+  transportation     P=0.20 R=0.25 n=4
+  household_goods    P=0.00 R=0.00 n=5
+  clothing           P=0.50 R=1.00 n=1
+  financial          P=0.25 R=0.25 n=4
+  legal_aid          P=0.00 R=0.00 n=1
+  language_access    P=1.00 R=0.50 n=2
+  internet_access    P=1.00 R=0.50 n=2
+  employment         P=0.00 R=0.00 n=2
+  mental_health      P=0.00 R=0.00 n=1
+  safety             P=0.00 R=0.00 n=3
+
+[generated validation split] n=104 micro-F1=0.660  exact-match=0.18  at-least-one-need-right=0.93
+  food               P=0.80 R=0.86 n=28
+  water              P=0.69 R=0.73 n=15
+  housing            P=0.48 R=0.54 n=26
+  utilities          P=0.50 R=0.69 n=13
+  medical            P=0.78 R=0.47 n=15
+  home_repair        P=0.67 R=0.53 n=15
+  disaster_cleanup   P=0.61 R=0.61 n=23
+  disaster_recovery  P=0.36 R=0.31 n=16
+  transportation     P=0.86 R=0.86 n=21
+  household_goods    P=0.71 R=0.62 n=8
+  clothing           P=0.75 R=1.00 n=6
+  financial          P=0.50 R=0.59 n=17
+  legal_aid          P=1.00 R=0.82 n=11
+  language_access    P=1.00 R=0.73 n=15
+  internet_access    P=1.00 R=0.75 n=8
+  employment         P=0.50 R=0.25 n=4
+  safety             P=0.00 R=0.00 n=1
+
+exported 17217 terms; nonzero weights kept: 108043
