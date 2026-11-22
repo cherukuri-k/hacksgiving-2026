@@ -223,6 +223,87 @@
   .ovw[data-step="2"] .one .p{opacity:0;transform:translateY(-8px)}
   .ovw[data-step="2"] .one .s{opacity:1;transform:none}
 
+  /* the journey in three slides (the call, the work, the proof): four drawn scenes each, on one track that runs across all three */
+  .jy .phase span.cur{background:var(--ink);border-color:var(--ink);color:#fff}
+  .jy .phase span.was{border-color:var(--teal);color:var(--teal)}
+  .jstage{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:36px;margin-top:34px}
+  .trk{position:absolute;left:-120px;right:-120px;top:525px;height:2px;background:var(--teal);transform-origin:left}
+  .trk.first{left:196px} .trk.last{right:196px}
+  .trk i{position:absolute;top:-4px;left:0;width:10px;height:10px;border-radius:50%;background:var(--teal);opacity:0}
+  section.active .trk{animation:growx 3.6s cubic-bezier(.4,0,.6,1) .3s both}
+  section.active .trk i{animation:runx 4.5s linear 4.6s infinite}
+  @keyframes growx{from{transform:scaleX(0)}}
+  @keyframes runx{0%{left:0;opacity:0}8%{opacity:1}92%{opacity:1}100%{left:100%;opacity:0}}
+  @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.94)}}
+  .scn .vis{height:480px;display:grid;place-items:center}
+  section.active .scn{animation:rise .6s cubic-bezier(.2,.7,.2,1) var(--d) both}
+  section.active .scn .p{animation:pop .45s cubic-bezier(.3,1.4,.5,1) calc(var(--d) + var(--e,.5s)) both}
+  .jcap{position:relative;margin-top:26px;padding-top:56px;text-align:center}
+  .jcap i{position:absolute;left:50%;top:0;margin-left:-20px;width:40px;height:40px;border-radius:50%;background:var(--c,var(--ink));color:#fff;font-style:normal;font-family:var(--mono);font-size:14px;font-weight:600;display:grid;place-items:center;box-shadow:0 0 0 6px var(--paper)}
+  .jcap small{display:block;font-family:var(--mono);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--c,var(--ink))}
+  .jcap b{display:block;font-size:25px;line-height:1.2;letter-spacing:-.02em;margin-top:4px}
+  .scn.res{--c:var(--coral)} .scn.ai{--c:var(--teal)} .scn.cf{--c:var(--ink)} .scn.pa{--c:var(--amber)}
+  /* a phone: dark while on a call, light in Messages */
+  .fone{width:286px;height:480px;border-radius:38px;background:#0b0c0f;padding:9px;box-shadow:0 30px 50px -28px rgba(0,0,0,.55)}
+  .fone .scr{height:100%;border-radius:30px;overflow:hidden;display:flex;flex-direction:column;padding:22px 14px 16px;background:#111827;color:#fff}
+  .fone .scr.msg{background:#f2f2f6;color:var(--ink)}
+  .fone .who{display:block;margin:0;padding:0;border-radius:0;background:none;color:inherit;text-align:center;font-size:17px;font-weight:600;letter-spacing:-.01em}
+  .fone .who small{display:block;font-family:var(--mono);font-size:11.5px;font-weight:400;opacity:.6;margin-top:3px}
+  .fone .av{grid-template-columns:none;width:54px;height:54px;border-radius:50%;background:#0b93d5;color:#fff;font-size:24px;font-weight:700;display:grid;place-items:center;margin:0 auto 10px;position:relative}
+  .fone .av.ring::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid #0b93d5;animation:pulse 1.6s ease-out infinite}
+  .fone .scr.msg .av{width:34px;height:34px;font-size:15px;margin-bottom:5px}
+  .fone .scr.msg .who{font-size:13px;padding-bottom:10px;border-bottom:1px solid #dcdce0}
+  .fone .talk{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;margin-top:12px}
+  .fone .scr.msg .talk{justify-content:flex-start}
+  .bub{max-width:88%;padding:8px 12px;border-radius:17px;font-size:14.5px;line-height:1.3;background:rgba(255,255,255,.12);align-self:flex-start;border-bottom-left-radius:5px}
+  .bub.me{align-self:flex-end;background:#0b93d5;color:#fff;border-radius:17px;border-bottom-right-radius:5px}
+  .scr.msg .bub{background:#e4e4ea} .scr.msg .bub.me{background:#0b93d5}
+  .fone .end{width:46px;height:46px;border-radius:50%;background:#dc2626;margin:14px auto 0;display:grid;place-items:center}
+  .fone .end::after{content:'';width:20px;height:7px;border-radius:4px;background:#fff;transform:rotate(135deg)}
+  .fone .quick{display:flex;gap:6px;margin-top:10px} .fone .quick span{flex:1;text-align:center;font-size:12.5px;font-weight:600;padding:7px 0;border-radius:999px;border:1px solid #c9c9d0;background:#fff}
+  .fone .quick span.y{border-color:var(--teal);color:var(--teal)}
+  /* a panel: a piece of the ComForce worker's screen */
+  .pnl{width:100%;height:480px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;box-shadow:0 26px 44px -30px rgba(23,24,28,.4)}
+  .pnl h5{display:flex;justify-content:space-between;align-items:baseline;font-size:17px;font-weight:700;letter-spacing:-.01em;padding-bottom:12px;border-bottom:1px solid var(--line)}
+  .pnl h5 small{font-family:var(--mono);font-size:11.5px;font-weight:400;color:var(--mut)}
+  .rc{border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin-top:11px}
+  .rc.new{border:2px solid var(--teal);box-shadow:0 12px 24px -16px rgba(14,107,99,.7)}
+  .rc code{font-family:var(--mono);font-size:12px;color:var(--mut)}
+  .rc b{display:block;font-size:17px;line-height:1.25;letter-spacing:-.01em;margin:3px 0 8px}
+  .rc .chips{display:flex;gap:6px;flex-wrap:wrap;font-size:12px}
+  .rc .chips span{padding:2px 9px;border-radius:999px;border:1px solid var(--line2)}
+  .rc .chips .crit{border-color:var(--coral);color:var(--coral);font-weight:600}
+  .rc.ghost{height:62px;background:linear-gradient(var(--paper2),var(--paper2)) 13px 14px/45% 9px no-repeat,linear-gradient(var(--paper2),var(--paper2)) 13px 34px/70% 9px no-repeat}
+  .tk{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15.5px;line-height:1.3;font-weight:600}
+  .tk::before{content:attr(data-n);font-family:var(--mono);font-size:12.5px;font-weight:400;color:var(--mut);padding-top:2px}
+  .pnl .btn{margin-top:auto;align-self:flex-start;background:var(--teal);color:#fff;font-size:14.5px;font-weight:600;padding:10px 16px;border-radius:9px;position:relative}
+  .pnl .btn.dark{background:var(--ink);align-self:stretch;text-align:center;font-size:17px;padding:14px}
+  .pnl .btn.tap::after{content:'';position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px;border-radius:50%;border:2px solid var(--ink);animation:pulse 1.5s ease-out infinite}
+  .duo{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:13px;font-weight:600}
+  .duo span{display:flex;align-items:center;gap:7px} .duo span::before{content:attr(data-a);width:30px;height:30px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-size:14px}
+  .duo i{flex:1;height:0;border-top:2px dashed var(--line2)}
+  .pnl .bub{background:var(--teal2);color:var(--ink);margin-top:12px;font-size:15px}
+  .pnl .bub.me{background:var(--amber2);color:var(--ink)}
+  .okpill{margin-top:auto;align-self:flex-start;background:var(--teal);color:#fff;font-size:14.5px;font-weight:600;padding:9px 14px;border-radius:999px}
+  .pnl svg.mapp{display:block;width:100%;height:178px;border-radius:10px;background:var(--paper2);margin-top:12px}
+  .mapp .rt{fill:none;stroke:var(--teal);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1}
+  section.active .mapp .rt{animation:drawrt 1.4s ease calc(var(--d) + .7s) both}
+  @keyframes drawrt{from{stroke-dashoffset:1}}
+  .stop{display:flex;gap:11px;margin-top:12px;font-size:15.5px;font-weight:600;line-height:1.25}
+  .stop::before{content:attr(data-n);flex:none;width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;font-family:var(--mono);font-size:12px;display:grid;place-items:center}
+  .stop q{display:block;quotes:none;font-family:var(--mono);font-size:12.5px;font-weight:400;color:var(--ink2);margin-top:4px}
+  .stop q.note{display:inline-block;border:1.5px dashed var(--amber);border-radius:7px;padding:4px 8px;margin-top:6px;color:var(--ink)}
+  .prog{display:flex;gap:5px;margin:16px 0 6px} .prog span{flex:1;height:7px;border-radius:4px;background:var(--ink)} .prog span.no{background:none;border:1.5px dashed var(--line2)}
+  .plab{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--mut)}
+  .pnl p.fine{font-size:14.5px;line-height:1.35;color:var(--mut);margin-top:14px}
+  .pnl.done{background:var(--teal);border-color:var(--teal);color:#fff;align-items:center;text-align:center;padding-top:30px}
+  .pnl.done .tick{width:84px;height:84px;border-radius:50%;background:#fff;color:var(--teal);font-size:46px;font-weight:700;display:grid;place-items:center}
+  .pnl.done strong{display:block;font-size:26px;line-height:1.15;letter-spacing:-.02em;margin-top:16px}
+  .pnl.done ul{list-style:none;margin-top:auto;width:100%;text-align:left;font-size:15px}
+  .pnl.done li{display:flex;gap:10px;align-items:center;padding:9px 12px;border-radius:9px;margin-top:6px;background:rgba(255,255,255,.14)}
+  .pnl.done li b{font-family:var(--mono);font-size:12.5px;font-weight:600;opacity:.8;width:86px;white-space:nowrap}
+  .pnl.done li.y{background:#fff;color:var(--teal);font-weight:700}
+
   /* the whole journey: three phases of four steps, wired in the order they happen */
   .journey{position:relative;height:690px;margin-top:30px;display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
   .journey .jph.f{transform:none}
@@ -515,7 +596,8 @@
     #stage{position:static;transform:none!important;width:1920px;height:auto;overflow:visible}
     section.slide{position:relative;opacity:1;visibility:visible;transform:none;height:1080px;width:1920px;page-break-after:always;break-inside:avoid;overflow:hidden}
     section.slide:last-of-type{page-break-after:auto}
-    #help,#notes,#clock,#foot,#prog,#handoff,.ovw .wires circle,.jw .dot{display:none}
+    #help,#notes,#clock,#foot,#prog,#handoff,.ovw .wires circle,.jw .dot,.trk i{display:none}
+    .jy *,.jy *::after{animation:none!important}
     .f,.on{opacity:1!important;transform:none!important}
     section.slide>*{animation:none!important}
     .title .city image,.title .city .pt,.title .team,.title h1,.title p,.thanks .ty h3,.thanks .say h4,.thanks .end p{animation:none!important}
@@ -784,7 +866,126 @@
 
   <!-- 10 STACK -->
   <!-- THE WHOLE JOURNEY: one request, from the first ring to the resident's answer. Every quoted line is the app's own wording. -->
-  <section class="slide jr" data-beat="105">
+  <!-- THE JOURNEY in three slides. The scenes are drawings of the app's screens; the quoted texts and the pickup note are the app's own wording. They play on arrival, with no extra press. -->
+  <section class="slide jy" data-beat="105">
+    <div class="k"><span class="n">How it works</span><span class="sep"></span>one request, from the first ring to the resident's answer</div>
+    <div class="phase"><span class="cur">1 · The call</span><i></i><span>2 · The work</span><i></i><span>3 · The proof</span></div>
+    <h2>The call. <em>Any phone, no app.</em></h2>
+    <div class="jstage" id="jcall">
+      <div class="trk first"><i></i></div>
+      <div class="scn res" style="--d:.3s">
+        <div class="vis"><div class="fone"><div class="scr"><div class="av ring" style="margin-top:46px">C</div><div class="who">ComForce MKE<small>Calling…</small></div><div class="talk"></div><div class="end"></div></div></div></div>
+        <div class="jcap"><i>01</i><small>Resident</small><b>Calls ComForce</b></div>
+      </div>
+      <div class="scn ai" style="--d:1.3s">
+        <div class="vis"><div class="fone"><div class="scr"><div class="who">ComForce MKE<small>Relay line · Jordan · 0:12</small></div><div class="talk">
+          <div class="bub p" style="--e:.5s">Hey, this is Jordan with ComForce. What's going on today?</div>
+          <div class="bub me p" style="--e:1s">We had a fire last night. Five of us, two kids. Nowhere to sleep, no food.</div>
+          <div class="bub p" style="--e:1.5s">I'm so sorry. Getting this in right now.</div>
+        </div><div class="end"></div></div></div></div>
+        <div class="jcap"><i>02</i><small>Jordan · AI agent</small><b>Answers and logs it</b></div>
+      </div>
+      <div class="scn ai" style="--d:2.3s">
+        <div class="vis"><div class="fone"><div class="scr msg"><div class="who"><div class="av">R</div>Relay MKE</div><div class="talk">
+          <div class="bub p" style="--e:.6s">Relay MKE: your request is logged as R-4KDX. Text R-4KDX to this number any time for an update. We'll text you when help is on the way.</div>
+        </div></div></div></div>
+        <div class="jcap"><i>03</i><small>Jordan → resident</small><b>Texts a tracking code</b></div>
+      </div>
+      <div class="scn res" style="--d:3.3s">
+        <div class="vis"><div class="fone"><div class="scr msg"><div class="who"><div class="av">R</div>Relay MKE</div><div class="talk">
+          <div class="bub me p" style="--e:.5s">R-4KDX</div>
+          <div class="bub p" style="--e:1s">Relay MKE R-4KDX: Marcus T. is working on it right now.</div>
+        </div></div></div></div>
+        <div class="jcap"><i>04</i><small>Resident</small><b>Tracks it by text</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide jy">
+    <div class="k"><span class="n">How it works</span><span class="sep"></span>one request, from the first ring to the resident's answer</div>
+    <div class="phase"><span class="was">1 · The call</span><i></i><span class="cur">2 · The work</span><i></i><span>3 · The proof</span></div>
+    <h2>The work. <em>One card, from claim to doorstep.</em></h2>
+    <div class="jstage" id="jwork">
+      <div class="trk"><i></i></div>
+      <div class="scn cf" style="--d:.3s">
+        <div class="vis"><div class="pnl"><h5>Relay Board <small>New · 6</small></h5>
+          <div class="rc new p" style="--e:.5s"><code>R-4KDX · just now · by phone</code><b>Family of five displaced by fire</b><div class="chips"><span>Housing</span><span>Food</span><span class="crit">critical</span><span>Sherman Park</span></div></div>
+          <div class="rc ghost"></div><div class="rc ghost"></div><div class="rc ghost"></div>
+        </div></div>
+        <div class="jcap"><i>05</i><small>ComForce worker</small><b>Sees it on the dashboard</b></div>
+      </div>
+      <div class="scn ai" style="--d:1.3s">
+        <div class="vis"><div class="pnl"><h5>Tasks <small>wording tailored by AI</small></h5>
+          <div class="tk p" data-n="1" style="--e:.4s">Ask if Red Cross met household on scene</div>
+          <div class="tk p" data-n="2" style="--e:.6s">Open Rapid Response Room and invite partners</div>
+          <div class="tk p" data-n="3" style="--e:.8s">Request emergency food box delivery</div>
+          <div class="tk p" data-n="4" style="--e:1s">Follow up on shelter, food, and remaining needs</div>
+          <div class="btn">Approve tasks</div>
+        </div></div>
+        <div class="jcap"><i>06</i><small>Relay</small><b>Drafts the tasks</b></div>
+      </div>
+      <div class="scn pa" style="--d:2.3s">
+        <div class="vis"><div class="pnl"><h5>Connect to a partner <small>by phone</small></h5>
+          <div class="duo"><span data-a="J" style="--c:var(--teal)">Jordan</span><i></i><span data-a="P" style="--c:var(--amber)">Community pantry</span></div>
+          <div class="bub p" style="--e:.5s">A household in Sherman Park needs food, five people, critical. Could you help?</div>
+          <div class="bub me p" style="--e:1s">Yeah, we can do that. Give us about 20 minutes.</div>
+          <div class="okpill p" style="--e:1.5s">✓ Accepted · ready in about 20 minutes</div>
+        </div></div>
+        <div class="jcap"><i>07</i><small>Jordan → partner</small><b>Phones a partner</b></div>
+      </div>
+      <div class="scn cf" style="--d:3.3s">
+        <div class="vis"><div class="pnl"><h5>Run sheet <small>pickup → resident</small></h5>
+          <svg class="mapp" viewBox="0 0 352 178"><g stroke="#d8d4ca" stroke-width="1.5"><path d="M0 44H352M0 96H352M0 144H352M62 0V178M148 0V178M232 0V178M306 0V178"/></g>
+            <path class="rt" pathLength="1" d="M40 144H148V96H232V44H290"/>
+            <circle cx="290" cy="44" r="22" fill="#d9482b" fill-opacity=".16"/><circle cx="290" cy="44" r="6" fill="#d9482b"/>
+            <circle cx="40" cy="144" r="8" fill="#17181c"/><rect x="140" y="88" width="16" height="16" rx="3" fill="#b7791f"/></svg>
+          <div class="stop p" data-n="1" style="--e:.9s"><span>Pick up at the pantry<q class="note">side door on W Lisbon Ave · ask for Denise</q></span></div>
+          <div class="stop p" data-n="2" style="--e:1.3s"><span>Deliver in Sherman Park<q>approximate · the exact address stays with ComForce</q></span></div>
+        </div></div>
+        <div class="jcap"><i>08</i><small>ComForce worker</small><b>Follows the run sheet</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide jy">
+    <div class="k"><span class="n">How it works</span><span class="sep"></span>one request, from the first ring to the resident's answer</div>
+    <div class="phase"><span class="was">1 · The call</span><i></i><span class="was">2 · The work</span><i></i><span class="cur">3 · The proof</span></div>
+    <h2>The proof. <em>Only the resident closes it.</em></h2>
+    <div class="jstage" id="jproof">
+      <div class="trk last"><i></i></div>
+      <div class="scn cf" style="--d:.3s">
+        <div class="vis"><div class="pnl"><h5>R-4KDX <small>in progress</small></h5>
+          <div class="prog"><span></span><span></span><span></span><span class="no"></span><span class="no"></span></div>
+          <div class="plab"><span>new</span><span>claimed</span><span>in progress</span><span>delivered</span><span>verified</span></div>
+          <p class="fine">The worker says the help was dropped off. So far, only the helper says so.</p>
+          <div class="btn dark tap">Mark delivered</div>
+        </div></div>
+        <div class="jcap"><i>09</i><small>ComForce worker</small><b>Taps Delivered</b></div>
+      </div>
+      <div class="scn ai" style="--d:1.3s">
+        <div class="vis"><div class="fone"><div class="scr msg"><div class="who"><div class="av">R</div>Relay MKE</div><div class="talk">
+          <div class="bub p" style="--e:.5s">Relay MKE: Did the help for request R-4KDX arrive? Reply 1 = yes, 2 = partly, 3 = no.</div>
+          <div class="quick p" style="--e:1s"><span class="y">1 · yes</span><span>2 · partly</span><span>3 · no</span></div>
+        </div></div></div></div>
+        <div class="jcap"><i>10</i><small>Relay → resident</small><b>Asks the resident</b></div>
+      </div>
+      <div class="scn ai" style="--d:2.3s">
+        <div class="vis"><div class="fone"><div class="scr"><div class="av ring" style="margin-top:18px">J</div><div class="who">Jordan · ComForce MKE<small>calling back · 0:09</small></div><div class="talk">
+          <div class="bub p" style="--e:.6s">Hi, it's Jordan from ComForce. Did the help arrive?</div>
+          <div class="bub me p" style="--e:1.2s">Yes, everything came. Thank you.</div>
+        </div><div class="end"></div></div></div></div>
+        <div class="jcap"><i>11</i><small>Jordan · AI agent</small><b>Calls back if no reply</b></div>
+      </div>
+      <div class="scn res" style="--d:3.3s">
+        <div class="vis"><div class="pnl done"><div class="tick p" style="--e:.5s">✓</div><strong>Verified by the resident</strong>
+          <ul><li class="y"><b>1 · yes</b>closed</li><li><b>2 · partly</b>stays open, same owner</li><li><b>3 · no</b>reopened</li></ul>
+        </div></div>
+        <div class="jcap"><i>12</i><small style="color:var(--teal)">Resident</small><b>Closes it with a yes</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide jr" data-skip data-beat="105">
     <div class="k"><span class="n">How it works</span><span class="sep"></span>one request, from the first ring to the resident's answer</div>
     <h2>One request. <em>Start to finish.</em></h2>
     <div class="journey" id="journey">
@@ -987,7 +1188,9 @@
     '#map':     ['Problem 4 · the map', `Leaders decided from anecdote. → Now the map shows where help arrived, and where it's still missing. → [the real screen: say nothing, move on]`],
     '#know':    ['Problem 5 · training', `Know-how left with each volunteer. → Now it's written once, and the guide answers from it. → [the real screen: move on]`],
     '.rules4':  ['Guardrails', `Before any AI sees a message, → names, addresses and phone numbers are removed. → A person makes every decision. We never score or predict anyone, and all the data here is synthetic.`],
-    '#journey': ['The whole journey', `→ Here is one request, start to finish: the call, the work, and the proof. [let it play; the demo shows it for real]`],
+    '#jcall':   ['The call', `A resident calls. Jordan, our AI, answers, logs the request, and texts a tracking code.`],
+    '#jwork':   ['The work', `A worker sees the card, with tasks already drafted. Jordan phones a partner, and the run sheet says exactly where to go.`],
+    '#jproof':  ['The proof', `Delivered is not the end. Relay asks the resident, and Jordan calls back if they don't answer.`],
     '#stack':   ['How it is built', `→ A call becomes a record ComForce owns. → Every screen reads it. → And the resident closes the loop.`],
     '#demovid': ['Demo', `Watch one request: who asked, who delivered, and the resident's own answer. [play the demo; the clock is paused]`],
     '#yrs':     ['Cost', `→ Everything you watched cost one dollar sixty-eight. → The whole year, three hundred and thirty-six dollars, and ComForce owns the data. The commercial option costs two hundred times more.`],

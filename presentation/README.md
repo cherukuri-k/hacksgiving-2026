@@ -4,7 +4,7 @@
 
 | File | What it is |
 | --- | --- |
-| [slides/index.html](slides/index.html) | The deck. One HTML file plus `slides/img/` and `slides/fonts/`, 10 slides, 1920×1080, scales to any screen. Works offline. Open in Chrome, press **F**. |
+| [slides/index.html](slides/index.html) | The deck. One HTML file plus `slides/img/` and `slides/fonts/`, 12 slides, 1920×1080, scales to any screen. Works offline. Open in Chrome, press **F**. |
 | [Relay-MKE-pitch.pdf](Relay-MKE-pitch.pdf) | Static export of the deck (11 pages, every slide in its final state). Backup if the laptop dies. |
 | [pitch-script.md](pitch-script.md) | Word-for-word 2:00 script with beat timings matching the deck. |
 | [demo-runbook.md](demo-runbook.md) | The 2:00 demo, second by second: who does what, pre-flight checklist, what to do when something breaks. |
@@ -22,12 +22,14 @@ Slides 4–5 share one rhythm, shown by the pill top-right: **Today → With Rel
 | 4 | Problem 4 · Awareness & decisions | 2 | Anecdotes over a map of Milwaukee → the City's 26 clusters appear, sized by requests; coral hotspots are called out; weekly brief → `/pulse` |
 | 5 | Problem 5 · Training | 2 | Volunteers leave with their know-how → playbook, new volunteers, cited answer → `/guide` |
 | 6 | Guardrails | 2 | Name, address and phone are redacted before the AI sees the message; four rules |
-| 7 | The whole journey | 1 | One request in twelve numbered steps across three columns (the call, the work, the proof), colour-coded by who acts: resident, Jordan, ComForce worker, partner. One press fills the columns in turn and draws the line that joins them; a dot then keeps travelling the route. The quoted texts and the pickup note are the app's own wording |
-| 8 | Demo | — | Hand-off to live demo. **V** plays `demo-backup.mp4` if it exists |
-| 9 | Cost — $1.68 | 2 | Price counts up with the real cost split; then 223 squares fill in, one per year of Relay that a year of findhelp enterprise ($75,000) would pay for |
-| 10 | Closing | — | Arrives through a hand-off: two hands draw in from either side (one coral, one white), clasp, turn teal, and the view moves through the grip into the slide (about 3.5 s; a press skips it, back cancels it). Left half: "Thank you." in the title slide's two typefaces. Right half: "Care is not measured by how many we reach. It is measured by how many we don't lose.", and beneath it the challenge answered in three lines (one record, coordinated action, measurable impact) |
+| 7 | The journey · the call | — | Four drawn scenes on one line: the resident's phone calling, Jordan answering, the tracking-code text, the status reply. Plays on arrival |
+| 8 | The journey · the work | — | The card landing on the board, the drafted tasks, Jordan's call to a partner, the run sheet with its map and pickup note ("side door on W Lisbon Ave · ask for Denise") |
+| 9 | The journey · the proof | — | "Mark delivered", the "did the help arrive?" text, Jordan's call-back, and the card turning teal: verified by the resident. The scenes are drawings of the app's screens; the quoted texts and the pickup note are the app's own wording. The line runs off one slide and onto the next, and a stepper at the top right shows which of the three you are on |
+| 10 | Demo | — | Hand-off to live demo. **V** plays `demo-backup.mp4` if it exists |
+| 11 | Cost — $1.68 | 2 | Price counts up with the real cost split; then 223 squares fill in, one per year of Relay that a year of findhelp enterprise ($75,000) would pay for |
+| 12 | Closing | — | Arrives through a hand-off: two hands draw in from either side (one coral, one white), clasp, turn teal, and the view moves through the grip into the slide (about 3.5 s; a press skips it, back cancels it). Left half: "Thank you." in the title slide's two typefaces. Right half: "Care is not measured by how many we reach. It is measured by how many we don't lose.", and beneath it the challenge answered in three lines (one record, coordinated action, measurable impact) |
 
-17 presses reach the demo. Some presses play a short sequence; pressing again mid-sequence skips to its end.
+19 presses reach the demo. Some presses play a short sequence; pressing again mid-sequence skips to its end.
 
 **The Milwaukee map (slide 4).** `slides/img/milwaukee.svg` is the City of Milwaukee's 190 neighbourhood polygons from `data/public/milwaukee-neighborhoods.geojson`, simplified and drawn at 20 px per km. Each circle sits at its cluster's coordinates from `src/lib/clusters.ts`; its size and the call-out numbers were read from the `/grants` table (2026, synthetic data) when the slide was built, so update them if the seed changes.
 
@@ -46,7 +48,7 @@ Type: Inter Tight (display) and Instrument Serif Italic (emphasis), both SIL Ope
 | N | Speaker notes overlay (the script for this slide) |
 | P | Open the presenter view in a second window. The two windows stay in step: a press in either one moves both |
 | `?presenter` in the URL | The presenter view on its own, for rehearsing: deck on the left; on the right the script with the line to say now highlighted, the clock, and the time you should have left when you leave each slide |
-| V | Play `../demo-backup.mp4` on slide 8 |
+| V | Play `../demo-backup.mp4` on slide 10 |
 | F | Fullscreen |
 | `#7` in the URL | Deep-link to a slide with everything revealed |
 

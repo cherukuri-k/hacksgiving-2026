@@ -1,6 +1,6 @@
 # Relay MKE — 2-minute live demo runbook
 
-Starts the moment slide 8 (the demo slide) is on screen; slides 9–10 (cost, closing) are shown after the demo. Two people: **Presenter** (laptop, projected) and **Resident** (teammate, real phone). Target 1:50; hard cap 2:00.
+Starts the moment slide 10 (the demo slide) is on screen; slides 11–12 (cost, closing) are shown after the demo. Two people: **Presenter** (laptop, projected) and **Resident** (teammate, real phone). Target 1:50; hard cap 2:00.
 
 ## Screen layout (projected)
 
@@ -44,7 +44,7 @@ Starts the moment slide 8 (the demo slide) is on screen; slides 9–10 (cost, cl
 | Closing text doesn't appear | The resident hasn't hung up yet. Jordan never ends the call-back himself; tap **Hang up**. | 0 s |
 | Call-back doesn't ring | Resident taps **"1 · yes it arrived"** in Messages. Card still flips to Verified. | 0 s |
 | Tunnel dies mid-demo | Resident's phone is dead; laptop tab `/phone?number=4145550199` (localhost) becomes the resident. Presenter drives both. | 5 s |
-| Everything dies | Play `presentation/demo-backup.mp4` (deck slide 8, press **V**) (record it in the dry run with QuickTime screen recording, 1:50). | — |
+| Everything dies | Play `presentation/demo-backup.mp4` (deck slide 10, press **V**) (record it in the dry run with QuickTime screen recording, 1:50). | — |
 
 ## Lines to say over the quiet moments
 
