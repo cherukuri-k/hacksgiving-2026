@@ -20,16 +20,18 @@ Slides 4–6 share one rhythm, shown by the pill top-right: **Today → With Rel
 | 2 | About — one number, one board, one proof | 1 | Three real screens: phone, board, grants |
 | 3 | Five problems, one thing missing | 2 | Five tiles flip from broken to solved and connect to "one shared record"; then 01–02 are tagged "live in the demo" and 03–05 "next" |
 | 4 | Problem 3 · Data & impact | 2 | 203 dots, one per request: logged → delivered → resident-confirmed (67 %) → `/grants` |
-| 5 | Problem 4 · Awareness & decisions | 2 | Anecdotes → cluster map, coral gaps, weekly brief → `/pulse` |
+| 5 | Problem 4 · Awareness & decisions | 2 | Anecdotes over a map of Milwaukee → the City's 26 clusters appear, sized by requests; coral hotspots are called out; weekly brief → `/pulse` |
 | 6 | Problem 5 · Training | 2 | Volunteers leave with their know-how → playbook, new volunteers, cited answer → `/guide` |
 | 7 | Guardrails | 2 | Name, address and phone are redacted before the AI sees the message; four rules |
-| 8 | Tech stack | 3 | Logos + flowing arrows: intake → what reads the record → the verify loop |
+| 8 | Tech stack | 3 | Three numbered zones, one per press: the call becomes a record → every screen reads it → the resident closes the loop |
 | 9 | Demo | — | Hand-off to live demo. **V** plays `demo-backup.mp4` if it exists |
 | 10 | Benefits | 2 | Was/now cards, audience band |
 | 11 | Cost — $1.66 | 2 | Price counts up; findhelp vs Relay as areas drawn to scale |
 | 12 | Scorecard + thank you | — | The four criteria and three bonuses, each with where it was shown; QR to the repo |
 
 22 presses reach the demo. Some presses play a short sequence; pressing again mid-sequence skips to its end.
+
+**The Milwaukee map (slide 5).** `slides/img/milwaukee.svg` is the City of Milwaukee's 190 neighbourhood polygons from `data/public/milwaukee-neighborhoods.geojson`, simplified and drawn at 20 px per km. Each circle sits at its cluster's coordinates from `src/lib/clusters.ts`; its size and the call-out numbers were read from the `/grants` table (2026, synthetic data) when the slide was built, so update them if the seed changes.
 
 **Hidden slides.** Problems 1 (information sharing) and 2 (requests) each have a full slide that is switched off, because the live demo shows both. A `<section>` with `data-skip` is left out of the deck, the counter and the PDF; delete the attribute to bring a slide back, or add it to hide one.
 

@@ -246,22 +246,29 @@
   .units .leg em{margin-left:auto;font-style:normal;font-family:var(--mono);font-size:13px;color:var(--coral);border:1px dashed var(--coral);border-radius:6px;padding:9px 14px}
 
   /* 6 map */
-  .map{width:1100px;height:620px}
-  .map .grid circle{fill:var(--line2)}
-  .map .cl circle.base{fill:var(--teal);opacity:.75}
-  .map .cl circle.base{transition:fill .6s,opacity .6s}
-  .map.gaps .cl.gap circle.base{fill:var(--coral);opacity:1}
-  .map .cl circle.ring{fill:none;stroke:var(--coral);stroke-width:2;transform-origin:center;transform-box:fill-box;opacity:0}
-  .map .lg{opacity:0;transition:opacity .6s .4s} .map.live .lg{opacity:1}
-  .map.gaps .cl.gap.on circle.ring{animation:pulse 2s ease-out infinite}
-  .map .cl{opacity:0;transform:scale(.4);transform-origin:center;transform-box:fill-box;transition:opacity .5s,transform .7s cubic-bezier(.34,1.3,.4,1)}
+  .map{width:1100px;height:640px}
+  .map .geo{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;fill:#8d8a80;paint-order:stroke;stroke:#fff;stroke-width:4px;transition:opacity .6s}
+  .map.live .geo{opacity:0}
+  .map .lake{font-family:var(--serif);font-style:italic;font-size:23px;fill:#9fb4bd;letter-spacing:.04em}
+  .map .cl{opacity:0;transform:scale(.3);transform-origin:center;transform-box:fill-box;transition:opacity .5s,transform .7s cubic-bezier(.34,1.3,.4,1)}
   .map .cl.on{opacity:1;transform:none}
-  .map text{font-size:13px;fill:var(--ink2)}
+  .map .cl .glow{fill:url(#gt);transition:fill .6s}
+  .map .cl .base{fill:var(--teal);opacity:.82;stroke:#fff;stroke-width:1.2;transition:fill .6s,opacity .6s}
+  .map .cl.zero .base{fill:#fff;opacity:1;stroke:#a3a6ad;stroke-width:1.5;stroke-dasharray:3 3}
+  .map .cl .ring{fill:none;stroke:var(--coral);stroke-width:2;transform-origin:center;transform-box:fill-box;opacity:0}
+  .map.gaps .cl.gap .base{fill:var(--coral);opacity:1}
+  .map.gaps .cl.gap .glow{fill:url(#gc)}
+  .map.gaps .cl.gap.on .ring{animation:pulse 2s ease-out infinite}
+  .map .hl{opacity:0;transition:opacity .6s .3s} .map.gaps .hl{opacity:1}
+  .map .hl path{fill:none;stroke:var(--coral);stroke-width:1.4}
+  .map .hl text{font-size:15px;fill:var(--mut)} .map .hl .b{font-size:18px;font-weight:700;fill:var(--ink)}
   .map .brief{opacity:0;transition:opacity .7s .3s} .map .brief.on{opacity:1}
-  .map .brief rect{fill:#fff;stroke:var(--line);stroke-width:1}
+  .map .brief rect{fill:#fff;stroke:var(--line);stroke-width:1;filter:drop-shadow(0 16px 22px rgba(20,20,25,.1))}
   .map .brief .h{font-family:var(--mono);font-size:11px;fill:var(--mut);letter-spacing:.08em}
-  .map .brief .t{font-size:15px;fill:var(--ink)} .map .brief .t.b{font-weight:600}
-  .map .leg{font-family:var(--mono);font-size:12px;fill:var(--mut)}
+  .map .brief .t{font-size:16px;fill:var(--ink)} .map .brief .t.b{font-size:18px;font-weight:700}
+  .map .lg{opacity:0;transition:opacity .6s .4s} .map.live .lg{opacity:1}
+  .map .leg{font-size:17px;fill:var(--ink2)}
+  .map .src{font-family:var(--mono);font-size:12.5px;fill:var(--mut)}
 
   /* 7 knowledge */
   .know{width:1200px;height:620px;position:relative}
@@ -316,33 +323,41 @@
   .rules4 .ic{width:60px;height:60px;border-radius:16px;background:var(--teal2);color:var(--teal);display:grid;place-items:center} .rules4 .ic svg{width:30px;height:30px}
   .rules4 b{display:block;font-size:27px;letter-spacing:-.02em;line-height:1.15} .rules4 span{display:block;font-size:19px;color:var(--mut);line-height:1.35;margin-top:8px}
 
-  /* 8 stack */
+  /* 8 stack: three numbered zones on one grid, one zone per press */
   .stack{position:relative;isolation:isolate;width:1680px;height:720px;margin-top:26px}
   .stack::before{content:'';position:absolute;inset:-12px -30px -16px;z-index:-1;border-radius:22px;border:1px solid var(--line);background:#faf8f3 radial-gradient(circle at 1px 1px,#e3dfd4 1.2px,transparent 1.7px) 0 0/28px 28px}
-  .stack .node{position:absolute;display:flex;flex-direction:column;align-items:center;gap:10px;width:170px;opacity:.18;filter:grayscale(1);transition:opacity .6s,filter .6s,transform .6s cubic-bezier(.34,1.3,.4,1);transform:scale(.92)}
+  .stack .zone{position:absolute;border:1.5px dashed var(--line2);border-radius:18px;transition:border-color .6s,background .6s}
+  .stack .zone.f{opacity:1;transform:none}
+  .stack .zone h6{position:absolute;left:22px;top:13px;font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;color:var(--faint);transition:color .6s}
+  .stack .zone h6 b{display:inline-grid;place-items:center;width:22px;height:22px;margin-right:9px;border-radius:50%;background:var(--line2);color:#fff;font-size:12px;letter-spacing:0;transition:background .6s}
+  .stack .zone.on{border-style:solid;border-color:#b9b4a7;background:rgba(255,255,255,.62)}
+  .stack .zone.on h6{color:var(--ink)} .stack .zone.on h6 b{background:var(--ink)}
+  .stack .zone.rec.on,.stack .zone.verify.on{border-color:var(--teal);background:rgba(14,107,99,.055)}
+  .stack .zone.rec.on h6,.stack .zone.verify.on h6{color:var(--teal)} .stack .zone.verify.on h6 b{background:var(--teal)}
+  .stack .node{position:absolute;display:flex;flex-direction:column;align-items:center;gap:10px;width:200px;opacity:.2;filter:grayscale(1);transition:opacity .6s,filter .6s,transform .6s cubic-bezier(.34,1.3,.4,1);transform:scale(.92)}
   .stack .node.on{opacity:1;filter:none;transform:none}
-  .stack .node .lg{width:84px;height:84px;border-radius:22px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;box-shadow:0 14px 30px -18px rgba(20,20,25,.35)}
-  .stack .node .lg img{width:46px;height:46px;display:block}
+  .stack .node .lg{width:96px;height:96px;border-radius:24px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;box-shadow:0 14px 30px -18px rgba(20,20,25,.35)}
+  .stack .node .lg img,.stack .node .lg .aiic{width:52px;height:52px;display:block}
   .stack .node .lg.dk{background:var(--dark);border-color:var(--dark)} .stack .node .lg.dk img{filter:invert(1)}
-  .stack .node .lg.multi{width:170px;display:flex;gap:16px;padding:0 18px} .stack .node .lg.multi img{width:38px;height:38px}
-  .stack .node .lg.person{background:var(--teal);border-color:var(--teal);color:#fff} .stack .node .lg.person svg{width:40px;height:40px}
-  .stack .node b{font-size:17px;font-weight:600;text-align:center;letter-spacing:-.01em}
-  .stack .node span{font-family:var(--mono);font-size:11px;color:var(--mut);text-align:center;line-height:1.4}
-  .stack .node.rec .lg{width:120px;height:120px;border-radius:32px;border:1.5px solid var(--teal)} .stack .node.rec .lg img{width:64px;height:64px}
-  .stack .node.rec b{font-size:20px}
+  .stack .node .lg.multi{width:190px;display:flex;gap:16px;padding:0 20px} .stack .node .lg.multi img{width:38px;height:38px}
+  .stack .node .lg.person{background:var(--teal);border-color:var(--teal);color:#fff} .stack .node .lg.person svg{width:46px;height:46px}
+  .stack .node b{font-size:20px;font-weight:700;text-align:center;letter-spacing:-.015em;white-space:nowrap}
+  .stack .node span{font-family:var(--mono);font-size:13px;color:var(--mut);text-align:center;line-height:1.35;white-space:nowrap}
+  .stack .node.rec{width:240px} .stack .node.rec .lg{width:120px;height:120px;border-radius:32px;border:1.5px solid var(--teal)} .stack .node.rec .lg img{width:64px;height:64px}
+  .stack .node.rec b{font-size:22px}
+  .stack .node.out{width:240px} .stack .node.out .lg{height:84px} .stack .node.out .lg:not(.multi){width:84px} .stack .node.out .lg img{width:44px;height:44px} .stack .node.out .lg.multi img{width:36px;height:36px}
+  .stack .node.out b{font-size:19px}
   .stack svg.wires{position:absolute;inset:0;pointer-events:none;overflow:visible}
-  .stack .w{fill:none;stroke:var(--ink);stroke-width:2;stroke-dasharray:10 8;opacity:0;transition:opacity .5s}
+  .stack .w{fill:none;stroke:var(--ink);stroke-width:2.2;stroke-dasharray:10 8;opacity:0;transition:opacity .5s}
   .stack .w.on{opacity:1;animation:flow 1.1s linear infinite}
   .stack .w.vf{stroke:var(--teal)} .stack .w.ai{stroke:#7a5af5}
-  .stack .wl{font-family:var(--mono);font-size:12px;fill:var(--mut);opacity:0;transition:opacity .5s .2s} .stack .wl.on{opacity:1}
-  .stack .dot{fill:var(--ink);opacity:0} .stack .dot.on{opacity:1}
-  .stack .steps{position:absolute;right:0;top:0;width:300px;display:grid;gap:0}
-  .stack .steps div{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:11px 0;border-top:1px solid var(--line);font-size:15px;color:var(--faint);transition:color .4s}
-  .stack .steps div:last-child{border-bottom:1px solid var(--line)}
-  .stack .steps div.on{color:var(--ink)} .stack .steps div.on .num{color:var(--teal)} .stack .steps div .num{color:var(--faint)}
-  .stack .costs{position:absolute;right:0;bottom:0;width:300px;font-family:var(--mono);font-size:12px;color:var(--mut);line-height:1.7}
-  .stack .costs b{color:var(--ink);font-weight:600}
-  .stack .hint{position:absolute;left:0;bottom:0;font-family:var(--mono);font-size:12px;color:var(--faint)}
+  .stack .wl{font-family:var(--mono);font-size:13px;fill:var(--mut);text-anchor:middle;paint-order:stroke;stroke:#fbfaf6;stroke-width:7px;stroke-linejoin:round;opacity:0;transition:opacity .5s .2s} .stack .wl.on{opacity:1}
+  .stack .say{position:absolute;width:var(--w);margin-left:calc(var(--w)/-2);text-align:center;font-size:22px;font-weight:600;letter-spacing:-.01em;padding:12px 0;border-radius:20px;background:#fff;border:1px solid var(--line2);box-shadow:0 14px 26px -18px rgba(20,20,25,.4)}
+  .stack .say.yes{background:var(--teal);border-color:var(--teal);color:#fff}
+  .stack .say.ok{font-size:19px;font-weight:700;color:var(--teal);border:1.5px solid var(--teal);border-radius:999px;padding:9px 0;box-shadow:none}
+  .stack .cap{position:absolute;width:560px;margin-left:-280px;text-align:center;font-family:var(--mono);font-size:13px;color:var(--mut)}
+  .stack .costs{position:absolute;left:0;right:0;top:676px;font-family:var(--mono);font-size:15px;color:var(--mut);white-space:nowrap}
+  .stack .costs b{color:var(--ink);font-weight:600} .stack .costs i{font-style:normal;color:var(--line2);margin:0 12px}
 
   /* 9 video */
   .vid{position:relative;margin-top:30px;width:1680px;height:700px;border-radius:12px;overflow:hidden;background:var(--dark)}
@@ -587,29 +602,43 @@
   </section>
 
   <!-- 7 PROBLEM 4 -->
-  <section class="slide prob" data-beat="78" data-notes="Problem four, awareness and decision support. Today leaders decide where to send people from anecdote. (Press.) Relay shows every cluster, sized by requests. (Press.) Coral is where requests outrun help — and the weekly brief writes itself. (Press.) The real screen: Neighborhood Pulse. Counts only. Never people.">
-    <div class="k"><span class="n">04 / 05</span><span class="sep"></span>Community awareness &amp; decision support</div>
+  <section class="slide prob" data-beat="78" data-notes="Problem four, awareness and decision support. Today leaders decide where to send people from anecdote. (Press.) Relay puts every request on the map of Milwaukee: one circle for each of the City's 26 Countdown clusters, sized by requests. Coral is where requests are still open, and the weekly brief writes itself. (Press.) The real screen: Neighborhood Pulse. Counts only. Never people.">
+    <div class="k"><span class="n">04 / 05</span><span class="sep"></span>Community awareness &amp; decision support <span class="tag">synthetic 2026 data</span></div>
     <div class="phase"><span>Today</span><i></i><span>With Relay</span><i></i><span>In the app</span></div>
     <h2 class="swap"><span class="h0">Decisions run on anecdote, a month late.</span><span class="h1">Need vs. delivery, live, <em>by neighbourhood.</em></span></h2>
     <div class="pv">
       <div class="viz" style="--vw:1100px;--vs:.545">
-        <div class="chip" style="left:110px;top:150px">“Feels like it's mostly Sherman Park?”</div>
-        <div class="chip" style="left:400px;top:330px">“Someone said Amani is bad this month.”</div>
-        <div class="chip" style="left:760px;top:90px">“We'll know at the next meeting.”</div>
+        <div class="chip" style="left:20px;top:150px">“Feels like it's mostly Sherman Park?”</div>
+        <div class="chip" style="left:300px;top:320px">“Someone said Amani is bad this month.”</div>
+        <div class="chip" style="left:560px;top:470px">“We'll know at the next meeting.”</div>
         <i class="f sp" data-g="m" data-ph="1"></i>
-        <svg class="map" viewBox="0 0 1100 620" id="map">
-          <g class="grid" id="mgrid"></g>
-          <g id="clusters"></g>
-          <g transform="translate(760 40)"><g class="brief f" data-g="m" data-seq="1500" data-ph="1">
-            <rect x="0" y="0" width="330" height="200" rx="10"/>
-            <text class="h" x="22" y="34">WEEKLY BRIEF · WK 46</text>
-            <text class="t b" x="22" y="68">3 clusters need outreach</text>
-            <text class="t" x="22" y="98">Metcalfe Park: 11 requests, 4 delivered</text>
-            <text class="t" x="22" y="124">Garden Homes: housing up 2× vs Oct</text>
-            <text class="t" x="22" y="150">Sherman Park: verified 9 of 9 ✓</text>
-            <text class="h" x="22" y="182">DRAFTED BY RELAY · EDIT BEFORE SENDING</text>
+        <svg class="map" viewBox="0 0 1100 640" id="map">
+          <defs>
+            <radialGradient id="gt"><stop offset="0" stop-color="#0e6b63" stop-opacity=".34"/><stop offset="1" stop-color="#0e6b63" stop-opacity="0"/></radialGradient>
+            <radialGradient id="gc"><stop offset="0" stop-color="#d9482b" stop-opacity=".5"/><stop offset="1" stop-color="#d9482b" stop-opacity="0"/></radialGradient>
+          </defs>
+          <image href="img/milwaukee.svg" x="146" y="10" width="346" height="618"/>
+          <text class="geo" x="418" y="377" text-anchor="middle">Downtown</text>
+          <text class="lake" transform="translate(508 622) rotate(-80)">Lake Michigan</text>
+          <g id="clusters"><g class="cl gap" style="transition-delay:0ms"><circle class="glow" cx="354.5" cy="248.4" r="41.2"/><circle class="base" cx="354.5" cy="248.4" r="12.1"/><circle class="ring" cx="354.5" cy="248.4" r="12.1"/></g><g class="cl" style="transition-delay:35ms"><circle class="glow" cx="393.5" cy="409.9" r="28.7"/><circle class="base" cx="393.5" cy="409.9" r="11.5"/><circle class="ring" cx="393.5" cy="409.9" r="11.5"/></g><g class="cl" style="transition-delay:70ms"><circle class="glow" cx="408.2" cy="280.9" r="27.8"/><circle class="base" cx="408.2" cy="280.9" r="11.1"/><circle class="ring" cx="408.2" cy="280.9" r="11.1"/></g><g class="cl" style="transition-delay:105ms"><circle class="glow" cx="330.1" cy="297.1" r="27.8"/><circle class="base" cx="330.1" cy="297.1" r="11.1"/><circle class="ring" cx="330.1" cy="297.1" r="11.1"/></g><g class="cl gap" style="transition-delay:140ms"><circle class="glow" cx="350.7" cy="296.4" r="37.8"/><circle class="base" cx="350.7" cy="296.4" r="11.1"/><circle class="ring" cx="350.7" cy="296.4" r="11.1"/></g><g class="cl" style="transition-delay:175ms"><circle class="glow" cx="385.9" cy="292.0" r="27.8"/><circle class="base" cx="385.9" cy="292.0" r="11.1"/><circle class="ring" cx="385.9" cy="292.0" r="11.1"/></g><g class="cl" style="transition-delay:210ms"><circle class="glow" cx="277.2" cy="183.0" r="25.0"/><circle class="base" cx="277.2" cy="183.0" r="10.0"/><circle class="ring" cx="277.2" cy="183.0" r="10.0"/></g><g class="cl" style="transition-delay:245ms"><circle class="glow" cx="320.3" cy="267.5" r="24.0"/><circle class="base" cx="320.3" cy="267.5" r="9.6"/><circle class="ring" cx="320.3" cy="267.5" r="9.6"/></g><g class="cl" style="transition-delay:280ms"><circle class="glow" cx="348.8" cy="395.4" r="24.0"/><circle class="base" cx="348.8" cy="395.4" r="9.6"/><circle class="ring" cx="348.8" cy="395.4" r="9.6"/></g><g class="cl" style="transition-delay:315ms"><circle class="glow" cx="332.5" cy="213.7" r="24.0"/><circle class="base" cx="332.5" cy="213.7" r="9.6"/><circle class="ring" cx="332.5" cy="213.7" r="9.6"/></g><g class="cl" style="transition-delay:350ms"><circle class="glow" cx="391.1" cy="457.7" r="24.0"/><circle class="base" cx="391.1" cy="457.7" r="9.6"/><circle class="ring" cx="391.1" cy="457.7" r="9.6"/></g><g class="cl" style="transition-delay:385ms"><circle class="glow" cx="324.4" cy="320.9" r="22.8"/><circle class="base" cx="324.4" cy="320.9" r="9.1"/><circle class="ring" cx="324.4" cy="320.9" r="9.1"/></g><g class="cl" style="transition-delay:420ms"><circle class="glow" cx="351.2" cy="347.2" r="21.6"/><circle class="base" cx="351.2" cy="347.2" r="8.6"/><circle class="ring" cx="351.2" cy="347.2" r="8.6"/></g><g class="cl" style="transition-delay:455ms"><circle class="glow" cx="330.9" cy="183.0" r="21.6"/><circle class="base" cx="330.9" cy="183.0" r="8.6"/><circle class="ring" cx="330.9" cy="183.0" r="8.6"/></g><g class="cl gap" style="transition-delay:490ms"><circle class="glow" cx="374.8" cy="402.1" r="27.5"/><circle class="base" cx="374.8" cy="402.1" r="8.1"/><circle class="ring" cx="374.8" cy="402.1" r="8.1"/></g><g class="cl" style="transition-delay:525ms"><circle class="glow" cx="359.4" cy="289.3" r="18.7"/><circle class="base" cx="359.4" cy="289.3" r="7.5"/><circle class="ring" cx="359.4" cy="289.3" r="7.5"/></g><g class="cl" style="transition-delay:560ms"><circle class="glow" cx="388.6" cy="254.2" r="18.7"/><circle class="base" cx="388.6" cy="254.2" r="7.5"/><circle class="ring" cx="388.6" cy="254.2" r="7.5"/></g><g class="cl" style="transition-delay:595ms"><circle class="glow" cx="384.6" cy="259.8" r="18.7"/><circle class="base" cx="384.6" cy="259.8" r="7.5"/><circle class="ring" cx="384.6" cy="259.8" r="7.5"/></g><g class="cl" style="transition-delay:630ms"><circle class="glow" cx="268.3" cy="273.1" r="18.7"/><circle class="base" cx="268.3" cy="273.1" r="7.5"/><circle class="ring" cx="268.3" cy="273.1" r="7.5"/></g><g class="cl" style="transition-delay:665ms"><circle class="glow" cx="357.7" cy="329.8" r="18.7"/><circle class="base" cx="357.7" cy="329.8" r="7.5"/><circle class="ring" cx="357.7" cy="329.8" r="7.5"/></g><g class="cl" style="transition-delay:700ms"><circle class="glow" cx="331.7" cy="237.5" r="14.5"/><circle class="base" cx="331.7" cy="237.5" r="5.8"/><circle class="ring" cx="331.7" cy="237.5" r="5.8"/></g><g class="cl zero" style="transition-delay:735ms"><circle class="base" cx="422.8" cy="335.4" r="4.5"/></g><g class="cl zero" style="transition-delay:770ms"><circle class="base" cx="213.8" cy="183.0" r="4.5"/></g><g class="cl zero" style="transition-delay:805ms"><circle class="base" cx="250.4" cy="220.8" r="4.5"/></g><g class="cl zero" style="transition-delay:840ms"><circle class="base" cx="189.4" cy="183.0" r="4.5"/></g><g class="cl zero" style="transition-delay:875ms"><circle class="base" cx="221.9" cy="54.3" r="4.5"/></g></g>
+          <g class="hl"><path d="M369.6 248.4L500 248.4H530"/><text x="540" y="245.4"><tspan class="b">25th &amp; Capitol</tspan><tspan x="540" dy="18">14 requests · 2 still open</tspan></text><path d="M364.9 296.4L500 296.4H530"/><text x="540" y="293.4"><tspan class="b">27th &amp; Fond du Lac</tspan><tspan x="540" dy="18">11 requests · 2 still open</tspan></text><path d="M385.9 402.1L500 402.1H530"/><text x="540" y="399.1"><tspan class="b">16th &amp; Pierce</tspan><tspan x="540" dy="18">4 requests · 2 still open</tspan></text></g>
+          <g transform="translate(750 24)"><g class="brief f" data-g="m" data-seq="1500" data-ph="1">
+            <rect x="0" y="0" width="340" height="212" rx="12"/>
+            <text class="h" x="24" y="36">WEEKLY BRIEF · WK 46</text>
+            <text class="t b" x="24" y="72">3 clusters still have open requests</text>
+            <text class="t" x="24" y="104">25th &amp; Capitol: 14 requests, 2 open</text>
+            <text class="t" x="24" y="130">27th &amp; Fond du Lac: 11 requests, 2 open</text>
+            <text class="t" x="24" y="156">8th &amp; Greenfield: 12 of 12 delivered ✓</text>
+            <text class="h" x="24" y="190">DRAFTED BY RELAY · EDIT BEFORE SENDING</text>
           </g></g>
-          <g class="lg" transform="translate(0 600)"><circle cx="6" cy="-4" r="6" fill="#0e6b63" opacity=".75"/><text class="leg" x="20" y="0">help delivered</text><circle cx="180" cy="-4" r="6" fill="#d9482b"/><text class="leg" x="194" y="0">requests outrun help</text><text class="leg" x="1100" y="0" text-anchor="end">26 Countdown clusters · size = requests</text></g>
+          <g class="lg" transform="translate(750 290)">
+            <circle cx="10" cy="0" r="9" fill="#0e6b63" opacity=".8"/><text class="leg" x="32" y="5">help delivered</text>
+            <circle cx="10" cy="34" r="9" fill="#d9482b"/><text class="leg" x="32" y="39">most requests still open</text>
+            <circle cx="10" cy="68" r="6" fill="none" stroke="#a3a6ad" stroke-width="1.5" stroke-dasharray="3 3"/><text class="leg" x="32" y="73">no requests yet</text>
+            <text class="src" x="0" y="124">The City's 26 Countdown clusters · 21 reached</text>
+            <text class="src" x="0" y="146">Circle size = requests in 2026</text>
+            <text class="src" x="0" y="168">Areas only — never a name or an address</text>
+          </g>
         </svg>
       </div>
       <div class="mod f" data-g="real" data-ph="2" style="--mt:380px"><b>Neighborhood Pulse</b><code>/pulse</code><p>Counts only — never names, never addresses.</p></div>
@@ -674,49 +703,40 @@
   </section>
 
   <!-- 10 STACK -->
-  <section class="slide" data-beat="105" data-manual data-notes="How it's built. Click through: the resident calls a Twilio number; ElevenLabs runs Jordan's voice; an AI agent turns the transcript into a structured request; it's written to Supabase — the one record. The Next.js board reads it live; dispatch goes out by Resend; the Pulse map reads the same rows; and the loop closes with a Twilio text back to the resident. Pay-per-use everywhere.">
+  <section class="slide" data-beat="105" data-manual data-notes="How it is built, in three steps. (Press.) One: the call becomes a record. Twilio carries the call, ElevenLabs is Jordan's voice, an AI agent turns what was said into a structured request, and it lands in one database ComForce owns. (Press.) Two: every screen reads that same record — the board, the map, the partner hand-off. (Press.) Three: the resident closes the loop. Relay asks, did your help arrive? Only their yes marks it verified. Every part is pay-per-use.">
     <div class="k"><span class="n">How it's built</span><span class="sep"></span>one record in the middle · pay-per-use around it</div>
     <h2>Every part is rentable. <em>Nothing has a seat licence.</em></h2>
     <div class="stack" id="stack">
+      <div class="zone f" data-g="1" style="left:0;top:20px;width:980px;height:270px"><h6><b>1</b>The call becomes a record</h6></div>
+      <div class="zone rec f" data-g="4" style="left:1050px;top:20px;width:260px;height:270px"><h6>The one record</h6></div>
+      <div class="zone f" data-g="5" style="left:1390px;top:20px;width:290px;height:626px"><h6><b>2</b>Every screen reads it</h6></div>
+      <div class="zone verify f" data-g="8" data-seq="0" style="left:0;top:330px;width:1310px;height:316px"><h6 style="left:200px"><b>3</b>The resident closes the loop</h6></div>
       <svg class="wires" viewBox="0 0 1680 720">
         <defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker></defs>
-        <path class="w f" data-g="1" d="M212 330 C 330 330, 340 162, 458 162" marker-end="url(#arr)"/>
-        <text class="wl f" data-g="1" x="300" y="228" text-anchor="middle">voice call</text>
-        <path class="w f" data-g="2" d="M552 162 H 738" marker-end="url(#arr)"/>
-        <text class="wl f" data-g="2" x="645" y="150" text-anchor="middle">media stream</text>
-        <path class="w f ai" data-g="3" d="M832 162 H 1018" marker-end="url(#arr)"/>
-        <text class="wl f" data-g="3" x="925" y="150" text-anchor="middle">transcript</text>
-        <path class="w f ai" data-g="4" d="M1022 186 C 960 205, 905 265, 886 342" marker-end="url(#arr)"/>
-        <text class="wl f" data-g="4" x="968" y="300" text-anchor="start">structured request</text>
-        <path class="w f" data-g="5" d="M886 365 H 1130" marker-end="url(#arr)"/>
-        <text class="wl f" data-g="5" x="1008" y="353" text-anchor="middle">live · every 2 s</text>
-        <path class="w f" data-g="6" d="M1306 376 C 1350 410, 1350 555, 1268 596" marker-end="url(#arr)"/>
-        <text class="wl f" data-g="6" x="1358" y="492" text-anchor="start">dispatch</text>
-        <path class="w f" data-g="7" d="M762 410 C 715 445, 715 560, 740 596" marker-end="url(#arr)"/>
-        <text class="wl f" data-g="7" x="700" y="500" text-anchor="end">same rows</text>
-        <path class="w f vf" data-g="8" d="M820 490 C 820 610, 165 610, 165 452" marker-end="url(#arr)"/>
-        <text class="wl f" data-g="8" x="490" y="618" text-anchor="middle" style="fill:#0e6b63">“did it arrive?” · SMS reply or Jordan calls back</text>
+        <path class="w f" data-g="1" d="M170 124H300" marker-end="url(#arr)"/><text class="wl f" data-g="1" x="235" y="106">voice call</text>
+        <path class="w f" data-g="2" d="M420 124H550" marker-end="url(#arr)"/><text class="wl f" data-g="2" x="485" y="106">audio</text>
+        <path class="w f ai" data-g="3" d="M670 124H800" marker-end="url(#arr)"/><text class="wl f" data-g="3" x="735" y="106">transcript</text>
+        <path class="w f ai" data-g="4" d="M920 124H1106" marker-end="url(#arr)"/><text class="wl f" data-g="4" x="1013" y="106">structured request</text>
+        <path class="w f" data-g="5" d="M1252 124H1428" marker-end="url(#arr)"/><text class="wl f" data-g="5" x="1418" y="106">live</text>
+        <path class="w f" data-g="6" d="M1350 124V294Q1350 314 1370 314H1481" marker-end="url(#arr)"/><text class="wl f" data-g="6" x="1418" y="296">same rows</text>
+        <path class="w f" data-g="7" d="M1350 290V484Q1350 504 1370 504H1481" marker-end="url(#arr)"/><text class="wl f" data-g="7" x="1418" y="486">hand-off</text>
+        <path class="w f vf" data-g="8" data-seq="0" d="M1130 292V402Q1130 442 1090 442H190Q150 442 150 402V300" marker-end="url(#arr)"/>
+        <path class="w f vf" data-g="8" data-seq="1100" d="M70 292V510Q70 550 110 550H1190Q1230 550 1230 510V300" marker-end="url(#arr)"/>
       </svg>
-      <div class="node on" style="left:80px;top:300px"><div class="lg person"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><b>Resident</b><span>any phone · no app</span></div>
-      <div class="node f" style="left:420px;top:120px" data-g="1"><div class="lg"><img src="img/logos/twilio.svg" alt="Twilio"></div><b>Twilio</b><span>voice + SMS · $0.10/min</span></div>
-      <div class="node f" style="left:700px;top:120px" data-g="2"><div class="lg dk"><img src="img/logos/elevenlabs.svg" alt="ElevenLabs"></div><b>ElevenLabs Agents</b><span>Jordan's voice · EN / ES</span></div>
-      <div class="node f" style="left:980px;top:120px" data-g="3"><div class="lg"><svg class="aiic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="AI agent"><path d="M11 3.5l1.9 5.1a2 2 0 0 0 1.2 1.2l5.1 1.9-5.1 1.9a2 2 0 0 0-1.2 1.2L11 19.9l-1.9-5.1a2 2 0 0 0-1.2-1.2l-5.1-1.9 5.1-1.9a2 2 0 0 0 1.2-1.2z"/><path d="M19 2.5v4M17 4.5h4M19.5 17.5v3M18 19h3"/></svg></div><b>AI Agent</b><span>structure · triage · summary</span></div>
-      <div class="node rec f" style="left:720px;top:300px;width:200px" data-g="4"><div class="lg"><img src="img/logos/supabase.svg" alt="Supabase"></div><b>Supabase Postgres</b><span>the record · ComForce owns it</span></div>
-      <div class="node f" style="left:1120px;top:300px;width:200px" data-g="5"><div class="lg multi"><img src="img/logos/nextdotjs.svg" alt="Next.js"><img src="img/logos/react.svg" alt="React"><img src="img/logos/vercel.svg" alt="Vercel"></div><b>Relay Board</b><span>Next 16 · React 19 · Vercel</span></div>
-      <div class="node f" style="left:1120px;top:560px;width:200px" data-g="6"><div class="lg dk"><img src="img/logos/resend.svg" alt="Resend"></div><b>Resend</b><span>partner handoff · run sheet</span></div>
-      <div class="node f" style="left:700px;top:560px" data-g="7"><div class="lg"><img src="img/logos/leaflet.svg" alt="Leaflet"></div><b>Neighborhood Pulse</b><span>Leaflet · cluster overlays</span></div>
-      <div class="steps" id="steps">
-        <div><span class="num">01</span>Resident calls the number ComForce already gives out</div>
-        <div><span class="num">02</span>Twilio streams the call to Jordan</div>
-        <div><span class="num">03</span>AI agent turns the transcript into a request</div>
-        <div><span class="num">04</span>Written to the one record</div>
-        <div><span class="num">05</span>Board updates live for every division</div>
-        <div><span class="num">06</span>One tap dispatches a partner</div>
-        <div><span class="num">07</span>Pulse map reads the same rows</div>
-        <div><span class="num">08</span>Resident confirms — the loop closes</div>
-      </div>
-      <div class="costs">voice <b>$0.10</b>/min · SMS <b>$0.008</b> · AI ≈ <b>$0.02</b>/request<br>hosting <b>$25</b>/mo · everything else <b>$0</b> at this volume</div>
-      <div class="hint">→ reveals the next connection</div>
+      <div class="node on" style="left:10px;top:76px"><div class="lg person"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><b>Resident</b><span>any phone · no app</span></div>
+      <div class="node f" style="left:260px;top:76px" data-g="1"><div class="lg"><img src="img/logos/twilio.svg" alt="Twilio"></div><b>Twilio</b><span>the phone line + texts</span></div>
+      <div class="node f" style="left:510px;top:76px" data-g="2"><div class="lg dk"><img src="img/logos/elevenlabs.svg" alt="ElevenLabs"></div><b>ElevenLabs</b><span>Jordan's voice · EN / ES</span></div>
+      <div class="node f" style="left:760px;top:76px" data-g="3"><div class="lg"><svg class="aiic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="AI agent"><path d="M11 3.5l1.9 5.1a2 2 0 0 0 1.2 1.2l5.1 1.9-5.1 1.9a2 2 0 0 0-1.2 1.2L11 19.9l-1.9-5.1a2 2 0 0 0-1.2-1.2l-5.1-1.9 5.1-1.9a2 2 0 0 0 1.2-1.2z"/><path d="M19 2.5v4M17 4.5h4M19.5 17.5v3M18 19h3"/></svg></div><b>AI Agent</b><span>turns talk into a request</span></div>
+      <div class="node rec f" style="left:1060px;top:64px" data-g="4"><div class="lg"><img src="img/logos/supabase.svg" alt="Supabase"></div><b>Supabase Postgres</b><span>ComForce owns every row</span></div>
+      <div class="node out f" style="left:1415px;top:82px" data-g="5"><div class="lg multi"><img src="img/logos/nextdotjs.svg" alt="Next.js"><img src="img/logos/react.svg" alt="React"><img src="img/logos/vercel.svg" alt="Vercel"></div><b>Relay Board</b><span>Next.js · React · Vercel</span></div>
+      <div class="node out f" style="left:1415px;top:272px" data-g="6"><div class="lg"><img src="img/logos/leaflet.svg" alt="Leaflet"></div><b>Neighborhood Pulse</b><span>Leaflet map · counts only</span></div>
+      <div class="node out f" style="left:1415px;top:462px" data-g="7"><div class="lg dk"><img src="img/logos/resend.svg" alt="Resend"></div><b>Resend</b><span>partner e-mail · run sheet</span></div>
+      <div class="say f" data-g="8" data-seq="300" style="--w:340px;left:640px;top:416px">“Did your help arrive?”</div>
+      <div class="cap f" data-g="8" data-seq="300" style="left:640px;top:482px">a text — or Jordan calls back, in their language</div>
+      <div class="say yes f" data-g="8" data-seq="1400" style="--w:240px;left:640px;top:524px">“Yes — thank you.”</div>
+      <div class="say ok f" data-g="8" data-seq="2100" style="--w:170px;left:1040px;top:529px">✓ Verified</div>
+      <div class="cap f" data-g="8" data-seq="2100" style="left:640px;top:596px">only the resident's answer closes the request</div>
+      <div class="costs">voice <b>$0.10</b>/min<i>·</i>text <b>$0.008</b><i>·</i>AI ≈ <b>$0.02</b>/request<i>·</i>hosting <b>$25</b>/mo<i>·</i>everything else <b>$0</b> at this volume</div>
     </div>
   </section>
 
@@ -840,17 +860,7 @@
   const netState = on => { net.querySelector('#tangle').classList.toggle('off', on); net.querySelector('#hub').classList.toggle('on', on); net.querySelectorAll('.spoke').forEach((s, k) => setTimeout(() => s.classList.toggle('on', on), on ? k*45 : 0)); document.getElementById('netcap').textContent = on ? '17 connections — all to one place' : net.dataset.n; document.getElementById('netcap').classList.toggle('gap', !on); };
   net.dataset.n = document.getElementById('netcap').textContent;
 
-  // slide 6 map
-  (() => {
-    const g = document.getElementById('mgrid'); let h = '';
-    for (let y = 20; y < 570; y += 22) for (let x = 10; x < 720; x += 22) { const d = Math.hypot(x-360, y-290); if (d < 300 + 40*Math.sin(x/37) ) h += `<circle cx="${x}" cy="${y}" r="1.6"/>`; }
-    g.innerHTML = h;
-    const cl = document.getElementById('clusters'); let seed = 3; const rnd = () => (seed = (seed*9301+49297)%233280)/233280;
-    const gaps = new Set([4, 11, 19]); const names = {4:'Metcalfe Park', 11:'Garden Homes', 19:'Amani', 7:'Sherman Park'}; let s = '';
-    for (let k = 0; k < 26; k++) { const a = rnd()*Math.PI*2, r = 40 + rnd()*230; const x = 360 + Math.cos(a)*r*1.1, y = 290 + Math.sin(a)*r*0.9; const sz = 8 + rnd()*22; const gap = gaps.has(k);
-      s += `<g class="cl${gap?' gap':''}" style="transition-delay:${k*40}ms"><circle class="base" cx="${x}" cy="${y}" r="${sz}"/><circle class="ring" cx="${x}" cy="${y}" r="${sz}"/>${names[k] ? `<text x="${x+sz+6}" y="${y+4}">${names[k]}</text>` : ''}</g>`; }
-    cl.innerHTML = s;
-  })();
+  // The Milwaukee map on the awareness slide is static markup; its sources are listed in presentation/README.md.
   const mapState = on => document.querySelectorAll('#clusters .cl').forEach(c => c.classList.toggle('on', on));
 
   // slide 7 people
@@ -866,7 +876,7 @@
   document.getElementById('dots').innerHTML = Array.from({length: 203}, (_, k) => `<i class="${k < 124 ? 'v d' : k < 186 ? 'd' : ''}" style="--c:${Math.floor(k/7)}"></i>`).join('');
 
   // stack: the eight connections play in three presses — intake (1–4), what reads the record (5–7), the verify loop (8)
-  document.querySelectorAll('#stack .f').forEach(f => { const g = +f.dataset.g; f.dataset.seq = (g <= 4 ? g - 1 : g <= 7 ? g - 5 : 0) * 550; f.dataset.g = g <= 4 ? 'in' : g <= 7 ? 'out' : 'loop'; });
+  document.querySelectorAll('#stack .f').forEach(f => { const g = +f.dataset.g; f.dataset.seq ??= (g <= 4 ? g - 1 : g <= 7 ? g - 5 : 0) * 550; f.dataset.g = g <= 4 ? 'in' : g <= 7 ? 'out' : 'loop'; });
 
   /* ---------- engine ---------- */
   const frags = s => [...s.querySelectorAll('.f')];
@@ -892,7 +902,6 @@
     if (s.querySelector('#map')) { const map = document.getElementById('map'); mapState(ph >= 1); map.classList.toggle('live', ph >= 1); map.classList.toggle('gaps', !!s.querySelector('.brief.on')); }
     if (s.querySelector('#units')) document.getElementById('dots').dataset.step = s.querySelectorAll('.stat.on').length;
     if (s.querySelector('#know')) knowState(step >= 1);
-    if (s.querySelector('#stack')) { const k = s.querySelectorAll('.w.on').length; [...document.querySelectorAll('#steps div')].forEach((d, j) => d.classList.toggle('on', j < k)); }
     if (s.querySelector('#loop') && step === 0 && !s.dataset.played) { s.dataset.played = 1; playLoop(); }
   }
   const on = (f, instant) => { f.classList.add('on'); f.querySelectorAll('[data-count]').forEach(v => countUp(v, instant)); if (f.matches('[data-count]')) countUp(f, instant); };

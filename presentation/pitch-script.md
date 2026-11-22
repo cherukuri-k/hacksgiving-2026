@@ -1,6 +1,6 @@
 # Pitch script — 2:00, spoken slowly
 
-207 spoken words. At a slow, clear pace (around 115 words a minute) that is about 1:50 of talking in total: roughly 1:30 before the demo and 0:15 after it, which leaves about 10 seconds for pauses. Not yet timed aloud — rehearse once with the clock (**T**). **→** = one press. Nothing moves until you press; some presses play a short sequence, so pause and let it finish. If the demo runs long, press **End** to jump straight to the scorecard.
+About 215 spoken words. At a slow, clear pace (around 115 words a minute) that is about 1:50 of talking in total: roughly 1:30 before the demo and 0:15 after it, which leaves about 10 seconds for pauses. Not yet timed aloud — rehearse once with the clock (**T**). **→** = one press. Nothing moves until you press; some presses play a short sequence, so pause and let it finish. If the demo runs long, press **End** to jump straight to the scorecard.
 
 The deck no longer has separate slides for problems 1 and 2. The demo shows both live, and the overview slide says so.
 
@@ -26,7 +26,7 @@ Impact used to be rebuilt from memory. **→** Now every request counts itself. 
 
 **Slide 5 — Problem 4 · Awareness** *(→ map · → real screen)*
 
-Leaders used to decide from anecdote. **→** Now they see where requests outrun help. **→**
+Leaders used to decide from anecdote. **→** Now it is on the map: where help arrived, and where requests are still open. **→**
 
 **Slide 6 — Problem 5 · Training** *(→ playbook · → real screen)*
 
@@ -38,7 +38,7 @@ Before any AI sees a message, **→** names, addresses and phone numbers are rem
 
 **Slide 8 — Tech stack** *(→ ×3)*
 
-**→** It is built from rentable parts, **→** around one database ComForce owns. **→** And the loop closes with the resident.
+**→** A call becomes a record, in one database ComForce owns. **→** Every screen reads that record. **→** And the resident closes the loop.
 
 **Slide 9 — Demo**
 
