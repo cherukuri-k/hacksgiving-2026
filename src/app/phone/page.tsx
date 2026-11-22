@@ -74,9 +74,12 @@ export default function ResidentPhone() {
   const screenRef = useRef<Screen>("home");
   useEffect(() => { screenRef.current = screen; }, [screen]);
   const lastSeenRef = useRef<number | null>(null);
+  // Set when this phone has just taken the number the resident gave Jordan: the text waiting there is new to it.
+  const adoptedRef = useRef(false);
   useEffect(() => {
     let alive = true;
-    lastSeenRef.current = null;
+    lastSeenRef.current = adoptedRef.current ? 0 : null;
+    adoptedRef.current = false;
     const pull = async () => {
       const r = await fetch(`/api/sms/log?number=${encodeURIComponent(number)}`, { cache: "no-store" }).then((r) => r.json()).catch(() => null);
       if (!alive || !r?.messages) return;
@@ -138,6 +141,30 @@ export default function ResidentPhone() {
   const [muted, setMuted] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const convRef = useRef<Conversation | null>(null);
+  const [callId, setCallId] = useState<string | null>(null);
+
+  // This phone is a simulator: its number is a setting. If the resident tells Jordan to text a
+  // different number, the phone takes that number, so the code arrives here and the later
+  // texts and the call-back reach it too.
+  useEffect(() => {
+    if (!callId) return;
+    let alive = true;
+    const started = Date.now();
+    const ask = async () => {
+      // A re-send to a corrected number is still picked up for a while after the call.
+      if (Date.now() - started > 5 * 60 * 1000) return;
+      const r = await fetch(`/api/voice/texted?conversation=${encodeURIComponent(callId)}`, { cache: "no-store" }).then((r) => r.json()).catch(() => null);
+      if (!alive || !r?.number) return;
+      const given = formatNumber(r.number);
+      if (given.replace(/\D/g, "") === number.replace(/\D/g, "")) return;
+      adoptedRef.current = true;
+      setNumber(given);
+      localStorage.setItem(NUMBER_KEY, given);
+      window.history.replaceState(null, "", `?number=${given.replace(/\D/g, "").slice(-10)}`);
+    };
+    const t = setInterval(ask, 1500);
+    return () => { alive = false; clearInterval(t); };
+  }, [callId, number]);
   useEffect(() => {
     if (callState !== "active") return;
     const t = setInterval(() => setElapsed((n) => n + 1), 1000);
@@ -170,6 +197,7 @@ export default function ResidentPhone() {
         onError: (m) => setCallErr(String(m)),
       });
       convRef.current = conv;
+      setCallId(conv.getId());
     } catch (e) {
       setCallState("ended");
       setCallErr(e instanceof Error ? e.message : "Couldn't start the call");
