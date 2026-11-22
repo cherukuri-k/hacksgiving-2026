@@ -223,6 +223,34 @@
   .ovw[data-step="2"] .one .p{opacity:0;transform:translateY(-8px)}
   .ovw[data-step="2"] .one .s{opacity:1;transform:none}
 
+  /* the whole journey: three phases of four steps, wired in the order they happen */
+  .journey{position:relative;height:690px;margin-top:30px;display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
+  .journey .jph.f{transform:none}
+  .jph h4{height:40px;padding-left:58px;font-size:23px;font-weight:700;letter-spacing:-.015em;display:flex;align-items:center;gap:12px}
+  .jph h4 b{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--teal);color:var(--teal);font-family:var(--mono);font-size:13px;font-weight:600;display:grid;place-items:center}
+  .step{position:relative;height:142px;margin:12px 0 0 58px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 20px;opacity:0;transform:translateY(12px);transition:opacity .45s,transform .5s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--i)*.24s + .1s)}
+  .jph h4 + .step{margin-top:16px}
+  .jph.on .step{opacity:1;transform:none}
+  .step i{position:absolute;left:-58px;top:10px;width:40px;height:40px;border-radius:50%;background:var(--c);color:#fff;font-style:normal;font-family:var(--mono);font-size:14px;font-weight:600;display:grid;place-items:center}
+  .step small{display:block;font-family:var(--mono);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
+  .step b{display:block;font-size:25px;line-height:1.2;letter-spacing:-.02em;margin-top:4px}
+  .step span{display:block;font-size:18px;line-height:1.35;color:var(--mut);margin-top:6px}
+  .step q{display:inline-block;quotes:none;margin-top:9px;max-width:100%;font-size:16.5px;line-height:1.3;padding:7px 13px;border-radius:14px}
+  .step q.sms{background:#eceae4;color:var(--ink);border-bottom-left-radius:4px}
+  .step q.note{border:1.5px dashed var(--line2);border-radius:8px;font-family:var(--mono);font-size:15px;color:var(--ink2)}
+  .step q.say{background:var(--teal2);color:var(--teal);font-weight:600;border-bottom-right-radius:4px}
+  .step.res{--c:var(--coral)} .step.ai{--c:var(--teal)} .step.cf{--c:var(--ink)} .step.pa{--c:var(--amber)}
+  .step.ok{--c:var(--teal);border-color:var(--teal);box-shadow:0 14px 30px -22px rgba(14,107,99,.7)}
+  .jw{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+  .jw .w{fill:none;stroke:var(--teal);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .9s ease}
+  .journey:has(.jph[data-p="0"].on) .r0{stroke-dashoffset:0;transition-delay:.25s}
+  .journey:has(.jph[data-p="1"].on) .c0{stroke-dashoffset:0;transition-duration:.6s}
+  .journey:has(.jph[data-p="1"].on) .r1{stroke-dashoffset:0;transition-delay:.6s}
+  .journey:has(.jph[data-p="2"].on) .c1{stroke-dashoffset:0;transition-duration:.6s}
+  .journey:has(.jph[data-p="2"].on) .r2{stroke-dashoffset:0;transition-delay:.6s}
+  .jw .dot{fill:var(--teal);opacity:0;offset-path:path('M20 86V678H554V20H592V678H1126V20H1164V548')}
+  .journey:has(.jph[data-p="2"].on) .dot{animation:wireflow 8.4s linear calc(1.8s + var(--late,0s)) infinite}
+
   /* 3 network */
   .net{width:1100px;height:620px}
   .net .tangle{transition:opacity .8s}
@@ -487,7 +515,7 @@
     #stage{position:static;transform:none!important;width:1920px;height:auto;overflow:visible}
     section.slide{position:relative;opacity:1;visibility:visible;transform:none;height:1080px;width:1920px;page-break-after:always;break-inside:avoid;overflow:hidden}
     section.slide:last-of-type{page-break-after:auto}
-    #help,#notes,#clock,#foot,#prog,#handoff,.ovw .wires circle{display:none}
+    #help,#notes,#clock,#foot,#prog,#handoff,.ovw .wires circle,.jw .dot{display:none}
     .f,.on{opacity:1!important;transform:none!important}
     section.slide>*{animation:none!important}
     .title .city image,.title .city .pt,.title .team,.title h1,.title p,.thanks .ty h3,.thanks .say h4,.thanks .end p{animation:none!important}
@@ -755,7 +783,44 @@
   </section>
 
   <!-- 10 STACK -->
-  <section class="slide" data-beat="105" data-manual data-notes="How it is built, in three steps. (Press.) One: the call becomes a record. Twilio carries the call, ElevenLabs is Jordan's voice, an AI agent turns what was said into a structured request, and it lands in one database ComForce owns. (Press.) Two: every screen reads that same record — the board, the map, the partner hand-off. (Press.) Three: the resident closes the loop. Relay asks, did your help arrive? Only their yes marks it verified. Every part is pay-per-use.">
+  <!-- THE WHOLE JOURNEY: one request, from the first ring to the resident's answer. Every quoted line is the app's own wording. -->
+  <section class="slide jr" data-beat="105">
+    <div class="k"><span class="n">How it works</span><span class="sep"></span>one request, from the first ring to the resident's answer</div>
+    <h2>One request. <em>Start to finish.</em></h2>
+    <div class="journey" id="journey">
+      <svg class="jw" viewBox="0 0 1680 690" aria-hidden="true">
+        <path class="w r0" pathLength="1" d="M20 86V548"/>
+        <path class="w c0" pathLength="1" d="M20 568V678H554V20H592V66"/>
+        <path class="w r1" pathLength="1" d="M592 86V548"/>
+        <path class="w c1" pathLength="1" d="M592 568V678H1126V20H1164V66"/>
+        <path class="w r2" pathLength="1" d="M1164 86V548"/>
+        <circle class="dot" r="5"/><circle class="dot" r="5" style="--late:4.2s"/>
+      </svg>
+      <div class="jph f" data-g="j" data-p="0">
+        <h4><b>1</b>The call</h4>
+        <div class="step res" style="--i:0"><i>01</i><small>Resident</small><b>Calls ComForce</b><span>Any phone. No app, no login.</span></div>
+        <div class="step ai" style="--i:1"><i>02</i><small>Jordan · AI agent</small><b>Answers and logs the request</b><span>In English or Spanish. Asks what is wrong, and where.</span></div>
+        <div class="step ai" style="--i:2"><i>03</i><small>Jordan → resident</small><b>Texts a tracking code</b><q class="sms">Relay MKE: your request is logged as R-4KDX.</q></div>
+        <div class="step res" style="--i:3"><i>04</i><small>Resident</small><b>Texts the code any time for an update</b><q class="sms">R-4KDX: Marcus T. is working on it right now.</q></div>
+      </div>
+      <div class="jph f" data-g="j" data-seq="1500" data-p="1">
+        <h4><b>2</b>The work</h4>
+        <div class="step cf" style="--i:0"><i>05</i><small>ComForce worker</small><b>Sees it on the dashboard</b><span>One card every division works from, with one owner.</span></div>
+        <div class="step cf" style="--i:1"><i>06</i><small>ComForce worker</small><b>Gets the tasks, already drafted</b><span>Written for this household. Safety steps come first.</span></div>
+        <div class="step pa" style="--i:2"><i>07</i><small>Jordan → partner</small><b>Connects a partner organisation</b><span>Jordan phones them. They say yes, and when.</span></div>
+        <div class="step cf" style="--i:3"><i>08</i><small>ComForce worker</small><b>Follows the run sheet and map</b><q class="note">side door on W Lisbon Ave · ask for Denise</q></div>
+      </div>
+      <div class="jph f" data-g="j" data-seq="3000" data-p="2">
+        <h4><b>3</b>The proof</h4>
+        <div class="step cf" style="--i:0"><i>09</i><small>ComForce worker</small><b>Taps Delivered</b><span>So far, only the helper says it is done.</span></div>
+        <div class="step ai" style="--i:1"><i>10</i><small>Relay → resident</small><b>Asks the resident by text</b><q class="sms">Did the help for request R-4KDX arrive? 1 = yes, 2 = partly, 3 = no.</q></div>
+        <div class="step ai" style="--i:2"><i>11</i><small>Jordan · AI agent</small><b>No reply? Jordan calls back</b><q class="say">“Yes, everything came. Thank you.”</q></div>
+        <div class="step ok" style="--i:3"><i>12</i><small>The record</small><b>Verified by the resident</b><span>Only now does it close. “Partly” or “no” keeps it open.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-skip data-beat="105" data-manual data-notes="How it is built, in three steps. (Press.) One: the call becomes a record. Twilio carries the call, ElevenLabs is Jordan's voice, an AI agent turns what was said into a structured request, and it lands in one database ComForce owns. (Press.) Two: every screen reads that same record — the board, the map, the partner hand-off. (Press.) Three: the resident closes the loop. Relay asks, did your help arrive? Only their yes marks it verified. Every part is pay-per-use.">
     <div class="k"><span class="n">How it's built</span><span class="sep"></span>one record in the middle · pay-per-use around it</div>
     <h2>Every part is rentable. <em>Nothing has a seat licence.</em></h2>
     <div class="stack" id="stack">
@@ -922,9 +987,10 @@
     '#map':     ['Problem 4 · the map', `Leaders decided from anecdote. → Now the map shows where help arrived, and where it's still missing. → [the real screen: say nothing, move on]`],
     '#know':    ['Problem 5 · training', `Know-how left with each volunteer. → Now it's written once, and the guide answers from it. → [the real screen: move on]`],
     '.rules4':  ['Guardrails', `Before any AI sees a message, → names, addresses and phone numbers are removed. → A person makes every decision. We never score or predict anyone, and all the data here is synthetic.`],
+    '#journey': ['The whole journey', `→ Here is one request, start to finish: the call, the work, and the proof. [let it play; the demo shows it for real]`],
     '#stack':   ['How it is built', `→ A call becomes a record ComForce owns. → Every screen reads it. → And the resident closes the loop.`],
     '#demovid': ['Demo', `Watch one request: who asked, who delivered, and the resident's own answer. [play the demo; the clock is paused]`],
-    '#yrs':     ['Cost', `→ Everything you watched cost one dollar sixty-eight. → The whole year, three hundred and thirty-six dollars. The commercial option costs two hundred times more.`],
+    '#yrs':     ['Cost', `→ Everything you watched cost one dollar sixty-eight. → The whole year, three hundred and thirty-six dollars, and ComForce owns the data. The commercial option costs two hundred times more.`],
     '.thanks':  ['Closing', `[say this over the hands] Care is not measured by how many we reach. It is measured by how many we don't lose. Thank you.`],
   };
   for (const sel in SCRIPT) { const s = document.querySelector(sel)?.closest('section'); if (s) [s.dataset.name, s.dataset.notes] = SCRIPT[sel]; }

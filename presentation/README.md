@@ -22,16 +22,16 @@ Slides 4–5 share one rhythm, shown by the pill top-right: **Today → With Rel
 | 4 | Problem 4 · Awareness & decisions | 2 | Anecdotes over a map of Milwaukee → the City's 26 clusters appear, sized by requests; coral hotspots are called out; weekly brief → `/pulse` |
 | 5 | Problem 5 · Training | 2 | Volunteers leave with their know-how → playbook, new volunteers, cited answer → `/guide` |
 | 6 | Guardrails | 2 | Name, address and phone are redacted before the AI sees the message; four rules |
-| 7 | Tech stack | 3 | Three numbered zones, one per press: the call becomes a record → every screen reads it → the resident closes the loop |
+| 7 | The whole journey | 1 | One request in twelve numbered steps across three columns (the call, the work, the proof), colour-coded by who acts: resident, Jordan, ComForce worker, partner. One press fills the columns in turn and draws the line that joins them; a dot then keeps travelling the route. The quoted texts and the pickup note are the app's own wording |
 | 8 | Demo | — | Hand-off to live demo. **V** plays `demo-backup.mp4` if it exists |
 | 9 | Cost — $1.68 | 2 | Price counts up with the real cost split; then 223 squares fill in, one per year of Relay that a year of findhelp enterprise ($75,000) would pay for |
 | 10 | Closing | — | Arrives through a hand-off: two hands draw in from either side (one coral, one white), clasp, turn teal, and the view moves through the grip into the slide (about 3.5 s; a press skips it, back cancels it). Left half: "Thank you." in the title slide's two typefaces. Right half: "Care is not measured by how many we reach. It is measured by how many we don't lose.", and beneath it the challenge answered in three lines (one record, coordinated action, measurable impact) |
 
-19 presses reach the demo. Some presses play a short sequence; pressing again mid-sequence skips to its end.
+17 presses reach the demo. Some presses play a short sequence; pressing again mid-sequence skips to its end.
 
 **The Milwaukee map (slide 4).** `slides/img/milwaukee.svg` is the City of Milwaukee's 190 neighbourhood polygons from `data/public/milwaukee-neighborhoods.geojson`, simplified and drawn at 20 px per km. Each circle sits at its cluster's coordinates from `src/lib/clusters.ts`; its size and the call-out numbers were read from the `/grants` table (2026, synthetic data) when the slide was built, so update them if the seed changes.
 
-**Hidden slides.** Problems 1 (information sharing), 2 (requests) and 3 (data and impact) each have a full slide that is switched off, because the live demo shows all three. The Benefits slide (was/now cards, between the demo and Cost) is switched off too, to save time. A `<section>` with `data-skip` is left out of the deck, the counter and the PDF; delete the attribute to bring a slide back, or add it to hide one.
+**Hidden slides.** Problems 1 (information sharing), 2 (requests) and 3 (data and impact) each have a full slide that is switched off, because the live demo shows all three. The Benefits slide (was/now cards, between the demo and Cost) is switched off too, to save time, as is the tech stack slide (vendor logos and how the parts connect), which the journey slide replaced. A `<section>` with `data-skip` is left out of the deck, the counter and the PDF; delete the attribute to bring a slide back, or add it to hide one.
 
 Type: Inter Tight (display) and Instrument Serif Italic (emphasis), both SIL Open Font License, bundled in `slides/fonts/`.
 
