@@ -2,9 +2,13 @@
 
     python3 presentation/titlemap.py > /tmp/dots.json
 
-Writes slides/img/milwaukee-dark.svg (the slide-4 basemap restyled for a dark slide) and prints the
-request dots as a compact array, [x*10, y*10, confirmed], in the basemap's own 346x618 box, oldest
-request first. Paste the array into `const DOTS` in slides/index.html.
+Writes slides/img/milwaukee-dark.svg (the slide-4 basemap restyled for a dark slide) and prints four
+constants to paste over the ones in slides/index.html, all in the basemap's own 346x618 box:
+
+    DOTS      one [x*10, y*10, confirmed] per request, oldest first
+    PARTNERS  [x, y] of each partner organisation in the seed
+    TOOK      per request, which partner took it (index into PARTNERS, base 36; '-' = nobody yet)
+    MONTH     per request, the month it was logged (0 = January, base 36)
 
 One dot per request logged in 2026: the synthetic archive (/api/history) plus the seeded board.
 `confirmed` is 1 when the resident's own answer was "yes, the help arrived". A dot sits near its
@@ -32,7 +36,12 @@ get = lambda p: json.load(urllib.request.urlopen('http://localhost:3077' + p))['
 reqs = [r for r in get('/api/history') + [r for r in get('/api/snapshot') if r['id'].startswith('req-0')] if r['createdAt'].startswith('2026')]
 reqs.sort(key=lambda r: r['createdAt'])
 
-out, missing = [], set()
+seed = (HERE.parent / 'src/lib/db/seed.ts').read_text()
+partners = re.findall(r'\{ id: "(p-[a-z]+)", name: "[^"]+".*?coords: \[([\d.]+), (-[\d.]+)\]', seed)
+pidx = {pid: k for k, (pid, _, _) in enumerate(partners)}
+assert len(partners) <= 36, 'partner index is written as one base-36 character'
+
+out, took, month, missing = [], '', '', set()
 for r in reqs:
     c = hoods.get(r['neighborhood'])
     if not c:
@@ -43,6 +52,12 @@ for r in reqs:
     rad = math.sqrt(((h >> 16) % 10000) / 10000) * 0.0078        # within about 850 m of the centroid
     x, y = px(c[1] + math.cos(a) * rad * 1.35, c[0] + math.sin(a) * rad)
     out.append([round(x * 10), round(y * 10), 1 if r.get('residentFeedback') == 'yes' else 0])
+    p = r.get('partnerId') or (r.get('dispatch') or {}).get('partnerId')
+    took += '0123456789abcdefghijklmnopqrstuvwxyz'[pidx[p]] if p in pidx else '-'
+    month += '0123456789ab'[int(r['createdAt'][5:7]) - 1]
 
-print(f'{len(out)} dots, {sum(d[2] for d in out)} confirmed by the resident, missing neighbourhoods: {missing or "none"}', file=sys.stderr)
-print(json.dumps(out, separators=(',', ':')))
+print(f'{len(out)} dots, {sum(d[2] for d in out)} confirmed by the resident, {len(took) - took.count("-")} taken by a partner, missing neighbourhoods: {missing or "none"}', file=sys.stderr)
+print('const DOTS = ' + json.dumps(out, separators=(',', ':')) + ';')
+print('const PARTNERS = ' + json.dumps([[round(v, 1) for v in px(float(lon), float(lat))] for _, lat, lon in partners], separators=(',', ':')) + ';')
+print(f"const TOOK = '{took}';")
+print(f"const MONTH = '{month}';")

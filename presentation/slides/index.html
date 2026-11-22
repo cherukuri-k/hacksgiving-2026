@@ -114,46 +114,43 @@
   /* 1 title */
   .title{position:relative;height:100%;display:grid;grid-template-columns:1fr 860px;align-items:center}
   .title::before{content:'';position:absolute;left:-120px;right:-120px;top:-96px;bottom:-110px;background:radial-gradient(ellipse 60% 45% at 50% 108%,rgba(111,194,183,.16),transparent 70%),radial-gradient(circle at 1px 1px,#23262c 1px,transparent 1.5px);background-size:auto,38px 38px;pointer-events:none}
-  .title>*{position:relative}
+  .title>*{position:relative;min-width:0}
   .title .team{font-family:var(--mono);font-size:17px;color:#8a8e97;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:16px;margin-bottom:40px}
   .title .team b{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--paper);color:var(--dark);font-size:22px;font-weight:700;letter-spacing:0}
   .title .team i{font-style:normal;color:#50555e}
-  .title h1{color:var(--paper);font-size:232px;line-height:.86;letter-spacing:-.06em;margin-left:-10px}
-  .title h1 em{display:block;font-family:var(--serif);font-style:italic;font-weight:400;font-size:262px;letter-spacing:-.02em;line-height:.9;margin-left:6px}
+  .title h1{color:var(--paper);font-size:236px;line-height:.9;letter-spacing:-.055em;margin-left:-8px;white-space:nowrap;position:relative;z-index:1}
+  .title h1 em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.02em}
   .title p{font-size:31px;color:#c7cad1;line-height:1.34;margin-top:44px;max-width:720px}
   .title p b{color:#fff;font-weight:600}
-  /* Milwaukee: one dot for each request logged in 2026, teal once the resident confirmed the help arrived */
+  /* Milwaukee replays its year the way Relay works: a request comes in, a partner takes it, the help comes back, the resident's answer turns it teal */
   .title .city{display:grid;grid-template-columns:1fr 532px;align-items:end;gap:30px}
   .title .city svg{width:532px;height:950px;overflow:visible}
-  .title .city .rq{fill:#f08a6c;opacity:0;transform-box:fill-box;transform-origin:center}
-  .title .city .rq.y{fill:#6fc2b7}
-  .title .city.go .rq{animation:dotin .5s cubic-bezier(.3,1.5,.5,1) var(--t) both}
-  .title .city.go .rq.y{animation:dotin .5s cubic-bezier(.3,1.5,.5,1) var(--t) both,confirm .7s ease calc(var(--t) + .9s) both}
-  @keyframes dotin{from{opacity:0;transform:scale(0)}to{opacity:1;transform:none}}
-  @keyframes confirm{from{fill:#f08a6c}to{fill:#6fc2b7}}
-  /* entrance: the left side rises in line by line while the city wipes down; then the year's requests arrive */
+  .title .city .rq{fill:#f08a6c;opacity:0;transform:scale(0);transform-box:fill-box;transform-origin:center;transition:opacity .3s,transform .45s cubic-bezier(.3,1.5,.5,1),fill .5s}
+  .title .city .rq.in{opacity:1;transform:none}
+  .title .city .rq.ok{fill:#6fc2b7}
+  .title .city .pt{fill:var(--dark);stroke:#d6d9df;stroke-width:1.3;opacity:0;transform:rotate(45deg);transform-box:fill-box;transform-origin:center}
+  .title .city.go .pt{animation:ptin .6s ease 1.1s both}
+  .title .city.go .pt.hit{animation:pthit .45s ease-out both}
+  @keyframes ptin{from{opacity:0}to{opacity:1}}
+  @keyframes pthit{0%{opacity:1;transform:rotate(45deg) scale(1)}35%{opacity:1;transform:rotate(45deg) scale(1.8);stroke:#fff}100%{opacity:1;transform:rotate(45deg) scale(1)}}
+  .title .city .ln{fill:none;stroke:var(--paper);stroke-width:.9;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;opacity:.7;animation:lnk var(--dur,.7s) ease-in-out both}
+  @keyframes lnk{0%{stroke-dashoffset:1}45%{stroke-dashoffset:0}55%{stroke-dashoffset:0}100%{stroke-dashoffset:1}}
+  .title .city .ping{fill:none;stroke:#f08a6c;stroke-width:1;transform-box:fill-box;transform-origin:center;animation:pingout 1.1s ease-out both}
+  .title .city .ping.y{stroke:#6fc2b7}
+  @keyframes pingout{from{transform:scale(1);opacity:.9}to{transform:scale(3.4);opacity:0}}
+  /* entrance: the left side rises in line by line while the city wipes down */
   section.active .title .team{animation:rise .7s cubic-bezier(.2,.7,.2,1) .05s both}
   section.active .title h1{animation:rise .9s cubic-bezier(.2,.7,.2,1) .15s both}
-  section.active .title h1 em{animation:rise .9s cubic-bezier(.2,.7,.2,1) .4s both}
-  section.active .title p{animation:rise .8s cubic-bezier(.2,.7,.2,1) .75s both}
+  section.active .title p{animation:rise .8s cubic-bezier(.2,.7,.2,1) .6s both}
   .title .city image{opacity:0}
   .title .city.go image{animation:wipe 1.5s cubic-bezier(.3,.6,.2,1) .1s both}
   @keyframes wipe{from{opacity:0;clip-path:inset(0 0 100% 0)}25%{opacity:1}to{opacity:1;clip-path:inset(0 0 0 0)}}
-  /* after that, requests keep relaying to the one shared record */
-  .title .city .hub{fill:var(--dark);stroke:var(--paper);stroke-width:1.6;opacity:0}
-  .title .city.go .hub{animation:dotin .6s cubic-bezier(.3,1.5,.5,1) 5.3s both;transform-box:fill-box;transform-origin:center}
-  .title .city .relay{fill:none;stroke:var(--paper);stroke-width:1.1;stroke-linecap:round;stroke-dasharray:.3 1;animation:relaygo 1.15s cubic-bezier(.5,0,.35,1) both;filter:drop-shadow(0 0 2px rgba(244,241,234,.7))}
-  @keyframes relaygo{from{stroke-dashoffset:.3}to{stroke-dashoffset:-1}}
-  .title .city .ping{fill:none;stroke:#f08a6c;stroke-width:1;transform-box:fill-box;transform-origin:center;animation:pingout 1.1s ease-out both}
-  .title .city .ping.y{stroke:#6fc2b7}
-  .title .city .ping.hubping{stroke:var(--paper);animation-duration:.9s}
-  @keyframes pingout{from{transform:scale(1);opacity:.9}to{transform:scale(3.4);opacity:0}}
   .title .lgd{padding-bottom:96px;font-size:21px;line-height:1.3;color:#c7cad1}
   .title .lgd div{display:flex;gap:12px;align-items:baseline;margin-top:12px}
   .title .lgd div::before{content:'';flex:none;width:12px;height:12px;border-radius:50%;background:var(--c)}
-  .title .lgd div.h::before{background:none;border:2px solid var(--paper)}
+  .title .lgd div.p::before{width:10px;height:10px;margin:0 1px;border-radius:0;background:none;border:2px solid #d6d9df;transform:rotate(45deg)}
   .title .lgd small{display:block;font-family:var(--mono);font-size:13px;line-height:1.5;color:#6c7079;letter-spacing:.04em;text-transform:uppercase;margin-top:22px}
-  section.active .title .lgd{animation:rise .7s cubic-bezier(.2,.7,.2,1) 5.2s both}
+  section.active .title .lgd{animation:rise .7s cubic-bezier(.2,.7,.2,1) 1.1s both}
 
   /* 2 about */
   .tri{display:grid;grid-template-columns:290px 830px 440px;gap:60px;margin-top:36px;align-items:end}
@@ -461,8 +458,8 @@
     #help,#notes,#clock,#foot,#prog{display:none}
     .f,.on{opacity:1!important;transform:none!important}
     section.slide>*{animation:none!important}
-    .title .lgd,.title .city .rq,.title .city image,.title .city .hub,.title .team,.title h1,.title h1 em,.title p,.thanks .ty h3,.thanks .say h4,.thanks .end p{animation:none!important}
-    .title .city .rq,.title .city image,.title .city .hub{opacity:1!important}
+    .title .lgd,.title .city image,.title .city .pt,.title .team,.title h1,.title p,.thanks .ty h3,.thanks .say h4,.thanks .end p{animation:none!important}
+    .title .city image,.title .city .pt{opacity:1!important}
     .stack .node,.stack .w,.stack .wl,.stack .dot,.stack .steps div,.net .spoke,.net .hub,.map .cl,.map .brief,.know .arrow,.know .pp.new{opacity:1!important;transform:none!important}
     .net .tangle{opacity:.08!important}
     .seg i{width:calc(var(--w)*1%)!important}
@@ -483,21 +480,21 @@
     <div class="title">
       <div>
         <div class="team"><b>V</b> Team V <i>·</i> Hacksgiving 2026 <i>·</i> built for ComForce MKE</div>
-        <h1>Relay<em>MKE</em></h1>
+        <h1>Relay <em>MKE</em></h1>
         <p>One shared record for every request ComForce receives — <b>closed only when the resident says help arrived.</b></p>
       </div>
       <div class="city" id="city">
         <div class="lgd">
-          <div style="--c:#6fc2b7">The resident said help arrived</div>
-          <div style="--c:#f08a6c">Not yet</div>
-          <div class="h">Every one lands in one shared record</div>
-          <small>One dot per request<br>Milwaukee · 2026<br>synthetic demo data</small>
+          <div style="--c:#f08a6c">A request comes in</div>
+          <div class="p">A partner takes it</div>
+          <div style="--c:#6fc2b7">The resident says help arrived</div>
+          <small>Milwaukee · <span id="mo">Jan</span> 2026<br>one dot per request<br>synthetic demo data</small>
         </div>
-        <svg viewBox="0 0 346 618" role="img" aria-label="Map of Milwaukee's neighbourhoods with one dot for each request logged in 2026. A dot is teal where the resident confirmed that the help arrived, and coral where they have not yet.">
+        <svg viewBox="0 0 346 618" role="img" aria-label="Map of Milwaukee's neighbourhoods replaying the requests logged in 2026. Each request appears as a coral dot, a line runs to the partner that took it and back, and the dot turns teal when the resident confirmed that the help arrived.">
           <image href="img/milwaukee-dark.svg" x="0" y="0" width="346" height="618"/>
-          <g id="relays"></g>
+          <g id="fx"></g>
+          <g id="partners"></g>
           <g id="reqdots"></g>
-          <circle class="hub" cx="182.9" cy="273.5" r="5"/>
         </svg>
       </div>
     </div>
@@ -850,25 +847,50 @@
   /* ---------- generated visuals ---------- */
   // title: one dot per request logged in 2026 as [x*10, y*10, confirmed by the resident], oldest first. See "The title map" in presentation/README.md.
   const DOTS = [[2026,1907,1],[2512,2464,1],[1527,1799,0],[2342,2920,0],[2505,2412,0],[1677,1704,1],[2090,2564,0],[1177,1726,1],[2970,4459,1],[1884,2396,0],[2201,2788,1],[1854,1531,0],[1480,1879,1],[2143,2221,1],[2444,4130,1],[2197,2896,1],[2932,4596,0],[1971,3941,1],[2477,3990,1],[1997,1663,0],[1455,1832,1],[1597,1822,1],[1530,1783,0],[2153,2746,1],[1510,1952,1],[2324,2189,1],[2036,2992,1],[2003,1688,0],[1985,2557,1],[1841,2971,0],[2267,2888,0],[1931,1265,1],[2360,4402,1],[1976,3524,0],[2490,4048,1],[1830,2702,1],[2624,2853,0],[1876,2842,0],[2734,2906,1],[1774,2345,1],[2098,3864,0],[1333,2003,1],[1481,1717,1],[2905,2849,1],[1336,1591,0],[2144,3964,0],[2767,2774,0],[1515,1913,1],[1792,2661,1],[1373,1956,1],[1822,1368,1],[2036,3177,1],[1826,1307,0],[1965,3019,0],[1831,2944,0],[1980,2951,1],[2100,2738,0],[1902,3206,0],[1957,1475,1],[2938,4615,0],[2021,2646,1],[1925,2076,1],[1855,2873,1],[2121,3914,1],[1881,1764,0],[2372,2769,0],[2338,4149,0],[2412,4220,0],[2129,2325,1],[1727,2898,0],[2016,2171,0],[1972,2052,1],[1453,3034,0],[2333,2892,0],[2766,2778,1],[2389,4117,1],[1659,2290,1],[2052,3937,1],[2075,2944,1],[2054,2593,0],[1835,3552,1],[2014,1916,0],[1875,1953,0],[1186,1619,1],[1920,2983,0],[1850,3448,1],[1930,2983,1],[1811,3275,1],[1938,2632,0],[1579,3077,1],[1931,1671,1],[1579,2833,1],[1808,1559,1],[2736,4581,1],[1866,3298,1],[2370,4115,1],[1394,2568,1],[2843,4331,1],[1746,3036,1],[1953,2403,1],[1939,3832,1],[1362,2412,1],[2327,2303,0],[1981,2158,1],[2824,4616,1],[1854,2871,1],[2533,4239,1],[2229,2361,1],[1328,1650,1],[1776,3831,1],[1235,1597,1],[1814,2747,1],[1667,2416,1],[2974,4603,1],[2569,4196,1],[1923,1359,0],[1891,3452,1],[1669,2535,0],[1557,2257,1],[1494,1940,0],[2020,2621,1],[2009,2971,1],[2156,2918,1],[1902,1917,1],[2579,4147,1],[2314,3026,0],[2093,2534,0],[2185,2665,0],[2454,2861,1],[2028,3332,0],[2434,4383,1],[2808,2906,1],[1434,1934,1],[1864,2484,1],[1579,2243,1],[1199,1626,0],[2492,4232,1],[1652,1831,1],[1735,1768,1],[2132,4086,1],[2177,2227,1],[1961,2916,1],[1226,1699,0],[2757,2815,1],[2199,2328,1],[2279,4094,1],[2425,4220,1],[2214,2799,1],[2941,4477,1],[1630,2913,1],[2153,3301,0],[1856,3235,1],[1591,1837,0],[2137,2382,1],[1921,1534,1],[1405,1907,1],[2289,2430,0],[2191,2918,0],[2720,2902,1],[2944,4460,1],[1542,2069,0],[1672,1918,1],[2836,2680,1],[1512,2128,1],[1931,3560,1],[2457,4178,1],[2466,2890,0],[2704,2808,0],[1887,1599,1],[2054,2713,1],[1797,2633,0],[2354,3965,1],[2266,4293,0],[2071,3978,1],[1710,2496,1],[1164,2609,1],[2331,2409,1],[1477,2862,1],[2436,3017,1],[2080,2787,1],[2830,2648,0],[1609,1761,1],[1899,1367,0],[2467,2819,0],[2522,3789,0],[2061,2281,0],[2089,3972,0],[2130,2665,0],[1670,3171,0],[2185,2366,0],[2110,2389,0],[2329,4366,0],[1827,3071,0],[2021,2971,0],[1288,1715,0],[2025,3878,0],[2982,2809,0],[1540,1901,0],[1917,2849,0],[2636,2927,0],[1975,2083,0]];
-  const city = document.getElementById('city'), relays = city.querySelector('#relays'), SVGNS = 'http://www.w3.org/2000/svg';
-  city.querySelector('#reqdots').innerHTML = DOTS.map(([x, y, yes], k) => `<circle class="rq${yes ? ' y' : ''}" cx="${x/10}" cy="${y/10}" r="3.1" style="--t:${(1.5 + k*.017).toFixed(2)}s"/>`).join('');
-  // Once the year has replayed, requests keep relaying to the one shared record: a light travels from a dot to the hub, about one a second.
-  const HUB = [182.9, 273.5]; // ComForce's base in the demo data (src/lib/geo.ts), in the basemap's box
-  const svgEl = (tag, attrs) => { const el = document.createElementNS(SVGNS, tag); for (const k in attrs) el.setAttribute(k, attrs[k]); el.addEventListener('animationend', () => el.remove()); return relays.appendChild(el); };
+  const PARTNERS = [[182.9,273.5],[198.7,188.8],[144.4,188.4],[173.8,318.0],[180.0,333.2],[269.5,439.9],[249.1,347.6],[205.2,305.4],[168.6,324.3],[252.4,418.8],[274.4,272.0],[249.1,351.4]];
+  const TOOK = '9566634774557728b071452471008a45a7764169bb8241114690123b6955b160454361166455230196527676b5a004b664559945979a7a9ba741b609790a31516b68a900a6017a046418236545b6a65a65749b739a599b1ab6b0b39063-1983100260----';
+  const MONTH = '0000000000001111111111111122222222222222333333333333333333333333333333333333333444444444444444444444555555555555556666666666666777777777777777888888888888999999999999999aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+  // The map replays the most recent requests the way Relay works: a request comes in, a partner takes it, the help comes back, and the resident's answer turns it teal.
+  const FROM_MONTH = 9; // October: show the last two months, so the flow stays readable. 0 shows all of 2026.
+  const SHOW = DOTS.map((_, k) => k).filter(k => parseInt(MONTH[k], 36) >= FROM_MONTH);
+  const city = document.getElementById('city'), SVGNS = 'http://www.w3.org/2000/svg', monthEl = document.getElementById('mo');
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  city.querySelector('#reqdots').innerHTML = SHOW.map(k => `<circle class="rq" cx="${DOTS[k][0]/10}" cy="${DOTS[k][1]/10}" r="3.4"/>`).join('');
+  city.querySelector('#partners').innerHTML = PARTNERS.map(([x, y]) => `<rect class="pt" x="${x - 3.4}" y="${y - 3.4}" width="6.8" height="6.8"/>`).join('');
+  const rqEls = [...city.querySelectorAll('.rq')], ptEls = [...city.querySelectorAll('.pt')], fx = city.querySelector('#fx');
+  const fxEl = (tag, attrs) => { const el = document.createElementNS(SVGNS, tag); for (const k in attrs) el.setAttribute(k, attrs[k]); el.addEventListener('animationend', () => el.remove()); return fx.appendChild(el); };
   let cityRun = 0;
-  function relay(run){
-    if (run !== cityRun) return;
-    const [dx, dy, yes] = DOTS[Math.floor(Math.random()*DOTS.length)], x = dx/10, y = dy/10;
-    const mx = (x + HUB[0])/2 + (HUB[1] - y)*.22, my = (y + HUB[1])/2 + (x - HUB[0])*.22; // a gentle bow, not a straight line
-    svgEl('circle', { class: 'ping' + (yes ? ' y' : ''), cx: x, cy: y, r: 3.1 });
-    svgEl('path', { class: 'relay', d: `M${x} ${y}Q${mx.toFixed(1)} ${my.toFixed(1)} ${HUB[0]} ${HUB[1]}`, pathLength: 1 });
-    timers.push(setTimeout(() => { if (run === cityRun) svgEl('circle', { class: 'ping hubping', cx: HUB[0], cy: HUB[1], r: 5 }); }, 1050));
-    timers.push(setTimeout(() => relay(run), 900 + Math.random()*700));
+  const later = (run, ms, fn) => timers.push(setTimeout(() => { if (run === cityRun) fn(); }, ms));
+  // One request, start to finish. `j` is its place in SHOW; `leg` is how long each direction of the hand-off takes, in seconds.
+  function arrive(run, j, leg, ripple){
+    const k = SHOW[j], [dx, dy, yes] = DOTS[k], x = dx/10, y = dy/10, p = PARTNERS[parseInt(TOOK[k], 36)];
+    rqEls[j].classList.add('in'); if (ripple) fxEl('circle', { class: 'ping', cx: x, cy: y, r: 3.4 });
+    monthEl.textContent = MONTHS[parseInt(MONTH[k], 36)];
+    if (!p) return; // nobody has taken this one yet: it stays coral and waits
+    later(run, leg*450, () => fxEl('path', { class: 'ln', d: `M${x} ${y}L${p[0]} ${p[1]}`, pathLength: 1, style: `--dur:${leg*2}s` }));
+    later(run, leg*450 + leg*900, () => { const el = ptEls[parseInt(TOOK[k], 36)]; el.classList.remove('hit'); void el.getBoundingClientRect(); el.classList.add('hit'); });
+    if (yes) later(run, leg*450 + leg*2000, () => { rqEls[j].classList.add('ok'); fxEl('circle', { class: 'ping y', cx: x, cy: y, r: 3.4 }); });
+  }
+  function replay(run, j){
+    if (j >= SHOW.length) return later(run, 2500, () => watch(run));
+    const first = j === 0;                    // the first one plays slowly so the flow can be read; after that, about three a second
+    arrive(run, j, first ? .8 : .45, first);
+    later(run, first ? 2100 : 340, () => replay(run, j + 1));
+  }
+  // Afterwards the requests still waiting on an answer take turns to pulse: none of them is forgotten.
+  const waiting = SHOW.filter(k => !DOTS[k][2]);
+  function watch(run){
+    const [dx, dy] = DOTS[waiting[Math.floor(Math.random()*waiting.length)]];
+    fxEl('circle', { class: 'ping', cx: dx/10, cy: dy/10, r: 3.4 });
+    later(run, 2200 + Math.random()*1400, () => watch(run));
   }
   function playCity(){
-    const run = ++cityRun; relays.innerHTML = '';
+    const run = ++cityRun; fx.innerHTML = '';
+    rqEls.forEach(el => el.classList.remove('in', 'ok')); ptEls.forEach(el => el.classList.remove('hit'));
     city.classList.remove('go'); void city.getBoundingClientRect(); city.classList.add('go');
-    if (!location.search.includes('print')) timers.push(setTimeout(() => relay(run), 5600));
+    if (location.search.includes('print')) { rqEls.forEach((el, j) => el.classList.add('in', ...(DOTS[SHOW[j]][2] ? ['ok'] : []))); monthEl.textContent = MONTHS[parseInt(MONTH.at(-1), 36)]; return; }
+    monthEl.textContent = MONTHS[parseInt(MONTH[SHOW[0]], 36)];
+    later(run, 1700, () => replay(run, 0));
   }
 
   // slide 3 network
@@ -939,7 +961,6 @@
     if (s.querySelector('#map')) { const map = document.getElementById('map'); mapState(ph >= 1); map.classList.toggle('live', ph >= 1); map.classList.toggle('gaps', !!s.querySelector('.brief.on')); }
     if (s.querySelector('#units')) document.getElementById('dots').dataset.step = s.querySelectorAll('.stat.on').length;
     if (s.querySelector('#know')) knowState(step >= 1);
-    if (s.querySelector('#city') && step === 0 && !s.dataset.played) { s.dataset.played = 1; playCity(); }
   }
   const on = (f, instant) => { f.classList.add('on'); f.querySelectorAll('[data-count]').forEach(v => countUp(v, instant)); if (f.matches('[data-count]')) countUp(f, instant); };
   const revealAll = s => { clearTimers(); frags(s).forEach(f => on(f, true)); hooks(s); };
@@ -956,7 +977,8 @@
     prog.style.width = ((n)/(slides.length-1)*100) + '%';
     history.replaceState(null, '', '#' + (n+1));
     hooks(s);
-    if (all) revealAll(s); else if (s.querySelector('#city')) playCity();
+    if (all) revealAll(s);
+    if (s.querySelector('#city')) playCity(); // after revealAll, which clears the timers the replay runs on
     void s.offsetWidth; s.classList.remove('noanim');
   }
   function next(){
@@ -993,7 +1015,7 @@
 
   setTimeout(() => document.getElementById('help').classList.add('hide'), 5000);
   addEventListener('hashchange', () => { const n = (parseInt(location.hash.slice(1)) || 1) - 1; if (n !== i) show(n, true); });
-  if (location.search.includes('print')) { slides.forEach(s => { s.classList.add('active'); frags(s).forEach(f => f.classList.add('on')); hooks(s); }); return; }
+  if (location.search.includes('print')) { slides.forEach(s => { s.classList.add('active'); frags(s).forEach(f => f.classList.add('on')); hooks(s); }); playCity(); return; }
   const start = (parseInt(location.hash.slice(1)) || 1) - 1;
   show(Math.max(0, start), start > 0);
   paint();
