@@ -1,6 +1,6 @@
 import { db } from "./db";
 import { intake, flagSafety } from "./actions";
-import { sendSms, CODE_TEXT } from "./sms";
+import { sendSms, CODE_TEXT, MISSING_PERSON_TEXT } from "./sms";
 import { redactPII } from "./ai/redact";
 import { summarizeCall, structureIntake } from "./ai";
 import type { CallTurn, HelpRequest } from "./types";
@@ -63,7 +63,8 @@ export async function createRequestFromCall(input: CallToolInput): Promise<{ req
   // Text the code so nobody has to memorize it over the phone; the same number is the reply channel.
   let texted = false;
   if (contactRef) {
-    const r = await sendSms(contactRef, CODE_TEXT(updated.shortCode, updated.language));
+    const body = updated.safety?.kind === "missing_person" ? MISSING_PERSON_TEXT(updated.shortCode, updated.language) : CODE_TEXT(updated.shortCode, updated.language);
+    const r = await sendSms(contactRef, body);
     texted = r.ok;
     const note = r.ok ? `Tracking code texted to the resident${r.mocked ? " (mock SMS)" : ""}` : `Could not text code: ${r.error}`;
     updated = (await db.updateRequest(updated.id, {}, { actor: "system", type: "sms_out", text: note })) ?? updated;

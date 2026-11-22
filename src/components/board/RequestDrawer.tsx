@@ -84,7 +84,7 @@ export function RequestDrawer({ request, partners, onClose, me }: { request: Saf
               {request.safety && (
                 <section className="card p-4 !border-red/40 bg-red/5">
                   <div className="flex items-center justify-between">
-                    <div className="label flex items-center gap-1.5 text-red"><Siren size={12} /> {request.safety.level === "crisis" ? "Crisis" : "Safety concern"} · ComForce-only</div>
+                    <div className="label flex items-center gap-1.5 text-red"><Siren size={12} /> {request.safety.kind === "missing_person" ? "Missing person" : request.safety.level === "crisis" ? "Crisis" : "Safety concern"} · ComForce-only</div>
                     {request.safety.leadPagedAt && <span className="text-[11px] font-semibold text-red">On-call lead paged</span>}
                   </div>
                   {request.safety.note && <p className="mt-2 text-[13.5px] leading-snug text-ink">{highlight(request.safety.note)}</p>}

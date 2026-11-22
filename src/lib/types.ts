@@ -185,6 +185,8 @@ export interface HelpRequest {
 export type SafetyLevel = "concern" | "crisis";
 export interface SafetyFlag {
   level: SafetyLevel;
+  /** Set for a missing child or adult: the card says so and the resident is pointed to 911, not a crisis line. */
+  kind?: "missing_person";
   /** ComForce-tier only: Jordan's one-line note on what was said (already redacted). */
   note?: string;
   /** Resource names Jordan shared on the call, e.g. "988", "211", "Sojourner" */

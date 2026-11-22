@@ -2,7 +2,7 @@ import { db } from "./db";
 import { structureIntake } from "./ai";
 import { makeShortCode } from "./db/seed";
 import { sendSms, VERIFY_PROMPT, THANKS_TEXT, CALL_CLOSE_TEXT } from "./sms";
-import { detectSafety, resourcesFor, resourcesSms, SAFETY_RESOURCES } from "./safety";
+import { detectSafety, isMissingPerson, resourcesFor, resourcesSms, SAFETY_RESOURCES } from "./safety";
 import { scheduleFollowUpCall, cancelFollowUp } from "./followup";
 import { classifyResidentReply } from "./replyClassifier";
 import { nudgeCooldownRemainingMs } from "./nudge";
@@ -58,17 +58,25 @@ export async function intake(input: IntakeInput): Promise<{ request: HelpRequest
  */
 export async function flagSafety(id: string, level: "concern" | "crisis", text: string, note?: string, shared?: string[]) {
   const cur = await db.getRequest(id);
-  if (!cur || cur.safety) return cur;
+  if (!cur) return cur;
+  if (cur.safety) {
+    // Intake already flagged this from the words alone. Keep Jordan's own note and what he actually read out.
+    if (!note && !shared?.length) return cur;
+    const said = shared?.length ? shared.map((k) => SAFETY_RESOURCES.find((r) => r.key === k)?.name ?? k) : cur.safety.resourcesShared;
+    return db.updateRequest(id, { safety: { ...cur.safety, note: note ?? cur.safety.note, resourcesShared: said } }, { actor: "ai", type: "safety", text: `Jordan's note added · he shared ${said.join(", ")}` });
+  }
   const now = new Date().toISOString();
+  const missing = isMissingPerson(text);
+  if (missing) level = "crisis";
   const keys = shared?.length ? shared : resourcesFor(level, text);
   const names = keys.map((k) => SAFETY_RESOURCES.find((r) => r.key === k)?.name ?? k);
   const needs = cur.needs.includes("safety") ? cur.needs : (["safety", ...cur.needs].slice(0, 3) as HelpRequest["needs"]);
   const first = await db.updateRequest(id, {
     urgency: "critical",
     needs,
-    safety: { level, note, resourcesShared: names, at: now, leadPagedAt: now },
-  }, { actor: "ai", type: "safety", text: `${level === "crisis" ? "Crisis" : "Safety concern"} flagged · Jordan shared ${names.join(", ")}` });
-  await db.updateRequest(id, {}, { actor: "system", type: "safety", text: "ComForce on-call lead paged (mock) · partner tier sees the need, not the details" });
+    safety: { level, ...(missing ? { kind: "missing_person" as const } : {}), note, resourcesShared: names, at: now, leadPagedAt: now },
+  }, { actor: "ai", type: "safety", text: `${missing ? "Missing person" : level === "crisis" ? "Crisis" : "Safety concern"} flagged · Jordan shared ${names.join(", ")}` });
+  await db.updateRequest(id, {}, { actor: "system", type: "safety", text: `ComForce on-call lead${missing ? " and Missing Persons Network" : ""} paged (mock) · partner tier sees the need, not the details` });
   return first;
 }
 
@@ -201,7 +209,7 @@ export async function handleInboundSms(fromNumber: string, body: string): Promis
   // Anything else is a new request for help.
   const { request } = await intake({ text: body, channel: "sms", contactRef: fromNumber, consentToShare: true });
   const base = `Relay MKE: got it. Your request number is ${request.shortCode}. A community responder will reach out${request.safety ? " right away" : ""}.`;
-  return request.safety ? `${base} ${resourcesSms(request.safety.resourcesShared)}` : `${base} Reply STOP to opt out.`;
+  return request.safety ? `${base} ${resourcesSms(request.safety.resourcesShared, request.safety.kind)}` : `${base} Reply STOP to opt out.`;
 }
 
 const STATUS_TEXT: Record<HelpRequest["status"], (r: HelpRequest) => string> = {

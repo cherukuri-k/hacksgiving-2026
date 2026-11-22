@@ -9,7 +9,7 @@ import { NeedChip, UrgencyChip } from "../ui/Chip";
 const CHANNEL = { sms: ["SMS", MessageSquareText], voice: ["Voice", Mic], web: ["Web", Globe], partner: ["Partner", Users] } as const;
 const COL_DOT: Record<string, string> = { new: "#0b93d5", claimed: "#7c3aed", in_progress: "#f59e0b", delivered: "#16a34a", verified: "#16a34a" };
 
-const shortResources = (names: string[]) => names.map((n) => n.startsWith("988") ? "988" : n.includes("County") ? "County crisis" : n.includes("Sojourner") ? "Sojourner" : "211").slice(0, 2).join(" / ");
+const shortResources = (names: string[]) => names.map((n) => n === "911" ? "911" : n.includes("Missing") ? "Missing-child hotline" : n.startsWith("988") ? "988" : n.includes("County") ? "County crisis" : n.includes("Sojourner") ? "Sojourner" : n.includes("2-1-1") || n === "211" ? "211" : n).slice(0, 2).join(" / ");
 
 function Row({ Icon, k, v, vClass = "text-ink" }: { Icon: typeof MapPin; k: string; v: React.ReactNode; vClass?: string }) {
   return (
@@ -40,7 +40,7 @@ export function RequestCard({ r, fresh, onClick, now }: { r: SafeRequest; fresh:
     <motion.button layout layoutId={r.id} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ type: "spring", stiffness: 400, damping: 34 }} onClick={onClick}
       className={`card w-full text-left overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,.06)] ${border}`}>
       {reopened && <div className="flex items-center gap-1.5 bg-red-soft px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-wide text-red"><RotateCcw size={11} /> Reopened by resident</div>}
-      {!reopened && r.safety && <div className="flex items-center gap-1.5 bg-red px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-wide text-white"><Siren size={11} /> {r.safety.level === "crisis" ? "Crisis" : "Safety"} · {shortResources(r.safety.resourcesShared)} shared · lead paged</div>}
+      {!reopened && r.safety && <div className="flex items-center gap-1.5 bg-red px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-wide text-white"><Siren size={11} /> {r.safety.kind === "missing_person" ? "Missing person" : r.safety.level === "crisis" ? "Crisis" : "Safety"} · {shortResources(r.safety.resourcesShared)} shared · lead paged</div>}
       {!reopened && !r.safety && flagged && (
         <div className={`flex items-center gap-1.5 px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-wide ${overdue ? "bg-red-soft text-red" : "bg-orange-soft text-[#b45309]"}`}>
           {overdue ? <AlertTriangle size={11} /> : <Clock3 size={11} />} {overdue ? "Needs attention" : "Follow-up needed"}

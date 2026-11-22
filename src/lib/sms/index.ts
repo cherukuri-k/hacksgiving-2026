@@ -60,6 +60,12 @@ export const CODE_TEXT = (code: string, lang?: Lang) =>
       ? `Relay MKE: koj qhov kev thov yog ${code}. Xa ${code} rau tus xov tooj no kom paub xov xwm. Ib tug neeg hais lus Hmoob yuav hu rov qab rau koj. (Your request is ${code}; a Hmong-speaking neighbor will call you back.)`
       : `Relay MKE: your request is logged as ${code}. Text ${code} to this number any time for an update. We'll text you when help is on the way. Reply STOP to opt out.`;
 
+/** Tracking-code text for a missing-person report: the first thing it says is to call 911, so nobody waits on us instead. */
+export const MISSING_PERSON_TEXT = (code: string, lang?: Lang) =>
+  es(lang)
+    ? `Relay MKE: llame al 911 ahora para reportar a una persona desaparecida. No tiene que esperar 24 horas. Su solicitud es ${code}; el equipo de ComForce la está viendo y alguien le llamará. Mantenga su teléfono cerca.`
+    : `Relay MKE: call 911 now to report a missing person. You do not have to wait 24 hours. Your request is ${code}; ComForce's team is looking at it now and someone will call you. Keep your phone close.`;
+
 /** Final text after Jordan's call-back, echoing what the resident said so they have it in writing. */
 export const CALL_CLOSE_TEXT = (code: string, reply: "1" | "2" | "3", lang?: Lang) => {
   if (es(lang)) {

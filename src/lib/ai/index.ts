@@ -1,6 +1,6 @@
 import { NEEDS, NEIGHBORHOODS, type Need, type StructuredIntake, type Urgency } from "../types";
 import { redactPII } from "./redact";
-import { detectSafety } from "../safety";
+import { detectSafety, isMissingPerson, mayBeMinor } from "../safety";
 import { complete, llmConfigured, parseJson } from "./llm";
 
 const KEYWORDS: Record<Need, RegExp> = {
@@ -54,6 +54,7 @@ const HEADLINE: Record<Need, string> = {
 
 /** Build a short neutral title from what the rules detected, e.g. "Groceries for a household of 5 · by Friday". */
 function composeHeadline(needs: Need[], householdSize: number | undefined, t: string): string {
+  if (isMissingPerson(t)) return mayBeMinor(t) ? "Missing child reported" : "Missing person reported";
   const primary = needs.find((n) => n !== "youth" && n !== "other") ?? needs[0] ?? "other";
   let s = HEADLINE[primary];
   if (householdSize) s += ` for a household of ${householdSize}`;
@@ -107,7 +108,8 @@ function guessHoodFromStreets(t: string): string | undefined {
 const SYSTEM = `You structure incoming requests for help for a Milwaukee community organization.
 The text has already had personal identifiers replaced with [name], [phone], [address], [email]. Never try to guess them back.
 Return strict JSON: {"summary": string (<= 12 words, neutral, no names), "needs": string[] (1-3 from ${JSON.stringify(NEEDS)}), "urgency": "low"|"normal"|"high"|"critical", "neighborhood": one of ${JSON.stringify(NEIGHBORHOODS)} or "Unknown", "householdSize": number|null, "language": "en"|"es"|"hmn"|"other", "safety": "none"|"concern"|"crisis"}.
-Safety: "crisis" = thoughts of self-harm, overdose, someone with a weapon or threatening to kill; "concern" = domestic violence, abuse, feeling unsafe at home, threats, stalking; otherwise "none".
+Safety: "crisis" = thoughts of self-harm, overdose, someone with a weapon or threatening to kill, or a missing person (a child or adult who has not come home, ran away, or cannot be found); "concern" = domestic violence, abuse, feeling unsafe at home, threats, stalking; otherwise "none".
+A missing person: needs ["safety"] (add "youth" if they are a minor, never "legal"), urgency "critical", and a summary like "Missing child, last seen near <place> at <time>".
 Urgency rules: critical = risk to life/safety, shutoff/eviction within 72h, infant without heat; high = needed within a week, or food/housing/utilities when children are in the home, or health; normal otherwise.
 Neighborhood: only pick one if the text names it or names streets you are sure of (35th/Burleigh/Sherman = Sherman Park; Holton/Locust/MLK = Harambee; 27th/Center = Metcalfe Park; Fond du Lac/North Ave = Amani; Teutonia/Villard/Hampton Ave = Old North Milwaukee; Good Hope = Thurston Woods; Capitol Dr = Roosevelt Grove; Cesar Chavez/National = Clarke Square; Mitchell St = Historic Mitchell Street; KK/Bay View = Bay View; Humboldt/Riverwest = Riverwest). Otherwise "Unknown".
 Describe the NEED. Never characterize people as dangerous or as suspects.`;
