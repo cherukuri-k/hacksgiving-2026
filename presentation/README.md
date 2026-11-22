@@ -16,7 +16,7 @@ Slides 4–5 share one rhythm, shown by the pill top-right: **Today → With Rel
 
 | # | Slide | Presses | What happens |
 | --- | --- | --- | --- |
-| 1 | Team V · Relay MKE | — | Request rail draws itself on load, a pulse rides it; Verify step in coral |
+| 1 | Team V · Relay MKE | — | Request rail draws itself on load, a pulse rides it; Verify step in coral. On the right, the resident's phone with a real thread from a recorded demo call; the text that closes the request is outlined in the same coral |
 | 2 | About — one number, one board, one proof | 1 | Three real screens: phone, board, grants |
 | 3 | Five problems, one thing missing | 2 | Five tiles flip from broken to solved and connect to "one shared record"; then 01–03 are tagged "live in the demo" and 04–05 "next" |
 | 4 | Problem 4 · Awareness & decisions | 2 | Anecdotes over a map of Milwaukee → the City's 26 clusters appear, sized by requests; coral hotspots are called out; weekly brief → `/pulse` |
@@ -26,7 +26,7 @@ Slides 4–5 share one rhythm, shown by the pill top-right: **Today → With Rel
 | 8 | Demo | — | Hand-off to live demo. **V** plays `demo-backup.mp4` if it exists |
 | 9 | Benefits | 2 | Was/now cards, audience band |
 | 10 | Cost — $1.68 | 2 | Price counts up with the real cost split; then 223 squares fill in, one per year of Relay that a year of findhelp enterprise ($75,000) would pay for |
-| 11 | Scorecard + thank you | — | The four criteria and three bonuses, each with where it was shown; QR to the repo |
+| 11 | Thank you + scorecard | — | "Thank you. Ready Monday." and the QR to the repo on the left; the four criteria, each with where it was shown, and the three bonuses in one strip on the right |
 
 19 presses reach the demo. Some presses play a short sequence; pressing again mid-sequence skips to its end.
 
@@ -60,5 +60,7 @@ node pdf.mjs   # Playwright: opens slides/index.html?print, prints 12 pages at 1
 ## Screenshots
 
 With the app running on `:3077`, capture `/board` and `/grants` at 1600×1000 and `/phone?number=4145550188` at 390×844 (2× scale) into `slides/img/` — `board.png`, `grants.png`, `phone-home.png`, `phone-messages.png`, `phone-dialer.png`; plus `/partners`, `/pulse`, `/guide`, `/impact` as `partners.png`, `pulse.png`, `guide.png`, `impact.png`.
+
+`phone-loop.png` (title slide) is the Messages screen of the phone after a full demo run: the code text, "did the help arrive?", and the closing text. Capture it at 390×640 (3× scale) once a request from that phone has been verified. The coral outline on the slide is positioned over the third text; if the thread's wording or length changes, adjust `.title .ph .mark` in the deck's CSS.
 
 Numbers on the visible slides come from the app on a **freshly reset board**, 2026, synthetic data: 200 requests · $336 platform cost for the year · $1.68 per request · $2.73 per resident-verified outcome (Grants → application tab → Platform cost), and the cluster counts on the map (Grants → cluster table). Each live demo request adds one. The hidden data slide still shows 203 / 186 / 124, captured when three demo requests were on the board. If the seed changes, update the script, the map on slide 4, the cost on slide 10, the scorecard and the hidden data slide.
