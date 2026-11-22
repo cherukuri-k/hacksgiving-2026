@@ -303,6 +303,7 @@
   .grd:not([data-step="0"]) .gbox.ai{border-color:var(--teal);box-shadow:0 20px 40px -28px rgba(14,107,99,.7)}
   .gbox .lg{width:84px;height:84px;border-radius:22px;border:1px solid var(--line);display:grid;place-items:center;background:#fff}
   .gbox .lg img{width:46px;height:46px}
+  .aiic{width:46px;height:46px;display:block;color:#7a5af5}
   .gbox.vault .lg{background:var(--dark);border-color:var(--dark);color:#fff} .gbox.vault .lg svg{width:38px;height:38px}
   .gbox .chips{display:flex;flex-wrap:wrap;gap:8px}
   .gbox .chips i{font-style:normal;font-family:var(--mono);font-size:16px;padding:6px 11px;border-radius:6px;background:var(--teal2);color:var(--teal)}
@@ -657,7 +658,7 @@
         <text x="100" y="286" text-anchor="middle" fill="#17181c">who she is</text>
       </svg>
       <div class="dest">
-        <div class="gbox ai"><div class="lg"><img src="img/logos/claude.svg" alt="Claude"></div><div><div class="lab">What the AI sees</div><div class="chips"><i>need: food</i><i>household: 4</i><i>until: Friday</i><i>urgency: critical</i></div></div></div>
+        <div class="gbox ai"><div class="lg"><svg class="aiic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="AI agent"><path d="M11 3.5l1.9 5.1a2 2 0 0 0 1.2 1.2l5.1 1.9-5.1 1.9a2 2 0 0 0-1.2 1.2L11 19.9l-1.9-5.1a2 2 0 0 0-1.2-1.2l-5.1-1.9 5.1-1.9a2 2 0 0 0 1.2-1.2z"/><path d="M19 2.5v4M17 4.5h4M19.5 17.5v3M18 19h3"/></svg></div><div><div class="lab">What the AI sees</div><div class="chips"><i>need: food</i><i>household: 4</i><i>until: Friday</i><i>urgency: critical</i></div></div></div>
         <div class="gbox vault"><div class="lg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div><div class="lab">What stays in ComForce's own database</div><div class="chips"><i>name</i><i>address</i><i>phone</i><i>never sent to a model</i></div></div></div>
       </div>
     </div>
@@ -670,7 +671,7 @@
   </section>
 
   <!-- 10 STACK -->
-  <section class="slide" data-beat="105" data-manual data-notes="How it's built. Click through: the resident calls a Twilio number; ElevenLabs runs Jordan's voice; Claude turns the transcript into a structured request; it's written to Supabase — the one record. The Next.js board reads it live; dispatch goes out by Resend; the Pulse map reads the same rows; and the loop closes with a Twilio text back to the resident. Pay-per-use everywhere.">
+  <section class="slide" data-beat="105" data-manual data-notes="How it's built. Click through: the resident calls a Twilio number; ElevenLabs runs Jordan's voice; an AI agent turns the transcript into a structured request; it's written to Supabase — the one record. The Next.js board reads it live; dispatch goes out by Resend; the Pulse map reads the same rows; and the loop closes with a Twilio text back to the resident. Pay-per-use everywhere.">
     <div class="k"><span class="n">How it's built</span><span class="sep"></span>one record in the middle · pay-per-use around it</div>
     <h2>Every part is rentable. <em>Nothing has a seat licence.</em></h2>
     <div class="stack" id="stack">
@@ -696,7 +697,7 @@
       <div class="node on" style="left:80px;top:300px"><div class="lg person"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><b>Resident</b><span>any phone · no app</span></div>
       <div class="node f" style="left:420px;top:120px" data-g="1"><div class="lg"><img src="img/logos/twilio.svg" alt="Twilio"></div><b>Twilio</b><span>voice + SMS · $0.10/min</span></div>
       <div class="node f" style="left:700px;top:120px" data-g="2"><div class="lg dk"><img src="img/logos/elevenlabs.svg" alt="ElevenLabs"></div><b>ElevenLabs Agents</b><span>Jordan's voice · EN / ES</span></div>
-      <div class="node f" style="left:980px;top:120px" data-g="3"><div class="lg"><img src="img/logos/claude.svg" alt="Claude"></div><b>Claude</b><span>structure · triage · redaction</span></div>
+      <div class="node f" style="left:980px;top:120px" data-g="3"><div class="lg"><svg class="aiic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="AI agent"><path d="M11 3.5l1.9 5.1a2 2 0 0 0 1.2 1.2l5.1 1.9-5.1 1.9a2 2 0 0 0-1.2 1.2L11 19.9l-1.9-5.1a2 2 0 0 0-1.2-1.2l-5.1-1.9 5.1-1.9a2 2 0 0 0 1.2-1.2z"/><path d="M19 2.5v4M17 4.5h4M19.5 17.5v3M18 19h3"/></svg></div><b>AI Agent</b><span>structure · triage · summary</span></div>
       <div class="node rec f" style="left:720px;top:300px;width:200px" data-g="4"><div class="lg"><img src="img/logos/supabase.svg" alt="Supabase"></div><b>Supabase Postgres</b><span>the record · ComForce owns it</span></div>
       <div class="node f" style="left:1120px;top:300px;width:200px" data-g="5"><div class="lg multi"><img src="img/logos/nextdotjs.svg" alt="Next.js"><img src="img/logos/react.svg" alt="React"><img src="img/logos/vercel.svg" alt="Vercel"></div><b>Relay Board</b><span>Next 16 · React 19 · Vercel</span></div>
       <div class="node f" style="left:1120px;top:560px;width:200px" data-g="6"><div class="lg dk"><img src="img/logos/resend.svg" alt="Resend"></div><b>Resend</b><span>partner handoff · run sheet</span></div>
@@ -704,7 +705,7 @@
       <div class="steps" id="steps">
         <div><span class="num">01</span>Resident calls the number ComForce already gives out</div>
         <div><span class="num">02</span>Twilio streams the call to Jordan</div>
-        <div><span class="num">03</span>Claude turns the transcript into a request</div>
+        <div><span class="num">03</span>AI agent turns the transcript into a request</div>
         <div><span class="num">04</span>Written to the one record</div>
         <div><span class="num">05</span>Board updates live for every division</div>
         <div><span class="num">06</span>One tap dispatches a partner</div>
