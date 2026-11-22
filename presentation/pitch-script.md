@@ -1,6 +1,6 @@
 # Pitch script — 2:00, spoken slowly
 
-216 spoken words. At a slow, clear pace (around 115 words a minute) that is about 1:53 of talking in total: roughly 1:27 before the demo and 0:25 after it, which leaves about 7 seconds for pauses. Not yet timed aloud — rehearse once with the clock (**T**). **→** = one press. Nothing moves until you press; some presses play a short sequence, so pause and let it finish. If the demo runs long, press **End** to jump straight to the scorecard.
+223 spoken words. At a slow, clear pace (around 115 words a minute) that is about 1:56 of talking in total: roughly 1:27 before the demo and 0:29 after it, which leaves about 4 seconds for pauses. Not yet timed aloud — rehearse once with the clock (**T**). **→** = one press. Nothing moves until you press; some presses play a short sequence, so pause and let it finish. If the demo runs long, press **End** to jump straight to the scorecard.
 
 The deck no longer has separate slides for problems 1, 2 and 3. The demo shows all three live — it ends on the Grants page — and the overview slide says so.
 
@@ -54,7 +54,7 @@ Now watch a resident call. *(hand off — see demo-runbook.md)*
 
 **Slide 11 — Scorecard** *(leave it up)*
 
-No request lost. No outcome assumed. This is your scorecard. Thank you.
+Care is not measured by how many we reach. It is measured by how many we don't lose. Thank you.
 
 ---
 
